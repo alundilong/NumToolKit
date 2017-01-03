@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>myres/new.png</file>
+        <file>myres/edit.png</file>
+        <file>myres/open.jpeg</file>
+        <file>myres/open.png</file>
+        <file>myres/save.jpg</file>
+        <file>myres/save_as.png</file>
+        <file>myres/cut.png</file>
+        <file>myres/copy.png</file>
+        <file>myres/paste.png</file>
+        <file>myres/redo.png</file>
+        <file>myres/undo.jpeg</file>
+        <file>myres/about.png</file>
+    </qresource>
+</RCC>
