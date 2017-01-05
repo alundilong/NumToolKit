@@ -51,6 +51,12 @@ private slots:
 
     void on_actionIterativeMethod_triggered();
 
+    void on_action1D_Element_triggered();
+
+    void on_action2D_Element_triggered();
+
+    void on_action3D_Element_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString filePath_;

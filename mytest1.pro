@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui printsupport
+QT       += core gui printsupport opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,14 +15,19 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     form.cpp \
-    linearalgebrasolver.cpp
+    linearalgebrasolver.cpp \
+    feaanalysispanel.cpp \
+    feaviewer.cpp
 
 HEADERS  += mainwindow.h \
     form.h \
-    linearalgebrasolver.h
+    linearalgebrasolver.h \
+    feaanalysispanel.h \
+    feaviewer.h
 
 FORMS    += mainwindow.ui \
-    form.ui
+    form.ui \
+    feaanalysispanel.ui
 
 RESOURCES += \
     resource.qrc

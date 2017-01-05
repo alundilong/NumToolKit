@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <iostream>
 #include "linearalgebrasolver.h"
+#include "mainwindow.h"
 
 using namespace std;
 
@@ -11,8 +12,15 @@ Form::Form(QWidget *parent) :
     ui(new Ui::Form)
 {
     ui->setupUi(this);
-    connect(ui->pushButton,SIGNAL(clicked()),this, SLOT(exit()));
-    connect(ui->solveButton,SIGNAL(clicked()),this,SLOT(solve()));
+    ui->spinBox->setValue(1);
+    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->setRowCount(1);
+    QStringList tbHeader;
+    tbHeader << "A1" << "b";
+    ui->tableWidget->setHorizontalHeaderLabels(tbHeader);
+
+//    connect(ui->pushButton,SIGNAL(clicked()),this, SLOT(exit()));
+//    connect(ui->solveButton,SIGNAL(clicked()),this,SLOT(solve()));
 }
 
 
@@ -41,53 +49,45 @@ void Form::on_pushButton_2_clicked()
 
 void Form::solve() {
 
-    // read data from textEdit
-    QStringList ns = ui->textEdit->toPlainText().split(" ");
-    int ntotal;
-    nl_ = ns.at(0).toInt();
-    nc_ = ns.at(1).toInt();
-    ntotal = nl_ + (nl_*nc_) + 2;
+    int ncol = nc_ + 1;
+    int nrow = nl_;
 
-//    cout << ns.count() << endl;
-//    cout << nl_ << "\t" << nc_ << "\t" << ntotal << endl;
-
-    if((ns.count() != ntotal) || (nl_ != nc_) || (nl_ < 1))
-        QMessageBox::warning(this,"warning","format is incorrect!");
-
-    // read the following nl*nc numbers
-    double matrixValues[nl_*nc_];
-    for (int i = 0; i < nl_*nc_; i++) {
-        matrixValues[i] = ns.at(i+2).toDouble();
+    double **A = new double*[nrow];
+    for (int i = 0; i < nrow; i++) {
+        A[i] = new double [ncol];
     }
-
-    double **A = new double*[nl_];
-    for (int i = 0; i < nl_; i++) {
-        A[i] = new double [nc_];
-    }
-    for (int k = 0; k < nl_*nc_; k++)
-    {
-        int irow = k/nl_;
-        int icol = k%nl_;
-        A[irow][icol] = matrixValues[k];
+    for (int i = 0; i < nrow; i++) {
+        for (int j = 0; j < ncol-1; j++) {
+            A[i][j] = ui->tableWidget->item(i,j)->text().toDouble();
+//            cout << i <<"\t"<< j <<"\t"<< A[i][j] << endl;
+        }
     }
 
     double *bValues = new double[nl_];
-    for (int i = 0; i < nl_; i++) {
-        bValues[i] = ns.at(i+2+nl_*nc_).toDouble();
+    for (int i = 0; i < nrow; i++) {
+        bValues[i] = ui->tableWidget->item(i,ncol-1)->text().toDouble();
+//        cout << i <<"\t"<< ncol-1 << "\t" << bValues[i] << endl;
     }
 
-    double *results = new double[nl_];
-    linearAlgebraSolver las (nl_,nc_,A,bValues,results);
+// call linearAlgebraClass
+    double *results = new double[nrow];
+    linearAlgebraSolver las (nrow,A,bValues,results);
     las.LUSolve();
-    // call linearAlgebraClass
 
     QString string;
-//    string += QString::number(nl_) + "\n";
-//    string += QString::number(nc_) + "\n";
-    for (int i = 0; i < nl_; i++) {
+//    string += QString::number(nrow) + "\n";
+//    string += QString::number(ncol) + "\n";
+    for (int i = 0; i < nrow; i++) {
         string += QString::number(results[i]) + "\n";
-
     }
+
+//    for (int i = 0; i < nrow; i++) {
+//        for (int j = 0; j < ncol; j++) {
+//            string += ui->tableWidget->item(i,j)->text() + " ";
+//        }
+//        string += "\n";
+//    }
+
     ui->textBrowser->setText(string);
 
     for (int i = 0; i < nl_; i++) {
@@ -102,4 +102,20 @@ void Form::on_solveButton_clicked()
 {
     // solve the linear algebra equations
     solve();
+}
+
+void Form::on_spinBox_editingFinished()
+{
+    nl_ = ui->spinBox->value();
+    nc_ = nl_;
+    int ncol = nc_ + 1;
+    int nrow = nl_;
+    ui->tableWidget->setColumnCount(ncol);
+    ui->tableWidget->setRowCount(nrow);
+    QStringList tbHeader;
+    for (int i = 0; i < ncol-1; i++) {
+        tbHeader << QString("A")+QString::number(i+1);
+    }
+    tbHeader << "b";
+    ui->tableWidget->setHorizontalHeaderLabels(tbHeader);
 }

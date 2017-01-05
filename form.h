@@ -22,9 +22,12 @@ private slots:
 
     void on_solveButton_clicked();
 
+    void on_spinBox_editingFinished();
+
 private:
     Ui::Form *ui;
     int nl_, nc_; // number of line and column
+    QStringList log_;
     void exit();
     void solve();
 };

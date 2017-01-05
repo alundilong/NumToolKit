@@ -12,6 +12,7 @@
 #include <QPrintDialog>
 #include <QPrinter>
 #include "form.h"
+#include "feaanalysispanel.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -182,3 +183,25 @@ void MainWindow::on_actionIterativeMethod_triggered()
     iterativeMethodWindow->setWindowTitle(QString("Iterative Method"));
     iterativeMethodWindow->show();
 }
+
+void MainWindow::on_action1D_Element_triggered()
+{
+    feaAnalysisPanel * fap = new feaAnalysisPanel;
+    fap->setWindowTitle("FEA 1D analysis");
+    fap->show();
+}
+
+void MainWindow::on_action2D_Element_triggered()
+{
+    feaAnalysisPanel *fap = new feaAnalysisPanel;
+    fap->setWindowTitle("FEA 2D analysis");
+    fap->show();
+}
+
+void MainWindow::on_action3D_Element_triggered()
+{
+    feaAnalysisPanel *fap = new feaAnalysisPanel;
+    fap->setWindowTitle("FEA 3D analysis");
+    fap->show();
+}
+

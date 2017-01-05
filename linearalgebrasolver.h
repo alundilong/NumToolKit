@@ -5,7 +5,7 @@ class linearAlgebraSolver
 {
 public:
     linearAlgebraSolver();
-    linearAlgebraSolver(int nl, int nc, double **A, double *b, double *x);
+    linearAlgebraSolver(int size, double **A, double *b, double *x);
     ~linearAlgebraSolver();
 // direct Methods
     void LUSolve();
@@ -13,11 +13,10 @@ public:
 // indirect Methods
 
 private:
-//    double **A_;
-//    double *b_;
-//    double *x_;
-
-
+    int size_;
+    double **A_;
+    double *b_;
+    double *x_;
 
 };
 
