@@ -15,6 +15,10 @@ public:
     explicit Form(QWidget *parent = 0);
     ~Form();
 
+    const QString & getLog() {
+        return log_;
+    }
+
 private slots:
     void on_pushButton_clicked();
 
@@ -27,7 +31,7 @@ private slots:
 private:
     Ui::Form *ui;
     int nl_, nc_; // number of line and column
-    QStringList log_;
+    QString log_;
     void exit();
     void solve();
 };

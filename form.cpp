@@ -88,7 +88,17 @@ void Form::solve() {
 //        string += "\n";
 //    }
 
+    string = "This is a " + QString::number(nrow) +" x " \
+          + QString::number(ncol-1) + " matrix \n";
+    string += "Start computing ...\n";
+    string += "Result is \n";
+    for (int i = 0; i < nrow; i++) {
+        string += QString::number(results[i]);
+    }
     ui->textBrowser->setText(string);
+    log_ += string;
+
+    ((MainWindow*)parent())->retrieveLogFromLAS();
 
     for (int i = 0; i < nl_; i++) {
         delete [] A[i];

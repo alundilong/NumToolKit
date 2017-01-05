@@ -7,6 +7,10 @@ namespace Ui {
 class MainWindow;
 }
 
+// forward declearation
+class Form;
+class feaAnalysisPanel;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -57,10 +61,19 @@ private slots:
 
     void on_action3D_Element_triggered();
 
+public:
+    // retrieve log
+    void retrieveLogFromLAS();
+
 private:
     Ui::MainWindow *ui;
     QString filePath_;
-
+    QString log_;
+    Form * iterativeMethodWindow_;
+    Form * directMethodWindow_;
+    feaAnalysisPanel *fap1D_;
+    feaAnalysisPanel *fap2D_;
+    feaAnalysisPanel *fap3D_;
 };
 
 #endif // MAINWINDOW_H

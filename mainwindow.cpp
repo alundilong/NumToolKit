@@ -21,12 +21,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setCentralWidget(ui->textEdit);
     on_actionNew_triggered();
+    ui->textEdit->setText("Welcome to NotePad!\n");
     this->menuBar()->setNativeMenuBar(false);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete iterativeMethodWindow_;
+    delete directMethodWindow_;
 }
 
 
@@ -172,36 +175,44 @@ void MainWindow::on_actionPrint_triggered()
 
 void MainWindow::on_actionDirectMethod_triggered()
 {
-    Form *directMethodWindow = new Form;
-    directMethodWindow->setWindowTitle(QString("Direct Method"));
-    directMethodWindow->show();
+    directMethodWindow_ = new Form;
+    directMethodWindow_->setWindowTitle(QString("Direct Method"));
+    directMethodWindow_->show();
 }
 
 void MainWindow::on_actionIterativeMethod_triggered()
 {
-    Form *iterativeMethodWindow = new Form;
-    iterativeMethodWindow->setWindowTitle(QString("Iterative Method"));
-    iterativeMethodWindow->show();
+    iterativeMethodWindow_ = new Form;
+    iterativeMethodWindow_->setWindowTitle(QString("Iterative Method"));
+    iterativeMethodWindow_->show();
 }
 
 void MainWindow::on_action1D_Element_triggered()
 {
-    feaAnalysisPanel * fap = new feaAnalysisPanel;
+    fap1D_ = new feaAnalysisPanel;
     fap->setWindowTitle("FEA 1D analysis");
     fap->show();
 }
 
 void MainWindow::on_action2D_Element_triggered()
 {
-    feaAnalysisPanel *fap = new feaAnalysisPanel;
+    fap2D_ = new feaAnalysisPanel;
     fap->setWindowTitle("FEA 2D analysis");
     fap->show();
 }
 
 void MainWindow::on_action3D_Element_triggered()
 {
-    feaAnalysisPanel *fap = new feaAnalysisPanel;
+    fap3D_ = new feaAnalysisPanel;
     fap->setWindowTitle("FEA 3D analysis");
     fap->show();
+}
+
+void MainWindow::retrieveLogFromLAS()
+{
+
+//    ui->textEdit->setText("data from las\n");
+//    return;
+    ui->textEdit->append(directMethodWindow_->getLog());
 }
 
