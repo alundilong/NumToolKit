@@ -2,6 +2,7 @@
 #define FORM_H
 
 #include <QWidget>
+#include "mainwindow.h"
 
 namespace Ui {
 class Form;
@@ -13,6 +14,7 @@ class Form : public QWidget
 
 public:
     explicit Form(QWidget *parent = 0);
+    explicit Form(MainWindow *mw, QWidget *parent = 0);
     ~Form();
 
     const QString & getLog() {
@@ -22,7 +24,7 @@ public:
 private slots:
     void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
+//    void on_pushButton_2_clicked();
 
     void on_solveButton_clicked();
 
@@ -30,10 +32,14 @@ private slots:
 
 private:
     Ui::Form *ui;
+    MainWindow *mw;
+
     int nl_, nc_; // number of line and column
     QString log_;
     void exit();
+
     void solve();
+
 };
 
 #endif // FORM_H

@@ -21,21 +21,36 @@ Form::Form(QWidget *parent) :
 
 //    connect(ui->pushButton,SIGNAL(clicked()),this, SLOT(exit()));
 //    connect(ui->solveButton,SIGNAL(clicked()),this,SLOT(solve()));
+
 }
 
+Form::Form(MainWindow *mw, QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::Form),
+    mw(mw)
+{
+    ui->setupUi(this);
+    ui->spinBox->setValue(1);
+    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->setRowCount(1);
+    QStringList tbHeader;
+    tbHeader << "A1" << "b";
+    ui->tableWidget->setHorizontalHeaderLabels(tbHeader);
+}
 
 Form::~Form()
 {
     delete ui;
 }
 
+// quit button
 void Form::on_pushButton_clicked()
 {
     exit();
 }
 
 void Form::exit() {
-    QApplication::exit();
+    this->exit();
 }
 
 /*
@@ -95,10 +110,13 @@ void Form::solve() {
     for (int i = 0; i < nrow; i++) {
         string += QString::number(results[i]);
     }
+
     ui->textBrowser->setText(string);
     log_ += string;
 
-    ((MainWindow*)parent())->retrieveLogFromLAS();
+    mw->retrieveLogFromLAS();
+
+//    ((MainWindow*)parentWidget())->retrieveLogFromLAS();
 
     for (int i = 0; i < nl_; i++) {
         delete [] A[i];
