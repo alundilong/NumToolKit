@@ -13,6 +13,7 @@
 #include <QPrinter>
 #include "form.h"
 #include "feaanalysispanel.h"
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -175,44 +176,51 @@ void MainWindow::on_actionPrint_triggered()
 
 void MainWindow::on_actionDirectMethod_triggered()
 {
-    directMethodWindow_ = new Form;
+    directMethodWindow_ = new Form(this);
     directMethodWindow_->setWindowTitle(QString("Direct Method"));
+//    directMethodWindow_->setWindowModality(Qt::WindowModal);
     directMethodWindow_->show();
+//    connect(directMethodWindow_, SIGNAL(solve()), this, SLOT(retrieveLogFromLAS()));
 }
 
 void MainWindow::on_actionIterativeMethod_triggered()
 {
-    iterativeMethodWindow_ = new Form;
+    iterativeMethodWindow_ = new Form(this);
     iterativeMethodWindow_->setWindowTitle(QString("Iterative Method"));
     iterativeMethodWindow_->show();
 }
 
 void MainWindow::on_action1D_Element_triggered()
 {
-    fap1D_ = new feaAnalysisPanel;
-    fap->setWindowTitle("FEA 1D analysis");
-    fap->show();
+    fap1D_ = new feaAnalysisPanel(this);
+    fap1D_->setWindowTitle("FEA 1D analysis");
+    fap1D_->show();
 }
 
 void MainWindow::on_action2D_Element_triggered()
 {
-    fap2D_ = new feaAnalysisPanel;
-    fap->setWindowTitle("FEA 2D analysis");
-    fap->show();
+    fap2D_ = new feaAnalysisPanel(this);
+    fap2D_->setWindowTitle("FEA 2D analysis");
+    fap2D_->show();
 }
 
 void MainWindow::on_action3D_Element_triggered()
 {
-    fap3D_ = new feaAnalysisPanel;
-    fap->setWindowTitle("FEA 3D analysis");
-    fap->show();
+    fap3D_ = new feaAnalysisPanel(this);
+    fap3D_->setWindowTitle("FEA 3D analysis");
+    fap3D_->show();
 }
 
 void MainWindow::retrieveLogFromLAS()
 {
-
-//    ui->textEdit->setText("data from las\n");
-//    return;
-    ui->textEdit->append(directMethodWindow_->getLog());
+      ui->textEdit->append(directMethodWindow_->getLog());
 }
+
+QString MainWindow::echo(QString qs)
+{
+//    ui->textEdit->setText("data from test\n");
+    return qs;
+}
+
+
 

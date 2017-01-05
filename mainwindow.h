@@ -64,6 +64,7 @@ private slots:
 public:
     // retrieve log
     void retrieveLogFromLAS();
+    QString echo(QString qs);
 
 private:
     Ui::MainWindow *ui;
