@@ -2,6 +2,7 @@
 #define FEAANALYSISPANEL_H
 
 #include <QWidget>
+#include "mainwindow.h"
 
 namespace Ui {
 class feaAnalysisPanel;
@@ -13,6 +14,7 @@ class feaAnalysisPanel : public QWidget
 
 public:
     explicit feaAnalysisPanel(QWidget *parent = 0);
+    explicit feaAnalysisPanel(MainWindow *mw, QWidget *parent = 0);
     ~feaAnalysisPanel();
 
 private slots:
@@ -24,6 +26,7 @@ private slots:
 
 private:
     Ui::feaAnalysisPanel *ui;
+    MainWindow *mw;
 };
 
 #endif // FEAANALYSISPANEL_H

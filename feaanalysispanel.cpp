@@ -11,6 +11,17 @@ feaAnalysisPanel::feaAnalysisPanel(QWidget *parent) :
     connect(ui->myGLwidget, SIGNAL(zRotationChanged(int)), ui->zRotSlider, SLOT(setValue(int)));
 }
 
+feaAnalysisPanel::feaAnalysisPanel(MainWindow *mw, QWidget *parent):
+    QWidget(parent),
+    ui(new Ui::feaAnalysisPanel),
+    mw(mw)
+{
+    ui->setupUi(this);
+    connect(ui->myGLwidget, SIGNAL(xRotationChanged(int)), ui->xRotSlider, SLOT(setValue(int)));
+    connect(ui->myGLwidget, SIGNAL(yRotationChanged(int)), ui->yRotSlider, SLOT(setValue(int)));
+    connect(ui->myGLwidget, SIGNAL(zRotationChanged(int)), ui->zRotSlider, SLOT(setValue(int)));
+}
+
 feaAnalysisPanel::~feaAnalysisPanel()
 {
     delete ui;
