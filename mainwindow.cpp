@@ -22,7 +22,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setCentralWidget(ui->textEdit);
     on_actionNew_triggered();
-    ui->textEdit->setText("Welcome to NotePad!\n");
+
+    QPalette p = ui->textEdit->palette();
+    p.setColor(QPalette::Base, Qt::blue);
+    ui->textEdit->setPalette(p);
+
+    QString welcome = "================= Welcome to NotePad! ================\n";
+    ui->textEdit->setText(welcome);
+
+    // ubuntu 14.04 will need this line
     this->menuBar()->setNativeMenuBar(false);
 }
 
