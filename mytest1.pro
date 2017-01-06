@@ -6,6 +6,8 @@
 
 QT       += core gui printsupport opengl
 
+LIBS += opengl32.lib
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = mytest1
