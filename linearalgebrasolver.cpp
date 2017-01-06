@@ -20,6 +20,62 @@ linearAlgebraSolver::~linearAlgebraSolver(){
 
 void linearAlgebraSolver::LUSolve() {
 
+    int N = size_;
+
+    // LU decomposition
+    double **u = new double*[N];
+    double **l = new double*[N];
+    for (int i = 0; i < N; i++) {
+        u[i] = new double [N];
+        l[i] = new double [N];
+    }
+
+    for (int i = 1; i <= N; i++) {
+        u[0][j-1] = A_[0][j-1];
+    }
+
+    for (int i = 2; i <= N; i++) {
+        l[i-1][0] = A_[i-1][0]/u[i-1][0];
+    }
+
+    for (i = 2; i <= N-1; i++) {
+        for (int j = i; j <= N; j++) {
+            u[i-1][j-1] = A_[i-1][j-1];
+            for (int k = i+1; k <= N; k++) {
+                u[i-1][j-1] -= l[i-1][k-1]*u[k-1][j-1];
+                l[k-1][i-1] = (A_[k-1][i-1] - l[k-1][j-1]*u[j-1][i-1])/u[i-1][i-1];
+            }
+        }
+
+    }
+    u[N-1][N-1] = A_[N-1][N-1];
+    for (int i = 1; i <= N-1; i++) {
+        u[N-1][N-1] -= l[N-1][i-1]*u[i-1][N-1];
+    }
+
+    // the substitution step
+    double *c = new double[N];
+    c[0] = b_[0];
+    for (int i = 2; i <=N; i++) {
+        c[i-1] = b_[i-1];
+        for(int j = 1; j <= i-1; j++) {
+            c[i-1] -= l[i-1][j-1]*c[j-1];
+        }
+    }
+
+    x_[N-1] = c[N-1]/u[N-1][N-1];
+    for (int i = N-1; i <=1; i--) {
+        for(int j = i+1; j <= N; j++) {
+            x_[i-1] = c[i-1] - u[i-1][j-1]*x_[j-1];
+        }
+        x_[i-1] /=u[i-1][i-1];
+    }
+
+    for (int i = 0; i < N; i++) {
+        delete [] u[i];
+        delete [] l[i];
+    }
+    delete [] c;
 }
 
 void linearAlgebraSolver::GaussElimination()
