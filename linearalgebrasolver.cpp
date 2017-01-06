@@ -30,7 +30,7 @@ void linearAlgebraSolver::LUSolve() {
         l[i] = new double [N];
     }
 
-    for (int i = 1; i <= N; i++) {
+    for (int j = 1; j <= N; j++) {
         u[0][j-1] = A_[0][j-1];
     }
 
@@ -38,7 +38,7 @@ void linearAlgebraSolver::LUSolve() {
         l[i-1][0] = A_[i-1][0]/u[i-1][0];
     }
 
-    for (i = 2; i <= N-1; i++) {
+    for (int i = 2; i <= N-1; i++) {
         for (int j = i; j <= N; j++) {
             u[i-1][j-1] = A_[i-1][j-1];
             for (int k = i+1; k <= N; k++) {
