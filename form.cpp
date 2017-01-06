@@ -87,14 +87,15 @@ void Form::solve() {
 // call linearAlgebraClass
     double *results = new double[nrow];
     linearAlgebraSolver las (nrow,A,bValues,results);
-    las.LUSolve();
+    las.GaussElimination();
 
     QString string;
 //    string += QString::number(nrow) + "\n";
 //    string += QString::number(ncol) + "\n";
-    for (int i = 0; i < nrow; i++) {
-        string += QString::number(results[i]) + "\n";
-    }
+//    string += "Solution is :\n";
+//    for (int i = 0; i < nrow; i++) {
+//        string += QString::number(results[i]) + "\n";
+//    }
 
 //    for (int i = 0; i < nrow; i++) {
 //        for (int j = 0; j < ncol; j++) {
@@ -108,7 +109,7 @@ void Form::solve() {
     string += "Start computing ...\n";
     string += "Result is \n";
     for (int i = 0; i < nrow; i++) {
-        string += QString::number(results[i]);
+        string += QString::number(results[i]) + "\n";
     }
 
     ui->textBrowser->setText(string);
