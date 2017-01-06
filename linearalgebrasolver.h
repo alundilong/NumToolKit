@@ -9,8 +9,14 @@ public:
     ~linearAlgebraSolver();
 // direct Methods
     void LUSolve();
+    void GaussElimination();
 
 // indirect Methods
+
+// check results
+    void checkSolution();
+    void printA();
+    void printb();
 
 private:
     int size_;
