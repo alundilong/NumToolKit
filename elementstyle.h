@@ -1,0 +1,4 @@
+#ifndef ELMENTSTYLE_H
+#define ELMENTSTYLE_H
+
+#endif // ELMENTSTYLE_H
