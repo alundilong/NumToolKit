@@ -110,9 +110,6 @@ void linearAlgebraSolver::GaussElimination()
         }
     }
 
-//    printA();
-//    printb();
-
     // Back Substitution Algorithm
 
     x_[N-1] = b_[N-1]/A_[N-1][N-1]; // find the last value
@@ -124,6 +121,51 @@ void linearAlgebraSolver::GaussElimination()
         }
         x_[i-1] = (b_[i-1] - term)/A_[i-1][i-1];
     }
+
+}
+
+void linearAlgebraSolver::JacobiMethod()
+{
+    int N = size_;
+    // initial guess
+    for (int i = 1; i <= N; i++) {
+        x_[i-1] = 0;
+    }
+
+    int nIter = 0;
+    double maxRes = 1e6;
+
+
+    while ((nIter < nIterMax()/100) && (maxRes > tolerance())) {
+        nIter++;
+        double maxResPrevElement = 0;
+        for (int i = 1; i <= N; i++) {
+            double tmp = b_[i-1];
+            for (int j = 1; j <= N; j++) {
+                if (i == j) continue;
+                tmp -= A_[i-1][j-1]*x_[j-1];
+            }
+
+            double xPrev = x_[i-1];
+            x_[i-1] = tmp/A_[i-1][i-1];
+            double xNew = x_[i-1];
+            qDebug() << "qDebug " << nIter << xNew << xPrev << maxRes;
+            maxRes = fmax(fabs((xNew-xPrev)/xNew)*100, maxResPrevElement);
+            maxResPrevElement = maxRes;
+        }
+
+    }
+
+    qDebug() << nIter << "\t" << maxRes;
+    if (maxRes > tolerance())
+        log_ += QString("Warning : After %1 iterations (maxIteration), the solution is NOT found! \n").arg(nIterMax());
+    else
+        log_ += QString("After %1 iterations, the solution is NOT found! \n").arg(nIter);
+
+}
+
+void linearAlgebraSolver::GaussSeidelMethod()
+{
 
 }
 
