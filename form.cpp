@@ -1,11 +1,9 @@
 #include "form.h"
 #include "ui_form.h"
 #include <QMessageBox>
-#include <iostream>
 #include "linearalgebrasolver.h"
 #include "mainwindow.h"
-
-using namespace std;
+#include <QDebug>
 
 Form::Form(QWidget *parent) :
     QWidget(parent),
@@ -13,15 +11,15 @@ Form::Form(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->spinBox->setValue(1);
-    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->setColumnCount(3);
     ui->tableWidget->setRowCount(1);
     QStringList tbHeader;
-    tbHeader << "A1" << "b";
+    tbHeader << "A1" << "b" <<"x";
     ui->tableWidget->setHorizontalHeaderLabels(tbHeader);
 
-//    connect(ui->pushButton,SIGNAL(clicked()),this, SLOT(exit()));
-//    connect(ui->solveButton,SIGNAL(clicked()),this,SLOT(solve()));
-
+    // default: direct method, gauss elimination
+    ui->radioDirectMethod->setChecked(true);
+    ui->radioGauss->setChecked(true);
 }
 
 Form::Form(MainWindow *mw, QWidget *parent) :
@@ -31,11 +29,14 @@ Form::Form(MainWindow *mw, QWidget *parent) :
 {
     ui->setupUi(this);
     ui->spinBox->setValue(1);
-    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->setColumnCount(3);
     ui->tableWidget->setRowCount(1);
     QStringList tbHeader;
-    tbHeader << "A1" << "b";
+    tbHeader << "A1" << "b" <<"x";
     ui->tableWidget->setHorizontalHeaderLabels(tbHeader);
+    // default: direct method, gauss elimination
+    ui->radioDirectMethod->setChecked(true);
+    ui->radioGauss->setChecked(true);
 }
 
 Form::~Form()
@@ -43,28 +44,11 @@ Form::~Form()
     delete ui;
 }
 
-// quit button
-void Form::on_pushButton_clicked()
-{
-    exit();
-}
-
-void Form::exit() {
-    this->exit();
-}
-
-/*
-void Form::on_pushButton_2_clicked()
-{
-    // solve the linear algebra equations
-    solve();
-}
-
-*/
-
 void Form::solve() {
 
-    int ncol = nc_ + 1;
+    nl_ = ui->spinBox->value();
+    nc_ = nl_;
+    int ncol = nc_ + 2;
     int nrow = nl_;
 
     double **A = new double*[nrow];
@@ -72,52 +56,49 @@ void Form::solve() {
         A[i] = new double [ncol];
     }
     for (int i = 0; i < nrow; i++) {
-        for (int j = 0; j < ncol-1; j++) {
+        for (int j = 0; j < ncol-2; j++) {
             A[i][j] = ui->tableWidget->item(i,j)->text().toDouble();
-//            cout << i <<"\t"<< j <<"\t"<< A[i][j] << endl;
         }
     }
 
     double *bValues = new double[nl_];
     for (int i = 0; i < nrow; i++) {
-        bValues[i] = ui->tableWidget->item(i,ncol-1)->text().toDouble();
-//        cout << i <<"\t"<< ncol-1 << "\t" << bValues[i] << endl;
+        bValues[i] = ui->tableWidget->item(i,ncol-2)->text().toDouble();
     }
 
-// call linearAlgebraClass
+    // call linearAlgebraClass
     double *results = new double[nrow];
     linearAlgebraSolver las (nrow,A,bValues,results);
-    las.GaussElimination();
 
     QString string;
-//    string += QString::number(nrow) + "\n";
-//    string += QString::number(ncol) + "\n";
-//    string += "Solution is :\n";
-//    for (int i = 0; i < nrow; i++) {
-//        string += QString::number(results[i]) + "\n";
-//    }
+    string = "\nStarting new computing...\n";
+    string += "A is a " + QString::number(nrow) +" x " \
+          + QString::number(ncol-2) + " matrix \n";
 
-//    for (int i = 0; i < nrow; i++) {
-//        for (int j = 0; j < ncol; j++) {
-//            string += ui->tableWidget->item(i,j)->text() + " ";
-//        }
-//        string += "\n";
-//    }
+    if(ui->radioGauss->isChecked())
+    {
+        string += "Gauss Elimination Method is applied!\n";
+        las.GaussElimination();
+    }
+    else if (ui->radioLU->isChecked()) {
+        string += "LU Decomposition Method is applied!\n";
+        las.LUSolve();
+    }
 
-    string = "This is a " + QString::number(nrow) +" x " \
-          + QString::number(ncol-1) + " matrix \n";
-    string += "Start computing ...\n";
+    // add results into the tablewidget
+    for (int i = 0; i < nrow; i++) {
+        ui->tableWidget->setItem(i, ncol-1,
+                                 new QTableWidgetItem(QString::number(results[i])));
+    }
+
     string += "Result is \n";
     for (int i = 0; i < nrow; i++) {
         string += QString::number(results[i]) + "\n";
     }
 
-    ui->textBrowser->setText(string);
+    log_ = "";
     log_ += string;
-
     mw->retrieveLogFromLAS();
-
-//    ((MainWindow*)parentWidget())->retrieveLogFromLAS();
 
     for (int i = 0; i < nl_; i++) {
         delete [] A[i];
@@ -137,14 +118,24 @@ void Form::on_spinBox_editingFinished()
 {
     nl_ = ui->spinBox->value();
     nc_ = nl_;
-    int ncol = nc_ + 1;
+    int ncol = nc_ + 2;
     int nrow = nl_;
     ui->tableWidget->setColumnCount(ncol);
     ui->tableWidget->setRowCount(nrow);
     QStringList tbHeader;
-    for (int i = 0; i < ncol-1; i++) {
-        tbHeader << QString("A")+QString::number(i+1);
+    for (int i = 0; i < ncol-2; i++) {
+        tbHeader << QString("A") + QString::number(i+1);
     }
-    tbHeader << "b";
+    tbHeader << "b" << "x";
     ui->tableWidget->setHorizontalHeaderLabels(tbHeader);
+}
+
+void Form::on_radioIterativeMethod_toggled(bool checked)
+{
+    ui->groupBoxDirectMethod->setEnabled(!checked);
+}
+
+void Form::on_radioDirectMethod_toggled(bool checked)
+{
+    ui->groupBoxIterativeMethod->setEnabled(!checked);
 }

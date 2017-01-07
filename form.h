@@ -22,7 +22,7 @@ public:
     }
 
 private slots:
-    void on_pushButton_clicked();
+//    void on_pushButton_clicked();
 
 //    void on_pushButton_2_clicked();
 
@@ -30,13 +30,17 @@ private slots:
 
     void on_spinBox_editingFinished();
 
+    void on_radioIterativeMethod_toggled(bool checked);
+
+    void on_radioDirectMethod_toggled(bool checked);
+
 private:
     Ui::Form *ui;
     MainWindow *mw;
 
     int nl_, nc_; // number of line and column
     QString log_;
-    void exit();
+//    void exit();
 
     void solve();
 

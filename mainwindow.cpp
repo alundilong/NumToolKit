@@ -24,8 +24,14 @@ MainWindow::MainWindow(QWidget *parent) :
     on_actionNew_triggered();
 
     QPalette p = ui->textEdit->palette();
-    p.setColor(QPalette::Base, Qt::blue);
+    p.setColor(QPalette::Base, Qt::black);
     ui->textEdit->setPalette(p);
+
+    QFont f = ui->textEdit->font();
+    f.setPointSize(10);
+    ui->textEdit->setFont(f);
+
+    ui->textEdit->setTextColor(Qt::yellow);
 
     QString welcome = "================= Welcome to NotePad! ================\n";
     ui->textEdit->setText(welcome);
@@ -37,8 +43,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete iterativeMethodWindow_;
-    delete directMethodWindow_;
+//    delete iterativeMethodWindow_;
+//    delete directMethodWindow_;
+//    delete fap1D_;
+//    delete fap2D_;
+//    delete fap3D_;
 }
 
 
@@ -182,21 +191,6 @@ void MainWindow::on_actionPrint_triggered()
     ui->textEdit->print(&printer);
 }
 
-void MainWindow::on_actionDirectMethod_triggered()
-{
-    directMethodWindow_ = new Form(this);
-    directMethodWindow_->setWindowTitle(QString("Direct Method"));
-//    directMethodWindow_->setWindowModality(Qt::WindowModal);
-    directMethodWindow_->show();
-//    connect(directMethodWindow_, SIGNAL(solve()), this, SLOT(retrieveLogFromLAS()));
-}
-
-void MainWindow::on_actionIterativeMethod_triggered()
-{
-    iterativeMethodWindow_ = new Form(this);
-    iterativeMethodWindow_->setWindowTitle(QString("Iterative Method"));
-    iterativeMethodWindow_->show();
-}
 
 void MainWindow::on_action1D_Element_triggered()
 {
@@ -221,14 +215,18 @@ void MainWindow::on_action3D_Element_triggered()
 
 void MainWindow::retrieveLogFromLAS()
 {
-      ui->textEdit->append(directMethodWindow_->getLog());
+      ui->textEdit->append(methodWindow_->getLog());
 }
 
 QString MainWindow::echo(QString qs)
 {
-//    ui->textEdit->setText("data from test\n");
     return qs;
 }
 
 
-
+void MainWindow::on_actionMethod_triggered()
+{
+    methodWindow_ = new Form(this);
+    methodWindow_->setWindowTitle(QString("Method Panel"));
+    methodWindow_->show();
+}

@@ -67,7 +67,7 @@
      <x>0</x>
      <y>0</y>
      <width>743</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -109,8 +109,7 @@
     <property name="title">
      <string>Ax=b</string>
     </property>
-    <addaction name="actionDirectMethod"/>
-    <addaction name="actionIterativeMethod"/>
+    <addaction name="actionMethod"/>
    </widget>
    <widget class="QMenu" name="menuFEA">
     <property name="title">
@@ -247,14 +246,12 @@
     <string>Print</string>
    </property>
   </action>
-  <action name="actionDirectMethod">
+  <action name="actionMethod">
    <property name="text">
-    <string>DirectMethod</string>
+    <string>Method</string>
    </property>
-  </action>
-  <action name="actionIterativeMethod">
-   <property name="text">
-    <string>IterativeMethod</string>
+   <property name="toolTip">
+    <string>Method</string>
    </property>
   </action>
   <action name="action1D_Element">

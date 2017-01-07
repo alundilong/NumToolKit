@@ -51,15 +51,13 @@ private slots:
 
     void on_actionPrint_triggered();
 
-    void on_actionDirectMethod_triggered();
-
-    void on_actionIterativeMethod_triggered();
-
     void on_action1D_Element_triggered();
 
     void on_action2D_Element_triggered();
 
     void on_action3D_Element_triggered();
+
+    void on_actionMethod_triggered();
 
 public:
     // retrieve log
@@ -70,8 +68,7 @@ private:
     Ui::MainWindow *ui;
     QString filePath_;
     QString log_;
-    Form * iterativeMethodWindow_;
-    Form * directMethodWindow_;
+    Form * methodWindow_;
     feaAnalysisPanel *fap1D_;
     feaAnalysisPanel *fap2D_;
     feaAnalysisPanel *fap3D_;

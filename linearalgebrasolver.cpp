@@ -21,6 +21,10 @@ linearAlgebraSolver::~linearAlgebraSolver(){
 void linearAlgebraSolver::LUSolve() {
 
     int N = size_;
+    if (N == 1) {
+        x_[0] = b_[0]/A_[0][0];
+        return;
+    }
 
     // LU decomposition
     double **u = new double*[N];
@@ -35,7 +39,7 @@ void linearAlgebraSolver::LUSolve() {
     }
 
     for (int i = 2; i <= N; i++) {
-        l[i-1][0] = A_[i-1][0]/u[i-1][0];
+        l[i-1][0] = A_[i-1][0]/u[0][0];
     }
 
     for (int i = 2; i <= N-1; i++) {
@@ -46,8 +50,8 @@ void linearAlgebraSolver::LUSolve() {
                 l[k-1][i-1] = (A_[k-1][i-1] - l[k-1][j-1]*u[j-1][i-1])/u[i-1][i-1];
             }
         }
-
     }
+
     u[N-1][N-1] = A_[N-1][N-1];
     for (int i = 1; i <= N-1; i++) {
         u[N-1][N-1] -= l[N-1][i-1]*u[i-1][N-1];
@@ -56,19 +60,22 @@ void linearAlgebraSolver::LUSolve() {
     // the substitution step
     double *c = new double[N];
     c[0] = b_[0];
-    for (int i = 2; i <=N; i++) {
+    for (int i = 2; i <= N; i++) {
         c[i-1] = b_[i-1];
         for(int j = 1; j <= i-1; j++) {
             c[i-1] -= l[i-1][j-1]*c[j-1];
         }
     }
 
+
     x_[N-1] = c[N-1]/u[N-1][N-1];
-    for (int i = N-1; i <=1; i--) {
+
+    for (int i = N-1; i >= 1; i--) {
+        double term = c[i-1];
         for(int j = i+1; j <= N; j++) {
-            x_[i-1] = c[i-1] - u[i-1][j-1]*x_[j-1];
+             term -= u[i-1][j-1]*x_[j-1];
         }
-        x_[i-1] /=u[i-1][i-1];
+        x_[i-1] = term/u[i-1][i-1];
     }
 
     for (int i = 0; i < N; i++) {
@@ -116,7 +123,6 @@ void linearAlgebraSolver::GaussElimination()
             term = term + A_[i-1][j-1]*x_[j-1];
         }
         x_[i-1] = (b_[i-1] - term)/A_[i-1][i-1];
-        qDebug() << x_[i-1] ;
     }
 
 }
@@ -133,7 +139,7 @@ void linearAlgebraSolver::checkSolution()
 //        for (int j = 0; j < N; j++) {
 //            res[i] += A_[i][j]*b_[j];
 //        }
-    //    }
+//    }
 }
 
 void linearAlgebraSolver::printA()
