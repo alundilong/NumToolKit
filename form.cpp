@@ -20,6 +20,7 @@ Form::Form(QWidget *parent) :
     // default: direct method, gauss elimination
     ui->radioDirectMethod->setChecked(true);
     ui->radioGauss->setChecked(true);
+    ui->radioJacobi->setChecked(true);
 }
 
 Form::Form(MainWindow *mw, QWidget *parent) :
@@ -34,9 +35,11 @@ Form::Form(MainWindow *mw, QWidget *parent) :
     QStringList tbHeader;
     tbHeader << "A1" << "b" <<"x";
     ui->tableWidget->setHorizontalHeaderLabels(tbHeader);
+
     // default: direct method, gauss elimination
     ui->radioDirectMethod->setChecked(true);
     ui->radioGauss->setChecked(true);
+    ui->radioJacobi->setChecked(true);
 }
 
 Form::~Form()
@@ -75,14 +78,27 @@ void Form::solve() {
     string += "A is a " + QString::number(nrow) +" x " \
           + QString::number(ncol-2) + " matrix \n";
 
-    if(ui->radioGauss->isChecked())
-    {
-        string += "Gauss Elimination Method is applied!\n";
-        las.GaussElimination();
+    if (ui->groupBoxDirectMethod->isEnabled()){
+        if(ui->radioGauss->isChecked())
+        {
+            string += "Direct Method : Gauss Elimination Method is applied!\n";
+            las.GaussElimination();
+        } else if (ui->radioLU->isChecked()) {
+            string += "Direct Method : LU Decomposition Method is applied!\n";
+            las.LUSolve();
+        }
     }
-    else if (ui->radioLU->isChecked()) {
-        string += "LU Decomposition Method is applied!\n";
-        las.LUSolve();
+
+    if(ui->groupBoxIterativeMethod->isEnabled()) {
+        if (ui->radioJacobi->isChecked()) {
+            string += "Iterative Method : Jacobi Method is applied!\n";
+            las.JacobiMethod();
+            string += las.mylog();
+        } else if (ui->radioGaussSeidel) {
+            string += "Iterative Method : Gauss-Seidel Method is applied!\n";
+            las.GaussSeidelMethod();
+            string += las.mylog();
+        }
     }
 
     // add results into the tablewidget
