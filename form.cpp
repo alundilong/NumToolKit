@@ -114,7 +114,7 @@ void Form::solve() {
 
     log_ = "";
     log_ += string;
-    mw->retrieveLogFromLAS();
+    mw->retrieveLogFromMethodWindow();
 
     for (int i = 0; i < nl_; i++) {
         delete [] A[i];

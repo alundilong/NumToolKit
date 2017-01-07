@@ -19,13 +19,20 @@ SOURCES += main.cpp\
     form.cpp \
     linearalgebrasolver.cpp \
     feaanalysispanel.cpp \
-    feaviewer.cpp
+    feaviewer.cpp \
+    feaelementbase.cpp \
+    stringelement.cpp \
+    barelement.cpp
 
 HEADERS  += mainwindow.h \
     form.h \
     linearalgebrasolver.h \
     feaanalysispanel.h \
-    feaviewer.h
+    feaviewer.h \
+    feaelementbase.h \
+    stringelement.h \
+    barelement.h \
+    elementstyle.h
 
 FORMS    += mainwindow.ui \
     form.ui \

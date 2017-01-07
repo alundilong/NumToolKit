@@ -135,8 +135,7 @@ void linearAlgebraSolver::JacobiMethod()
     int nIter = 0;
     double maxRes = 1e6;
 
-
-    while ((nIter < nIterMax()/100) && (maxRes > tolerance())) {
+    while ((nIter < nIterMax()) && (maxRes > tolerance())) {
         nIter++;
         double maxResPrevElement = 0;
         for (int i = 1; i <= N; i++) {
@@ -149,24 +148,50 @@ void linearAlgebraSolver::JacobiMethod()
             double xPrev = x_[i-1];
             x_[i-1] = tmp/A_[i-1][i-1];
             double xNew = x_[i-1];
-            qDebug() << "qDebug " << nIter << xNew << xPrev << maxRes;
             maxRes = fmax(fabs((xNew-xPrev)/xNew)*100, maxResPrevElement);
             maxResPrevElement = maxRes;
         }
-
     }
 
-    qDebug() << nIter << "\t" << maxRes;
     if (maxRes > tolerance())
         log_ += QString("Warning : After %1 iterations (maxIteration), the solution is NOT found! \n").arg(nIterMax());
     else
-        log_ += QString("After %1 iterations, the solution is NOT found! \n").arg(nIter);
+        log_ += QString("After %1 iterations, the solution is found! \n").arg(nIter);
 
 }
 
 void linearAlgebraSolver::GaussSeidelMethod()
 {
+    int N = size_;
+    // initial guess
+    for (int i = 1; i <= N; i++) {
+        x_[i-1] = 0;
+    }
 
+    int nIter = 0;
+    double maxRes = 1e6;
+
+    while ((nIter < nIterMax()) && (maxRes > tolerance())) {
+        nIter++;
+        double maxResPrevElement = 0;
+        for (int i = 1; i <= N; i++) {
+            double tmp = b_[i-1];
+            for (int j = 1; j <= N; j++) {
+                if (i == j) continue;
+                if(j <= i-1) {
+                    tmp -= A_[i-1][j-1]*x_[j-1]; // using current value
+                } else if (j >= (i+1)) {
+                    tmp -= A_[i-1][j-1]*x_[j-1]; // using previous value
+                }
+            }
+
+            double xPrev = x_[i-1];
+            x_[i-1] = tmp/A_[i-1][i-1];
+            double xNew = x_[i-1];
+            maxRes = fmax(fabs((xNew-xPrev)/xNew)*100, maxResPrevElement);
+            maxResPrevElement = maxRes;
+        }
+    }
 }
 
 void linearAlgebraSolver::checkSolution()

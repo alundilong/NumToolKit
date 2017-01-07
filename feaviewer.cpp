@@ -3,8 +3,9 @@
 #include <QtWidgets>
 
 FeaViewer::FeaViewer(QWidget *parent) :
-//    QGLWidget(parent)
-   QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
+    QGLWidget(parent)
+//     QOpenGLWidget(parent)
+//   QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     xRot = 0;
     yRot = 0;
@@ -73,7 +74,6 @@ static void qNormalizeAngle(int &angle)
 void FeaViewer::mousePressEvent(QMouseEvent *event)
 {
     lastPos = event->pos();
-
 }
 
 void FeaViewer::mouseMoveEvent(QMouseEvent *event)

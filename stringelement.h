@@ -1,6 +1,6 @@
 #ifndef STRINGELEMENT_H
 #define STRINGELEMENT_H
-
+#include "feaelementbase.h"
 
 class stringElement : public FEAElementBase
 {

@@ -2,11 +2,12 @@
 #define FEAANALYSISPANEL_H
 
 #include <QWidget>
-#include "mainwindow.h"
 
 namespace Ui {
 class feaAnalysisPanel;
 }
+
+class MainWindow;
 
 class feaAnalysisPanel : public QWidget
 {
@@ -16,6 +17,9 @@ public:
     explicit feaAnalysisPanel(QWidget *parent = 0);
     explicit feaAnalysisPanel(MainWindow *mw, QWidget *parent = 0);
     ~feaAnalysisPanel();
+    const QString & getLog() {
+        return log_;
+    }
 
 private slots:
     void on_xRotSlider_sliderMoved(int position);
@@ -24,9 +28,18 @@ private slots:
 
     void on_zRotSlider_sliderMoved(int position);
 
+    void on_radio2DElement_toggled(bool checked);
+
+    void on_radio1DElement_toggled(bool checked);
+
+    void on_radio3DElement_toggled(bool checked);
+
+    void on_buttonRun_clicked();
+
 private:
     Ui::feaAnalysisPanel *ui;
     MainWindow *mw;
+    QString log_;
 };
 
 #endif // FEAANALYSISPANEL_H

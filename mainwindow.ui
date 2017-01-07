@@ -13,6 +13,13 @@
   <property name="windowTitle">
    <string>NotePad</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resource.qrc">
+    <normaloff>:/res/myres/NumToolKit_icon.png</normaloff>
+    <normalon>:/res/myres/NumToolKit_icon.png</normalon>
+    <disabledoff>:/res/myres/NumToolKit_icon.png</disabledoff>
+    <disabledon>:/res/myres/NumToolKit_icon.png</disabledon>:/res/myres/NumToolKit_icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">

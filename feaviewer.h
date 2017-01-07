@@ -2,8 +2,10 @@
 #define FEAVIEWER_H
 
 #include <QGLWidget>
+// #include <QOpenGLWidget>
 
 class FeaViewer : public QGLWidget
+// class FeaViewer : public QOpenGLWidget
 {
     Q_OBJECT
 public:

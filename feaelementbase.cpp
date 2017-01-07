@@ -2,5 +2,9 @@
 
 FEAElementBase::FEAElementBase()
 {
+}
+
+FEAElementBase::~FEAElementBase()
+{
 
 }

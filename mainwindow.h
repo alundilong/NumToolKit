@@ -61,7 +61,8 @@ private slots:
 
 public:
     // retrieve log
-    void retrieveLogFromLAS();
+    void retrieveLogFromMethodWindow();
+    void retrieveLogFromFEAWindow();
     QString echo(QString qs);
 
 private:

@@ -14,6 +14,7 @@
 #include "form.h"
 #include "feaanalysispanel.h"
 #include <QDebug>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -33,21 +34,27 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->textEdit->setTextColor(Qt::yellow);
 
-    QString welcome = "================= Welcome to NotePad! ================\n";
+    ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
+
+    QString welcome = "==================================================\n";
+    welcome += "================= Welcome to NumToolKit!  ================\n";
+    welcome += "==================================================\n\n";
+    welcome += "About NumToolKit :\n";
+    welcome += "NumToolKit is an open-source GUI software built with QT 5.7.0\n";
+    welcome += "It is developed in a cross-platform fashion, supporing Window7 and Ubuntu\n";
+    welcome += "The software will cover Finite Element Analysis (FEA), Finite Volume Method (FVM), and \n";
+    welcome += "Smoothed Particle Hydrodynamics (SPH) and more.\n";
+    welcome += "It also builds its own linear algebra equation solver as the engine for FEA and FVM.\n\n";
     ui->textEdit->setText(welcome);
 
     // ubuntu 14.04 will need this line
     this->menuBar()->setNativeMenuBar(false);
+//    this->setWindowIcon(QIcon("NumToolKit_icon.png"));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-//    delete iterativeMethodWindow_;
-//    delete directMethodWindow_;
-//    delete fap1D_;
-//    delete fap2D_;
-//    delete fap3D_;
 }
 
 
@@ -163,7 +170,6 @@ void MainWindow::on_actionColor_triggered()
     if(color.isValid()){
         ui->textEdit->setTextColor(color);
     }
-
 }
 
 void MainWindow::on_actionBC_text_triggered()
@@ -213,9 +219,14 @@ void MainWindow::on_action3D_Element_triggered()
     fap3D_->show();
 }
 
-void MainWindow::retrieveLogFromLAS()
+void MainWindow::retrieveLogFromMethodWindow()
 {
-      ui->textEdit->append(methodWindow_->getLog());
+    ui->textEdit->append(methodWindow_->getLog());
+}
+
+void MainWindow::retrieveLogFromFEAWindow()
+{
+    ui->textEdit->append(fap1D_->getLog());
 }
 
 QString MainWindow::echo(QString qs)

@@ -12,5 +12,6 @@
         <file>myres/redo.png</file>
         <file>myres/undo.jpeg</file>
         <file>myres/about.png</file>
+        <file>myres/NumToolKit_icon.png</file>
     </qresource>
 </RCC>
