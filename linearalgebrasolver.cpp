@@ -1,5 +1,6 @@
 #include "linearalgebrasolver.h"
 #include <QDebug>
+#include "math.h"
 
 linearAlgebraSolver::linearAlgebraSolver()
 {
@@ -219,7 +220,6 @@ void linearAlgebraSolver::printA()
       for (int j = 0; j < N; j++) {
           qDebug() << A_[i][j];
      }
-        qDebug() << "\n";
     }
 }
 

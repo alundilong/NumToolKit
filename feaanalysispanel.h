@@ -40,6 +40,8 @@ private:
     Ui::feaAnalysisPanel *ui;
     MainWindow *mw;
     QString log_;
+
+    void solve1DBar();
 };
 
 #endif // FEAANALYSISPANEL_H

@@ -6,6 +6,8 @@
 class BarElement : public FEAElementBase
 {
 public:
+    enum position {LEFT, RIGHT};
+public:
     BarElement();
     ~BarElement();
 };

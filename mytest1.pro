@@ -6,7 +6,8 @@
 
 QT       += core gui printsupport opengl
 
-LIBS += opengl32.lib
+# LIBS += opengl32.lib
+QMAKE_CXXFLAGS += -std=c++0x
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

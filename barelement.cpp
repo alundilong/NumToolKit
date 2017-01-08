@@ -6,10 +6,10 @@ BarElement::BarElement()
     log_ += "Dimension: 1D \n DOF : 1 \n";
     dim_ = 1;
     nDOF_ = 1;
-    nSize_ = 2;
+    nNode_ = 2;
     name_ = "Bar";
 
-    int N = nSize_;
+    int N = nNode_;
     baseMass_ = new double *[N];
     baseStiff_ = new double *[N];
     for (int i = 0; i < N; i++) {
@@ -26,7 +26,7 @@ BarElement::BarElement()
 
 BarElement::~BarElement()
 {
-    int N = nSize_;
+    int N = nNode_;
     for (int i = 0; i < N; i ++){
         delete [] baseMass_[i];
         delete [] baseStiff_[i];
