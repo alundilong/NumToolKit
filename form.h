@@ -15,6 +15,7 @@ class Form : public QWidget
 public:
     explicit Form(QWidget *parent = 0);
     explicit Form(MainWindow *mw, QWidget *parent = 0);
+    explicit Form(int size, double ** A, double *b, MainWindow *mw, QWidget *parent = 0);
     ~Form();
 
     const QString & getLog() {

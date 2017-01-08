@@ -21,6 +21,7 @@ public:
     void checkSolution();
     void printA();
     void printb();
+    void printx();
     inline QString mylog() {return log_;}
 
 private:

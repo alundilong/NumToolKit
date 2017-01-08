@@ -5,6 +5,7 @@
 
 #include "elementstyle.h"
 #include <QDebug>
+#include "form.h"
 
 feaAnalysisPanel::feaAnalysisPanel(QWidget *parent) :
     QWidget(parent),
@@ -56,7 +57,6 @@ feaAnalysisPanel::feaAnalysisPanel(MainWindow *mw, QWidget *parent):
     ui->comboBox3DElement->addItem("8 node");
     ui->comboBox3DElement->addItem("20 node (8+12)");
 
-    qDebug() << " ************* ";
     log_ = "Finite Element Analysis Panel Loaded\n";
 //    mw->retrieveLogFromFEAWindow();
 }
@@ -212,39 +212,42 @@ void feaAnalysisPanel::solve1DBar()
         K_p[i] = new double[N_p];
     }
 
-    qDebug() << "....... 1 ......." ;
-
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             if (i < A2RemoveIndex && j < A2RemoveIndex) {
                 M_p[i][j] = M[i][j];
                 K_p[i][j] = K[i][j];
             } else if (i < A2RemoveIndex && j > A2RemoveIndex) {
-
+                M_p[i-1][j] = M[i][j];
+                K_p[i-1][j] = K[i][j];
+            } else if (i > A2RemoveIndex && j > A2RemoveIndex) {
+                M_p[i-1][j-1] = M[i][j];
+                K_p[i-1][j-1] = K[i][j];
+            } else if (i > A2RemoveIndex && j < A2RemoveIndex) {
+                M_p[i][j-1] = M[i][j];
+                K_p[i][j-1] = K[i][j];
             }
         }
 
     }
 
     for (int i = 0; i < N; i++) {
-        int I = i;
-        if (I == A2RemoveIndex) continue;
-        if (I > A2RemoveIndex) I = I-1;
-        Q_p[I] = Q[i];
-        X_p[I] = 0.0;
+
+        if (i < A2RemoveIndex) {Q_p[i] = Q[i]; X_p[i] = 0.0;}
+        else if (i > A2RemoveIndex) {Q_p[i-1] = Q[i]; X_p[i-1] = 0.0;}
+
     }
 
-    qDebug() << "....... 3 ......." ;
-
     linearAlgebraSolver las(N_p, K_p, Q_p, X_p);
-    las.printA();
-    las.printb();
-    las.GaussElimination();
+    las.GaussElimination(); // coefficient will be manipulated
+
+//    Form *tmp = new Form(N_p, K_p, Q_p, mw);
+//    tmp->show();
 
     log_ += las.mylog();
-    log_ += "\n Results of this Bar Problem is :";
+    log_ += "\n Results of this Bar Problem is :\n";
     for (int i = 0; i < N_p; i++) {
-        log_ += QString::number(Q_p[i]) + "\n";
+        log_ += QString::number(X_p[i]) + "\n";
     }
     mw->retrieveLogFromFEAWindow();
 

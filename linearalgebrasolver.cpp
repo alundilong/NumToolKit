@@ -121,6 +121,7 @@ void linearAlgebraSolver::GaussElimination()
             term = term + A_[i-1][j-1]*x_[j-1];
         }
         x_[i-1] = (b_[i-1] - term)/A_[i-1][i-1];
+        qDebug() << "------> " << x_[i-1];
     }
 
 }
@@ -229,5 +230,14 @@ void linearAlgebraSolver::printb()
     int N = size_;
     for (int i = 0; i < N; i++) {
       qDebug() << b_[i];
+    }
+}
+
+void linearAlgebraSolver::printx()
+{
+    qDebug() << "Print vector x";
+    int N = size_;
+    for (int i = 0; i < N; i++) {
+      qDebug() << x_[i];
     }
 }
