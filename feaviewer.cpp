@@ -4,8 +4,8 @@
 
 FeaViewer::FeaViewer(QWidget *parent) :
     QGLWidget(parent)
-//     QOpenGLWidget(parent)
-//   QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
+//  QOpenGLWidget(parent)
+//  QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     xRot = 0;
     yRot = 0;

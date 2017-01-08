@@ -56,8 +56,9 @@ feaAnalysisPanel::feaAnalysisPanel(MainWindow *mw, QWidget *parent):
     ui->comboBox3DElement->addItem("8 node");
     ui->comboBox3DElement->addItem("20 node (8+12)");
 
-//    log_ = "Finite Element Analysis Panel Loaded\n";
-
+    qDebug() << " ************* ";
+    log_ = "Finite Element Analysis Panel Loaded\n";
+//    mw->retrieveLogFromFEAWindow();
 }
 
 feaAnalysisPanel::~feaAnalysisPanel()
@@ -82,31 +83,24 @@ void feaAnalysisPanel::on_zRotSlider_sliderMoved(int position)
 
 void feaAnalysisPanel::on_radio2DElement_toggled(bool checked)
 {
-//    ui->radio1DElement->setChecked(!checked);
     ui->comboBox1DElement->setEnabled(!checked);
-//    ui->radio2DElement->setChecked(checked);
     ui->comboBox2DElement->setEnabled(checked);
-//    ui->radio3DElement->setChecked(!checked);
     ui->comboBox3DElement->setEnabled(!checked);
 }
 
 void feaAnalysisPanel::on_radio1DElement_toggled(bool checked)
 {
-//    ui->radio1DElement->setChecked(checked);
+
     ui->comboBox1DElement->setEnabled(checked);
-//    ui->radio2DElement->setChecked(!checked);
     ui->comboBox2DElement->setEnabled(!checked);
-//    ui->radio3DElement->setChecked(!checked);
     ui->comboBox3DElement->setEnabled(!checked);
 }
 
 void feaAnalysisPanel::on_radio3DElement_toggled(bool checked)
 {
-//    ui->radio1DElement->setChecked(!checked);
+
     ui->comboBox1DElement->setEnabled(!checked);
-//    ui->radio2DElement->setChecked(!checked);
     ui->comboBox2DElement->setEnabled(!checked);
-//    ui->radio3DElement->setChecked(checked);
     ui->comboBox3DElement->setEnabled(checked);
 }
 
@@ -220,31 +214,24 @@ void feaAnalysisPanel::solve1DBar()
 
     qDebug() << "....... 1 ......." ;
 
-    int shiftx = 0, shifty = 0;
     for (int i = 0; i < N; i++) {
-        if( i == A2RemoveIndex ) {
-            shiftx++;
-        }
         for (int j = 0; j < N; j++) {
-            if (j == A2RemoveIndex) {
-                shifty++;
+            if (i < A2RemoveIndex && j < A2RemoveIndex) {
+                M_p[i][j] = M[i][j];
+                K_p[i][j] = K[i][j];
+            } else if (i < A2RemoveIndex && j > A2RemoveIndex) {
+
             }
-            if (shiftx == shifty) continue;
-            qDebug() << "....... 2 ......." << i << "\t" << shiftx << "\t" << shifty;
-            M_p[i-shiftx][j-shifty] = M[i][j];
-            K_p[i-shiftx][j-shifty] = K[i][j];
         }
+
     }
 
-    shiftx = 0; shifty = 0;
-
     for (int i = 0; i < N; i++) {
-        if (i == A2RemoveIndex) {
-            shiftx++;
-            continue;
-        }
-        Q_p[i-shiftx] = Q[i];
-        X_p[i-shiftx] = 0.0;
+        int I = i;
+        if (I == A2RemoveIndex) continue;
+        if (I > A2RemoveIndex) I = I-1;
+        Q_p[I] = Q[i];
+        X_p[I] = 0.0;
     }
 
     qDebug() << "....... 3 ......." ;
@@ -252,14 +239,14 @@ void feaAnalysisPanel::solve1DBar()
     linearAlgebraSolver las(N_p, K_p, Q_p, X_p);
     las.printA();
     las.printb();
-//    las.GaussElimination();
+    las.GaussElimination();
 
-//    log_ += las.mylog();
-//    log_ += "\n Results of this Bar Problem is :";
-//    for (int i = 0; i < N_p; i++) {
-//        log_ += QString::number(Q_p[i]) + "\n";
-//    }
-//    mw->retrieveLogFromFEAWindow();
+    log_ += las.mylog();
+    log_ += "\n Results of this Bar Problem is :";
+    for (int i = 0; i < N_p; i++) {
+        log_ += QString::number(Q_p[i]) + "\n";
+    }
+    mw->retrieveLogFromFEAWindow();
 
     // BarElement elements[nElement];
     // solve the pre-defined problem
