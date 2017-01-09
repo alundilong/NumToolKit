@@ -53,6 +53,9 @@ MainWindow::MainWindow(QWidget *parent) :
     // ubuntu 14.04 will need this line
     this->menuBar()->setNativeMenuBar(false);
 //    this->setWindowIcon(QIcon("NumToolKit_icon.png"));
+
+//    connect(this,SIGNAL(QMainWindow::close()),fap_,SLOT(close()));
+//    setAttribute(Qt::WA_DeleteOnClose);
 }
 
 MainWindow::~MainWindow()
