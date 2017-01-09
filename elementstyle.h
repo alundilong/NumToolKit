@@ -3,5 +3,6 @@
 
 // 1D Element
 #include "barelement.h"
+#include "eulerbernoullibeam.h"
 
 #endif // ELMENTSTYLE_H

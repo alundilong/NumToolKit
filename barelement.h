@@ -6,10 +6,14 @@
 class BarElement : public FEAElementBase
 {
 public:
-    enum position {LEFT, RIGHT};
+    enum location {LEFT, RIGHT};
+    static const int  nNode;
+    static const int nDOF;
 public:
     BarElement();
+    BarElement(MaterialEle &m, GeometryEle &g);
     ~BarElement();
+
 };
 
 #endif // BARELEMENT_H

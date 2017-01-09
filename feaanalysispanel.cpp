@@ -4,6 +4,7 @@
 #include "linearalgebrasolver.h"
 
 #include "elementstyle.h"
+
 #include <QDebug>
 #include "form.h"
 
@@ -116,44 +117,35 @@ void feaAnalysisPanel::on_buttonRun_clicked()
 
 void feaAnalysisPanel::solve1DBar()
 {
+//    |-----|-----|-----|
+//    |-----|-----|-----|
+
     // Need a mesh class to store geometry data (3D)
     // Mesh reads points, stored by label
 
     // 1D problem
-    const int nElement = 3;
-    const int nNodeTotal = nElement + 1;
+    const int nElement = 300;
+    const int nNodes = nElement + 1;
 
     // geometry info
     const double length = 1.0; // m
-    const double lengthEle = length/nElement; // uniform
-    const double A = 0.01; // m^2
 
     // material info
-    const double mass = 2.0; // kg
-    const double massEle = mass/nElement;
-    const double E = 1e9; // Young's Modulus
+    const double rho = 7.9e3; // kg/m^3
+    const double E = 1e9; // Pa // Young's Modulus
+    const double G = 1e10; // Pa
 
-    // find matrix of M/K for the chosen element
-    const BarElement bar;
-    const int nNode = bar.nNode();
-    double **mMassEle = new double*[nNode]; // element mass matrix
-    double **mKEle = new double *[nNode]; // element stiffness matrix
-    for (int i = 0; i < nNode; i++) {
-        mMassEle[i] = new double[nNode];
-        mKEle[i] = new double[nNode];
-    }
-    double **baseMass = bar.baseMass();
-    double **baseStiff = bar.baseStiff();
-    for (int i = 0; i < nNode; i++) {
-        for (int j = 0; j < nNode; j++) {
-            mMassEle[i][j] = massEle*lengthEle/6.0*baseMass[i][j];
-            mKEle[i][j] = E*A/lengthEle*baseStiff[i][j];
-        }
+    QList<BarElement> elements;
+    for (int i = 0; i < nElement; i++) {
+        double e[3] = {length/nElement, 0.1, 0.1};
+        MaterialEle *m = new MaterialEle(rho,E,G);
+        GeometryEle *g = new GeometryEle(e);
+        BarElement *barEle = new BarElement(*m,*g);
+        elements.push_back(*barEle);
     }
 
     // assembly the matrix
-    const int nDOF = bar.nDOF();
-    const int N = nNodeTotal; // total unknown before BC applied
+    const int N = nNodes; // total unknown before BC applied
     double **M = new double*[N]; // full mass matrix
     double **K = new double*[N]; // full stiff matrix
     double *Q = new double[N];
@@ -171,14 +163,18 @@ void feaAnalysisPanel::solve1DBar()
         }
     }
 
+    const int nNodeEle = BarElement::nNode;
+
     for (int k = 0; k < nElement; k++) {
+        const BarElement & barEle = elements[k];
         int eleId = k; // to be general, a list storing element Id should be defined (MeshData)
-        for (int i = 0; i < nNode; i++) {
+        for (int i = 0; i < nNodeEle; i++) {
             int nodeI_Id = i + k; // to be general, a list of nodeId for each element should be defined (MeshData)
-            for (int j = 0; j < nNode; j++) {
+            for (int j = 0; j < nNodeEle; j++) {
                 int nodeJ_Id = j + k;
-                M[nodeI_Id][nodeJ_Id] += mMassEle[i][j];
-                K[nodeI_Id][nodeJ_Id] += mKEle[i][j];
+                M[nodeI_Id][nodeJ_Id] += barEle.baseMass()[i][j];
+                K[nodeI_Id][nodeJ_Id] += barEle.baseStiff()[i][j];
+
             }
         }
     }
@@ -196,8 +192,9 @@ void feaAnalysisPanel::solve1DBar()
         X[i] = 0;
     }
 
+    const int nDOFEle = BarElement::nDOF;
     int eleIDEOM = nElement-1; // element ID with Equation of Motion
-    Q[eleIDEOM*nDOF + BarElement::RIGHT] = 100;
+    Q[eleIDEOM*nDOFEle + BarElement::RIGHT] = 100;
 
     // reconstruct M, K, and Q
 
@@ -239,7 +236,7 @@ void feaAnalysisPanel::solve1DBar()
     }
 
     linearAlgebraSolver las(N_p, K_p, Q_p, X_p);
-    las.GaussElimination(); // coefficient will be manipulated
+    las.GaussElimination(); // coefficient will be changed
 
 //    Form *tmp = new Form(N_p, K_p, Q_p, mw);
 //    tmp->show();
@@ -247,7 +244,7 @@ void feaAnalysisPanel::solve1DBar()
     log_ += las.mylog();
     log_ += "\n Results of this Bar Problem is :\n";
     for (int i = 0; i < N_p; i++) {
-        log_ += QString::number(X_p[i]) + "\n";
+        log_ += QString("Element %1 : Disp = %2 m\n").arg(i).arg(QString::number(X_p[i]));
     }
     mw->retrieveLogFromFEAWindow();
 
@@ -259,13 +256,6 @@ void feaAnalysisPanel::solve1DBar()
     // construct stiffness matrix A and b
     // define linear algebra solver obj
     // solve problem and return results and display
-
-    for (int i = 0; i < nNode; i++) {
-        delete mMassEle[i];
-        delete mKEle[i];
-    }
-    delete [] mMassEle;
-    delete [] mKEle;
 
     for (int i = 0; i < N; i++) {
         delete M[i];

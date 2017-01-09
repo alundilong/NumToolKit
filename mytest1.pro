@@ -23,7 +23,12 @@ SOURCES += main.cpp\
     feaviewer.cpp \
     feaelementbase.cpp \
     stringelement.cpp \
-    barelement.cpp
+    barelement.cpp \
+    eulerbernoullibeam.cpp \
+    materialele.cpp \
+    geometryele.cpp \
+    mathextension.cpp \
+    mesh.cpp
 
 HEADERS  += mainwindow.h \
     form.h \
@@ -33,7 +38,12 @@ HEADERS  += mainwindow.h \
     feaelementbase.h \
     stringelement.h \
     barelement.h \
-    elementstyle.h
+    elementstyle.h \
+    eulerbernoullibeam.h \
+    materialele.h \
+    geometryele.h \
+    mathextension.h \
+    mesh.h
 
 FORMS    += mainwindow.ui \
     form.ui \

@@ -28,13 +28,16 @@ MainWindow::MainWindow(QWidget *parent) :
     p.setColor(QPalette::Base, Qt::black);
     ui->textEdit->setPalette(p);
 
+    ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
+    QTextCursor c = ui->textEdit->textCursor();
+    c.movePosition(QTextCursor::End);
+    ui->textEdit->setTextCursor(c);
+
+    ui->textEdit->ensureCursorVisible();
     QFont f = ui->textEdit->font();
     f.setPointSize(10);
     ui->textEdit->setFont(f);
-
     ui->textEdit->setTextColor(Qt::yellow);
-
-    ui->textEdit->verticalScrollBar()->setValue(ui->textEdit->verticalScrollBar()->maximum());
 
     QString welcome = "==================================================\n";
     welcome += "================= Welcome to NumToolKit!  ================\n";
@@ -198,27 +201,6 @@ void MainWindow::on_actionPrint_triggered()
 }
 
 
-void MainWindow::on_action1D_Element_triggered()
-{
-    fap1D_ = new feaAnalysisPanel(this);
-    fap1D_->setWindowTitle("FEA 1D analysis");
-    fap1D_->show();
-}
-
-void MainWindow::on_action2D_Element_triggered()
-{
-    fap2D_ = new feaAnalysisPanel(this);
-    fap2D_->setWindowTitle("FEA 2D analysis");
-    fap2D_->show();
-}
-
-void MainWindow::on_action3D_Element_triggered()
-{
-    fap3D_ = new feaAnalysisPanel(this);
-    fap3D_->setWindowTitle("FEA 3D analysis");
-    fap3D_->show();
-}
-
 void MainWindow::retrieveLogFromMethodWindow()
 {
     ui->textEdit->append(methodWindow_->getLog());
@@ -226,7 +208,7 @@ void MainWindow::retrieveLogFromMethodWindow()
 
 void MainWindow::retrieveLogFromFEAWindow()
 {
-    ui->textEdit->append(fap1D_->getLog());
+    ui->textEdit->append(fap_->getLog());
 }
 
 QString MainWindow::echo(QString qs)
@@ -240,4 +222,11 @@ void MainWindow::on_actionMethod_triggered()
     methodWindow_ = new Form(this);
     methodWindow_->setWindowTitle(QString("Method Panel"));
     methodWindow_->show();
+}
+
+void MainWindow::on_actionAnalysis_triggered()
+{
+    fap_ = new feaAnalysisPanel(this);
+    fap_->setWindowTitle("FEA static analysis");
+    fap_->show();
 }

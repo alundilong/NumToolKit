@@ -122,15 +122,7 @@
     <property name="title">
      <string>FEA</string>
     </property>
-    <widget class="QMenu" name="menuStaticAnalysis">
-     <property name="title">
-      <string>StaticAnalysis</string>
-     </property>
-     <addaction name="action1D_Element"/>
-     <addaction name="action2D_Element"/>
-     <addaction name="action3D_Element"/>
-    </widget>
-    <addaction name="menuStaticAnalysis"/>
+    <addaction name="actionAnalysis"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -261,19 +253,9 @@
     <string>Method</string>
    </property>
   </action>
-  <action name="action1D_Element">
+  <action name="actionAnalysis">
    <property name="text">
-    <string>1D Element</string>
-   </property>
-  </action>
-  <action name="action2D_Element">
-   <property name="text">
-    <string>2D Element</string>
-   </property>
-  </action>
-  <action name="action3D_Element">
-   <property name="text">
-    <string>3D Element</string>
+    <string>StaticAnalysis</string>
    </property>
   </action>
  </widget>

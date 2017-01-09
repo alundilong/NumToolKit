@@ -3,13 +3,14 @@
 #include <QtWidgets>
 
 FeaViewer::FeaViewer(QWidget *parent) :
-    QGLWidget(parent)
+//    QGLWidget(parent)
 //  QOpenGLWidget(parent)
-//  QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
+  QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
 {
     xRot = 0;
     yRot = 0;
     zRot = 0;
+    setAutoBufferSwap(true);
 }
 
 void FeaViewer::initializeGL()
