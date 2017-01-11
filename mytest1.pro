@@ -55,4 +55,5 @@ RESOURCES += \
     resource.qrc
 
 OTHER_FILES += \
-    UI.png
+    UI.png \
+    lib.note

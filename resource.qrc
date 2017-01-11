@@ -18,5 +18,6 @@
         <file>myres/neighbour</file>
         <file>myres/owner</file>
         <file>myres/points</file>
+        <file>myres/suzanne.obj</file>
     </qresource>
 </RCC>
