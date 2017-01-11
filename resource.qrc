@@ -13,5 +13,10 @@
         <file>myres/undo.jpeg</file>
         <file>myres/about.png</file>
         <file>myres/NumToolKit_icon.png</file>
+        <file>myres/boundary</file>
+        <file>myres/faces</file>
+        <file>myres/neighbour</file>
+        <file>myres/owner</file>
+        <file>myres/points</file>
     </qresource>
 </RCC>

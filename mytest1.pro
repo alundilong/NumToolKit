@@ -6,7 +6,7 @@
 
 QT       += core gui printsupport opengl
 
-LIBS += opengl32.lib
+#LIBS += opengl32.lib
 QMAKE_CXXFLAGS += -std=c++0x
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     materialele.cpp \
     geometryele.cpp \
     mathextension.cpp \
-    mesh.cpp
+    mesh.cpp \
+    openfoamqtextstream.cpp
 
 HEADERS  += mainwindow.h \
     form.h \
@@ -43,7 +44,8 @@ HEADERS  += mainwindow.h \
     materialele.h \
     geometryele.h \
     mathextension.h \
-    mesh.h
+    mesh.h \
+    openfoamqtextstream.h
 
 FORMS    += mainwindow.ui \
     form.ui \
@@ -51,3 +53,6 @@ FORMS    += mainwindow.ui \
 
 RESOURCES += \
     resource.qrc
+
+OTHER_FILES += \
+    UI.png
