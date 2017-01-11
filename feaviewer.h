@@ -2,6 +2,9 @@
 #define FEAVIEWER_H
 
 #include <QGLWidget>
+#include "mesh.h"
+
+using namespace std;
 // #include <QOpenGLWidget>
 
 class FeaViewer : public QGLWidget
@@ -10,6 +13,9 @@ class FeaViewer : public QGLWidget
     Q_OBJECT
 public:
     explicit FeaViewer(QWidget *parent = 0);
+
+    bool & meshLoadedState() { return meshLoadedState_; }
+    void setMesh(Mesh*mesh);
 
 protected:
     void initializeGL();
@@ -27,6 +33,7 @@ signals:
     void yRotationChanged(int angle);
     void zRotationChanged(int angle);
 
+
 public slots:
 
     // solts for xyz-rotation slider
@@ -36,10 +43,15 @@ public slots:
 
 private:
     void draw();
+    void drawMesh();
+
+    inline const Mesh* mesh() const { return mesh_; }
 
     int xRot;
     int yRot;
     int zRot;
+    bool meshLoadedState_;
+    Mesh *mesh_;
 
     QPoint lastPos;
 

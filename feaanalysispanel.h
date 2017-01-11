@@ -2,6 +2,7 @@
 #define FEAANALYSISPANEL_H
 
 #include <QWidget>
+#include "mesh.h"
 
 namespace Ui {
 class feaAnalysisPanel;
@@ -20,6 +21,9 @@ public:
     const QString & getLog() {
         return log_;
     }
+
+signals:
+    void meshLoaded();
 
 private slots:
     void on_xRotSlider_sliderMoved(int position);
@@ -42,6 +46,10 @@ private:
     Ui::feaAnalysisPanel *ui;
     MainWindow *mw;
     QString log_;
+
+    Mesh *mesh_;
+
+    inline const Mesh* mesh() { return mesh_; }
 
     void solve1DBar();
 };

@@ -12,12 +12,15 @@
 
 feaAnalysisPanel::feaAnalysisPanel(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::feaAnalysisPanel)
+    ui(new Ui::feaAnalysisPanel),
+    mesh_(NULL)
 {
     ui->setupUi(this);
     connect(ui->myGLwidget, SIGNAL(xRotationChanged(int)), ui->xRotSlider, SLOT(setValue(int)));
     connect(ui->myGLwidget, SIGNAL(yRotationChanged(int)), ui->yRotSlider, SLOT(setValue(int)));
     connect(ui->myGLwidget, SIGNAL(zRotationChanged(int)), ui->zRotSlider, SLOT(setValue(int)));
+
+    connect(this, SIGNAL(meshLoaded()), ui->myGLwidget, SLOT(updateGL()));
 
     // default : 1D elment
     ui->radio1DElement->setChecked(true);
@@ -38,7 +41,8 @@ feaAnalysisPanel::feaAnalysisPanel(QWidget *parent) :
 feaAnalysisPanel::feaAnalysisPanel(MainWindow *mw, QWidget *parent):
     QWidget(parent),
     ui(new Ui::feaAnalysisPanel),
-    mw(mw)
+    mw(mw),
+    mesh_(NULL)
 {
     ui->setupUi(this);
     connect(ui->myGLwidget, SIGNAL(xRotationChanged(int)), ui->xRotSlider, SLOT(setValue(int)));
@@ -285,7 +289,14 @@ void feaAnalysisPanel::on_loadMesh_clicked()
              "mesh dir",\
              "~/home",\
              QFileDialog::ShowDirsOnly);
-    Mesh mesh(dirName);
+    mesh_ = new Mesh(dirName);
+    qDebug() << "feaPannel : number of cell : " << mesh()->nCells();
+
+    if(mesh()->meshState()) {
+        ui->myGLwidget->meshLoadedState() = true;
+        ui->myGLwidget->setMesh(mesh_);
+        emit meshLoaded();
+    }
 //    QFile (dirName);
 //    filePath_ = fileName;
 //    if(!file.open(QFile::ReadOnly | QFile::Text)) {
