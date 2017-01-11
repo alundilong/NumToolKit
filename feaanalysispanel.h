@@ -36,6 +36,8 @@ private slots:
 
     void on_buttonRun_clicked();
 
+    void on_loadMesh_clicked();
+
 private:
     Ui::feaAnalysisPanel *ui;
     MainWindow *mw;

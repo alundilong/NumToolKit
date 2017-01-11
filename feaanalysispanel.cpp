@@ -7,6 +7,8 @@
 
 #include <QDebug>
 #include "form.h"
+#include <QFileDialog>
+#include "mesh.h"
 
 feaAnalysisPanel::feaAnalysisPanel(QWidget *parent) :
     QWidget(parent),
@@ -274,4 +276,25 @@ void feaAnalysisPanel::solve1DBar()
     delete [] K_p;
     delete [] Q_p;
     delete [] X_p;
+}
+
+void feaAnalysisPanel::on_loadMesh_clicked()
+{
+    QString dirName = QFileDialog::getExistingDirectory\
+            (this,\
+             "mesh dir",\
+             "~/home",\
+             QFileDialog::ShowDirsOnly);
+    Mesh mesh(dirName);
+//    QFile (dirName);
+//    filePath_ = fileName;
+//    if(!file.open(QFile::ReadOnly | QFile::Text)) {
+//        QMessageBox::warning(this,"..", "file not open");
+//        return;
+//    }
+
+//    QTextStream in(&file);
+//    QString text = in.readAll();
+//    ui->textEdit->setText(text);
+//    file.close();
 }
