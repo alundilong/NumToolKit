@@ -192,50 +192,44 @@ void FeaViewer::drawMesh()
 
     qglColor(Qt::yellow);
     const Mesh* msh = mesh();
-    double xlow = 2*msh->box().xlow;
-    double xhig = 2*msh->box().xhig;
-    double ylow = 2*msh->box().ylow;
-    double yhig = 2*msh->box().yhig;
-    glOrtho(xlow, xhig, ylow, yhig, -1.0, 1.0);
+    double xlow = msh->box().xlow;
+    double xhig = msh->box().xhig;
+    double ylow = msh->box().ylow;
+    double yhig = msh->box().yhig;
+    glOrtho(xlow, xhig, ylow, yhig, -100.0, 100.0);
 
     for (int faceI = 0 ; faceI < msh->nFaces(); faceI++) {
         glBegin(GL_QUADS);
 
-//        qDebug() << "faceI : " << faceI << "node 1: " << msh->faceNodes(faceI)[0]\
-//                 << " node 2: " << msh->faceNodes(faceI)[1] \
-//                 << " node 3: " << msh->faceNodes(faceI)[2] \
-//                 << " node 4: " << msh->faceNodes(faceI)[3];
         double nx = msh->faceNormals()[faceI].x();
         double ny = msh->faceNormals()[faceI].y();
         double nz = msh->faceNormals()[faceI].z();
-//        qDebug() << QString("normal %1 %2 %3").arg(nx).arg(ny).arg(nz);
-        glNormal3f(nx, ny, nz);
-        double p1x = msh->points()[msh->faceNodes(faceI)[0]].x()*20;
-        double p1y = msh->points()[msh->faceNodes(faceI)[0]].y()*20;
-        double p1z = msh->points()[msh->faceNodes(faceI)[0]].z()*20;
-//        qDebug() << QString("normal %1 %2 %3").arg(p1x).arg(p1y).arg(p1z);
-        glVertex3f(p1x, p1y, p1z);
-        double p2x = msh->points()[msh->faceNodes(faceI)[1]].x()*20;
-        double p2y = msh->points()[msh->faceNodes(faceI)[1]].y()*20;
-        double p2z = msh->points()[msh->faceNodes(faceI)[1]].z()*20;
-//        qDebug() << QString("normal %1 %2 %3").arg(p2x).arg(p2y).arg(p2z);
-        glVertex3f(p2x, p2y, p2z);
-        double p3x = msh->points()[msh->faceNodes(faceI)[2]].x()*20;
-        double p3y = msh->points()[msh->faceNodes(faceI)[2]].y()*20;
-        double p3z = msh->points()[msh->faceNodes(faceI)[2]].z()*20;
-//        qDebug() << QString("normal %1 %2 %3").arg(p3x).arg(p3y).arg(p3z);
-        glVertex3f(p3x, p3y, p3z);
-        double p4x = msh->points()[msh->faceNodes(faceI)[3]].x()*20;
-        double p4y = msh->points()[msh->faceNodes(faceI)[3]].y()*20;
-        double p4z = msh->points()[msh->faceNodes(faceI)[3]].z()*20;
-//        qDebug() << QString("normal %1 %2 %3").arg(p4x).arg(p4y).arg(p4z);
-        glVertex3f(p4x, p4y, p4z);
 
-//        glNormal3f(0, 0, -1);
-//        glVertex3f(-1, -1, 0);
-//        glVertex3f(-1, 1, 0);
-//        glVertex3f(1, 1, 0);
-//        glVertex3f(1, -1, 0);
+        glNormal3f(nx, ny, nz);
+        double p1x = msh->points()[msh->faceNodes(faceI)[0]].x();
+        double p1y = msh->points()[msh->faceNodes(faceI)[0]].y();
+        double p1z = msh->points()[msh->faceNodes(faceI)[0]].z();
+
+        glColor3f(1.0f,0.0f,0.0f);
+        glVertex3f(p1x, p1y, p1z);
+        double p2x = msh->points()[msh->faceNodes(faceI)[1]].x();
+        double p2y = msh->points()[msh->faceNodes(faceI)[1]].y();
+        double p2z = msh->points()[msh->faceNodes(faceI)[1]].z();
+
+        glColor3f(0.0f,1.0f,0.0f);
+        glVertex3f(p2x, p2y, p2z);
+        double p3x = msh->points()[msh->faceNodes(faceI)[2]].x();
+        double p3y = msh->points()[msh->faceNodes(faceI)[2]].y();
+        double p3z = msh->points()[msh->faceNodes(faceI)[2]].z();
+
+        glColor3f(0.0f,0.0f,1.0f);
+        glVertex3f(p3x, p3y, p3z);
+        double p4x = msh->points()[msh->faceNodes(faceI)[3]].x();
+        double p4y = msh->points()[msh->faceNodes(faceI)[3]].y();
+        double p4z = msh->points()[msh->faceNodes(faceI)[3]].z();
+
+        glColor3f(0.0f,0.5f,1.0f);
+        glVertex3f(p4x, p4y, p4z);
 
         glEnd();
     }
