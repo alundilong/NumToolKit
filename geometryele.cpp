@@ -30,3 +30,8 @@ GeometryEle::~GeometryEle()
 {
 
 }
+
+void GeometryEle::setLocalCoordinateSystem(coordSystem *cs)
+{
+    localCoordinateSystem_ = cs;
+}
