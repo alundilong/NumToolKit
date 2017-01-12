@@ -94,6 +94,12 @@ protected:
     double **baseMass_; // mass matrix
     double **baseStiff_; // stiffiness matrix
 
+    // firstNode label of this type element
+    // it serves as the origin of the local
+    // coordinate system for this element
+    // Knowing this is a very important
+    int firstNode_;
+
 };
 
 #endif // FEAELEMENTBASE_H
