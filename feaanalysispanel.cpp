@@ -8,7 +8,7 @@
 #include <QDebug>
 #include "form.h"
 #include <QFileDialog>
-#include "mesh.h"
+
 
 feaAnalysisPanel::feaAnalysisPanel(QWidget *parent) :
     QWidget(parent),
@@ -16,11 +16,6 @@ feaAnalysisPanel::feaAnalysisPanel(QWidget *parent) :
     mesh_(NULL)
 {
     ui->setupUi(this);
-    connect(ui->myGLwidget, SIGNAL(xRotationChanged(int)), ui->xRotSlider, SLOT(setValue(int)));
-    connect(ui->myGLwidget, SIGNAL(yRotationChanged(int)), ui->yRotSlider, SLOT(setValue(int)));
-    connect(ui->myGLwidget, SIGNAL(zRotationChanged(int)), ui->zRotSlider, SLOT(setValue(int)));
-
-    connect(this, SIGNAL(meshLoaded()), ui->myGLwidget, SLOT(updateGL()));
 
     // default : 1D elment
     ui->radio1DElement->setChecked(true);
@@ -36,18 +31,18 @@ feaAnalysisPanel::feaAnalysisPanel(QWidget *parent) :
     ui->comboBox3DElement->setEnabled(false);
     ui->comboBox3DElement->addItem("8 node");
     ui->comboBox3DElement->addItem("20 node (8+12)");
+
+    connect(this, SIGNAL(meshLoaded()), vwin_, SLOT(updateGL()));
 }
 
-feaAnalysisPanel::feaAnalysisPanel(MainWindow *mw, QWidget *parent):
+feaAnalysisPanel::feaAnalysisPanel(MainWindow *mw, ViewerWindow *vwin, QWidget *parent):
     QWidget(parent),
     ui(new Ui::feaAnalysisPanel),
-    mw(mw),
+    mw_(mw),
+    vwin_(vwin),
     mesh_(NULL)
 {
     ui->setupUi(this);
-    connect(ui->myGLwidget, SIGNAL(xRotationChanged(int)), ui->xRotSlider, SLOT(setValue(int)));
-    connect(ui->myGLwidget, SIGNAL(yRotationChanged(int)), ui->yRotSlider, SLOT(setValue(int)));
-    connect(ui->myGLwidget, SIGNAL(zRotationChanged(int)), ui->zRotSlider, SLOT(setValue(int)));
 
     // default : 1D elment
     ui->radio1DElement->setChecked(true);
@@ -65,6 +60,11 @@ feaAnalysisPanel::feaAnalysisPanel(MainWindow *mw, QWidget *parent):
     ui->comboBox3DElement->addItem("20 node (8+12)");
 
     log_ = "Finite Element Analysis Panel Loaded\n";
+
+    connect(this, SIGNAL(meshLoaded()), vwin_, SLOT(updateGL()));
+    this->setAttribute(Qt::WA_DeleteOnClose);
+    connect(this, SIGNAL(destroyed(QObject*)), vwin_, SLOT(close()));
+
 //    mw->retrieveLogFromFEAWindow();
 }
 
@@ -73,20 +73,6 @@ feaAnalysisPanel::~feaAnalysisPanel()
     delete ui;
 }
 
-void feaAnalysisPanel::on_xRotSlider_sliderMoved(int position)
-{
-    ui->myGLwidget->setXRotation(position);
-}
-
-void feaAnalysisPanel::on_yRotSlider_sliderMoved(int position)
-{
-    ui->myGLwidget->setYRotation(position);
-}
-
-void feaAnalysisPanel::on_zRotSlider_sliderMoved(int position)
-{
-    ui->myGLwidget->setZRotation(position);
-}
 
 void feaAnalysisPanel::on_radio2DElement_toggled(bool checked)
 {
@@ -113,7 +99,7 @@ void feaAnalysisPanel::on_radio3DElement_toggled(bool checked)
 
 void feaAnalysisPanel::on_buttonRun_clicked()
 {
-    mw->retrieveLogFromFEAWindow();
+    mw_->retrieveLogFromFEAWindow();
 
     if(ui->comboBox1DElement->currentText() == "Bar") {
         log_ += "Solving 1-D Bar Problem...\n";
@@ -252,7 +238,7 @@ void feaAnalysisPanel::solve1DBar()
     for (int i = 0; i < N_p; i++) {
         log_ += QString("Element %1 : Disp = %2 m\n").arg(i).arg(QString::number(X_p[i]));
     }
-    mw->retrieveLogFromFEAWindow();
+    mw_->retrieveLogFromFEAWindow();
 
     // BarElement elements[nElement];
     // solve the pre-defined problem
@@ -293,19 +279,9 @@ void feaAnalysisPanel::on_loadMesh_clicked()
     qDebug() << "feaPannel : number of cell : " << mesh()->nCells();
 
     if(mesh()->meshState()) {
-        ui->myGLwidget->meshLoadedState() = true;
-        ui->myGLwidget->setMesh(mesh_);
+        vwin_->setFormat(QString("openfoam"));
+        vwin_->setMeshLoadedState(true);
+        vwin_->setMesh(mesh_);
         emit meshLoaded();
     }
-//    QFile (dirName);
-//    filePath_ = fileName;
-//    if(!file.open(QFile::ReadOnly | QFile::Text)) {
-//        QMessageBox::warning(this,"..", "file not open");
-//        return;
-//    }
-
-//    QTextStream in(&file);
-//    QString text = in.readAll();
-//    ui->textEdit->setText(text);
-//    file.close();
 }

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "mesh.h"
+#include "viewerwindow.h"
 
 namespace Ui {
 class feaAnalysisPanel;
@@ -16,7 +17,7 @@ class feaAnalysisPanel : public QWidget
 
 public:
     explicit feaAnalysisPanel(QWidget *parent = 0);
-    explicit feaAnalysisPanel(MainWindow *mw, QWidget *parent = 0);
+    explicit feaAnalysisPanel(MainWindow *mw, ViewerWindow *vwin, QWidget *parent = 0);
     ~feaAnalysisPanel();
     const QString & getLog() {
         return log_;
@@ -26,11 +27,6 @@ signals:
     void meshLoaded();
 
 private slots:
-    void on_xRotSlider_sliderMoved(int position);
-
-    void on_yRotSlider_sliderMoved(int position);
-
-    void on_zRotSlider_sliderMoved(int position);
 
     void on_radio2DElement_toggled(bool checked);
 
@@ -44,13 +40,12 @@ private slots:
 
 private:
     Ui::feaAnalysisPanel *ui;
-    MainWindow *mw;
+    MainWindow *mw_;
+    ViewerWindow *vwin_;
     QString log_;
-
     Mesh *mesh_;
 
     inline const Mesh* mesh() { return mesh_; }
-
     void solve1DBar();
 };
 
