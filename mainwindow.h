@@ -2,14 +2,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "viewerwindow.h"
+#include "feaanalysispanel.h"
+#include "sph3dprintpanel.h"
 
 namespace Ui {
 class MainWindow;
 }
 
-// forward declearation
 class Form;
-class feaAnalysisPanel;
 
 class MainWindow : public QMainWindow
 {
@@ -55,6 +56,8 @@ private slots:
 
     void on_actionAnalysis_triggered();
 
+    void on_actionSPH_triggered();
+
 public:
     // retrieve log
     void retrieveLogFromMethodWindow();
@@ -67,6 +70,10 @@ private:
     QString log_;
     Form * methodWindow_;
     feaAnalysisPanel *fap_;
+    SPH3DPrintPanel *sph3DPrint_;
+    ViewerWindow * vwinFEA_;
+    ViewerWindow * vwinSPH_;
+
 };
 
 #endif // MAINWINDOW_H

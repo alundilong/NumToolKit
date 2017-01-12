@@ -1,11 +1,11 @@
-#include "feaviewer.h"
+#include "viewerwindow.h"
 #include <QtOpenGL>
 #include <QtWidgets>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
-FeaViewer::FeaViewer(QWidget *parent) :
+ViewerWindow::ViewerWindow(QWidget *parent) :
 //    QGLWidget(parent)
 //  QOpenGLWidget(parent)
   QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
@@ -17,15 +17,39 @@ FeaViewer::FeaViewer(QWidget *parent) :
     mesh_ = NULL;
     meshLoadedState_ = false; // default is false
     zoomVal_ = 0.0;
+
+//    // prevent the widget from being cleared when beginning the QPainter
+//    setAutoFillBackground(false);
+
 }
 
-void FeaViewer::setMesh(Mesh *mesh)
+void ViewerWindow::setMeshLoadedState(bool state)
+{
+    meshLoadedState_ = state;
+}
+
+void ViewerWindow::setSTLMeshLoadedState(bool state)
+{
+    stlmeshLoadedState_ = state;
+}
+
+void ViewerWindow::setFormat(QString format)
+{
+    format_ = format;
+}
+
+void ViewerWindow::setMesh(Mesh *mesh)
 {
     mesh_ = mesh;
 }
 
+void ViewerWindow::setSTLMesh(STLMesh *stlmesh)
+{
+    stlmesh_ = stlmesh;
+}
 
-void FeaViewer::initializeGL()
+
+void ViewerWindow::initializeGL()
 {
     qglClearColor(Qt::black);
 //    qglClearColor(Qt::black);
@@ -41,7 +65,7 @@ void FeaViewer::initializeGL()
 
 }
 
-void FeaViewer::paintGL()
+void ViewerWindow::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -51,17 +75,25 @@ void FeaViewer::paintGL()
     glRotatef(yRot/16.0, 0.0, 1.0, 0.0);
     glRotatef(zRot/16.0, 0.0, 0.0, 1.0);
 
-    // if mesh loaded draw mesh
-    if(meshLoadedState()) {
-//        qDebug() <<"draw Monkey...";
-        drawMesh();
+    if(format() == QString("openfoam")) {
+        // if mesh loaded draw mesh
+        if(meshLoadedState()) {
+            //        qDebug() <<"draw Monkey...";
+            drawMesh();
+        }
+    } else if(format() == QString("stl")) {
+        // if mesh loaded draw mesh
+        if(stlmeshLoadedState()) {
+            //        qDebug() <<"draw Monkey...";
+            drawSTLMesh();
+        }
     } else {
 //        qDebug() <<"draw Default...";
         draw();
     }
 }
 
-void FeaViewer::resizeGL(int width, int height)
+void ViewerWindow::resizeGL(int width, int height)
 {
     int side = qMin(width, height);
     glViewport((width - side)/2, (height-side)/2, side, side);
@@ -77,12 +109,30 @@ void FeaViewer::resizeGL(int width, int height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-QSize FeaViewer::minimumSizeHint() const
+//void ViewerWindow::glDraw()
+//{
+//    QGLWidget::glDraw();
+
+////    if(hasFocus())
+////    {
+//        QPainter painter(this);
+
+//        QPen pen(Qt::yellow, 4);
+//        painter.setPen(pen);
+
+//        painter.drawRect(0, 0, width(), height());
+////    }
+
+//    swapBuffers();
+
+//}
+
+QSize ViewerWindow::minimumSizeHint() const
 {
     return QSize(50,50);
 }
 
-QSize FeaViewer::sizeHint() const
+QSize ViewerWindow::sizeHint() const
 {
     return QSize(400, 400);
 }
@@ -95,12 +145,12 @@ static void qNormalizeAngle(int &angle)
         angle -= 360 * 16;
 }
 
-void FeaViewer::mousePressEvent(QMouseEvent *event)
+void ViewerWindow::mousePressEvent(QMouseEvent *event)
 {
     lastPos = event->pos();
 }
 
-void FeaViewer::mouseMoveEvent(QMouseEvent *event)
+void ViewerWindow::mouseMoveEvent(QMouseEvent *event)
 {
     int dx = event->x() - lastPos.x();
     int dy = event->y() - lastPos.y();
@@ -116,50 +166,50 @@ void FeaViewer::mouseMoveEvent(QMouseEvent *event)
     lastPos = event->pos();
 }
 
-void FeaViewer::wheelEvent(QWheelEvent *event)
+void ViewerWindow::wheelEvent(QWheelEvent *event)
 {
     double delta = double(event->delta());
     zoomVal_ += (delta/1200.0);
     updateGL();
 }
 
-void FeaViewer::setXRotation(int angle)
+void ViewerWindow::setXRotation(int angle)
 {
     qNormalizeAngle(angle);
     if(angle != xRot) {
         xRot = angle;
-        emit xRotationChanged(angle);
+//        emit xRotationChanged(angle);
         updateGL();
     }
 }
 
-void FeaViewer::setYRotation(int angle)
+void ViewerWindow::setYRotation(int angle)
 {
     qNormalizeAngle(angle);
     if(angle != yRot) {
         yRot = angle;
-        emit yRotationChanged(angle);
+//        emit yRotationChanged(angle);
         updateGL();
     }
 }
 
-void FeaViewer::setZRotation(int angle)
+void ViewerWindow::setZRotation(int angle)
 {
     qNormalizeAngle(angle);
     if(angle != zRot) {
         zRot = angle;
-        emit zRotationChanged(angle);
+//        emit zRotationChanged(angle);
         updateGL();
     }
 }
 
-void FeaViewer::draw()
+void ViewerWindow::draw()
 {
     glDisable(GL_LIGHTING);
     qglColor(Qt::red);
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
-// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 // https://www.opengl.org/discussion_boards/showthread.php/132858-Draw-a-triangle-and-his-borders-too
 
     glOrtho(-2-zoomVal(), +2+zoomVal(),\
@@ -201,7 +251,7 @@ void FeaViewer::draw()
     glEnable(GL_LIGHTING);
 }
 
-void FeaViewer::drawMesh()
+void ViewerWindow::drawMesh()
 {
     glDisable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -219,7 +269,7 @@ void FeaViewer::drawMesh()
     double zhig = msh->box().zhig;
     glOrtho(xlow-zoomVal(), xhig+zoomVal(), \
             ylow-zoomVal(), yhig+zoomVal(), \
-            zlow-zoomVal(), zhig+zoomVal());
+            max(zlow-zoomVal(),zlow), min(zhig+zoomVal(),zhig));
 
     int ndraw = 0;
     while(ndraw < 2) {
@@ -273,3 +323,62 @@ void FeaViewer::drawMesh()
     }
     glEnable(GL_LIGHTING);
 }
+
+void ViewerWindow::drawSTLMesh()
+{
+    glDisable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    static GLfloat lightPosition[4] = {0, 0, 0.1, 1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+
+    qglColor(Qt::white);
+    const STLMesh* msh = stlmesh();
+    double xlow = msh->box().xlow;
+    double xhig = msh->box().xhig;
+    double ylow = msh->box().ylow;
+    double yhig = msh->box().yhig;
+    double zlow = msh->box().zlow;
+    double zhig = msh->box().zhig;
+    glOrtho(xlow-zoomVal(), xhig+zoomVal(), \
+            ylow-zoomVal(), yhig+zoomVal(), \
+            max(zlow-zoomVal(),zlow), min(zhig+zoomVal(),zhig));
+
+    int ndraw = 0;
+    while(ndraw < 2) {
+
+        if(ndraw == 1) {
+            qglColor(Qt::blue);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        if(ndraw == 0) {
+            qglColor(Qt::yellow);
+            glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        }
+        ndraw++;
+
+        for (int faceI = 0 ; faceI < msh->nFaces(); faceI++) {
+
+            glBegin(GL_TRIANGLES);
+
+//            qDebug() << "FaceI : " << faceI;
+            double nx = msh->faceNormals()[faceI].x();
+            double ny = msh->faceNormals()[faceI].y();
+            double nz = msh->faceNormals()[faceI].z();
+
+            glNormal3f(nx, ny, nz);
+            for (int nodeI = 0; nodeI < 3; nodeI++) {
+//                qDebug() << msh->faceNodes(faceI)[nodeI];
+                double px = msh->points()[msh->faceNodes(faceI)[nodeI]].x();
+                double py = msh->points()[msh->faceNodes(faceI)[nodeI]].y();
+                double pz = msh->points()[msh->faceNodes(faceI)[nodeI]].z();
+                glVertex3f(px, py, pz);
+            }
+
+            glEnd();
+        }
+    }
+    glEnable(GL_LIGHTING);
+}
+
+//28800 	 86400 	 28800 	 28800

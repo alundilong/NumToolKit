@@ -5,15 +5,7 @@
 #include <QString>
 #include <QVector3D>
 #include <QMap>
-
-struct bound {
-    double xlow;
-    double xhig;
-    double ylow;
-    double yhig;
-    double zlow;
-    double zhig;
-};
+#include "bound.h"
 
 class Mesh
 {
@@ -52,7 +44,7 @@ public:
     const { return boundaryNameFaces_; }
 
     inline const QList< QList<int> > faceNode() const  { return faces_;}
-    inline const QList< QList<int> > cellNode() const;
+    inline const QList< QList<int> > cellNode() const { return cellNode_;}
     inline const QList< QList<int> > cellFace() const { return cellFace_;}
 
     inline const bound box() const { return box_; }

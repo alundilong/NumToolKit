@@ -11,10 +11,10 @@
 #include <QColor>
 #include <QPrintDialog>
 #include <QPrinter>
-#include "form.h"
-#include "feaanalysispanel.h"
 #include <QDebug>
 #include <QScrollBar>
+#include "form.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -52,6 +52,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // ubuntu 14.04 will need this line
     this->menuBar()->setNativeMenuBar(false);
+
+//    connect(this, SIGNAL(destroyed(QObject*)), methodWindow_, SLOT(close()));
+
 //    this->setWindowIcon(QIcon("NumToolKit_icon.png"));
 
 //    connect(this,SIGNAL(QMainWindow::close()),fap_,SLOT(close()));
@@ -68,7 +71,7 @@ void MainWindow::on_actionNew_triggered()
 {
     filePath_ = "";
     ui->textEdit->setText("");
-    this->setWindowTitle("new file");
+    this->setWindowTitle("NumToolKit");
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -219,7 +222,6 @@ QString MainWindow::echo(QString qs)
     return qs;
 }
 
-
 void MainWindow::on_actionMethod_triggered()
 {
     methodWindow_ = new Form(this);
@@ -229,7 +231,20 @@ void MainWindow::on_actionMethod_triggered()
 
 void MainWindow::on_actionAnalysis_triggered()
 {
-    fap_ = new feaAnalysisPanel(this);
+    vwinFEA_ = new ViewerWindow;
+    vwinFEA_->setWindowTitle("FEA Analysis Display Window");
+    vwinFEA_->show();
+    fap_ = new feaAnalysisPanel(this, vwinFEA_);
     fap_->setWindowTitle("FEA static analysis");
     fap_->show();
+}
+
+void MainWindow::on_actionSPH_triggered()
+{
+    vwinSPH_ = new ViewerWindow;
+    vwinSPH_->setWindowTitle("SPH 3D Printing Display Window");
+    vwinSPH_->show();
+    sph3DPrint_ = new SPH3DPrintPanel(this, vwinSPH_);
+    sph3DPrint_->setWindowTitle("SPH 3D Printing analysis");
+    sph3DPrint_->show();
 }

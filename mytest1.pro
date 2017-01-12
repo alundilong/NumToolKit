@@ -20,7 +20,6 @@ SOURCES += main.cpp\
     form.cpp \
     linearalgebrasolver.cpp \
     feaanalysispanel.cpp \
-    feaviewer.cpp \
     feaelementbase.cpp \
     stringelement.cpp \
     barelement.cpp \
@@ -29,13 +28,16 @@ SOURCES += main.cpp\
     geometryele.cpp \
     mathextension.cpp \
     mesh.cpp \
-    openfoamqtextstream.cpp
+    openfoamqtextstream.cpp \
+    coordsystem.cpp \
+    stlmesh.cpp \
+    viewerwindow.cpp \
+    sph3dprintpanel.cpp
 
 HEADERS  += mainwindow.h \
     form.h \
     linearalgebrasolver.h \
     feaanalysispanel.h \
-    feaviewer.h \
     feaelementbase.h \
     stringelement.h \
     barelement.h \
@@ -45,11 +47,17 @@ HEADERS  += mainwindow.h \
     geometryele.h \
     mathextension.h \
     mesh.h \
-    openfoamqtextstream.h
+    openfoamqtextstream.h \
+    coordsystem.h \
+    stlmesh.h \
+    viewerwindow.h \
+    sph3dprintpanel.h \
+    bound.h
 
 FORMS    += mainwindow.ui \
     form.ui \
-    feaanalysispanel.ui
+    feaanalysispanel.ui \
+    sph3dprintpanel.ui
 
 RESOURCES += \
     resource.qrc

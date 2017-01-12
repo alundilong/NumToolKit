@@ -385,4 +385,3 @@ void Mesh::createFaceNormals()
     }
 }
 
-const QList<QList<int> > Mesh::cellNode() const { return cellNode_;}

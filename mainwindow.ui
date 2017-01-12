@@ -74,7 +74,7 @@
      <x>0</x>
      <y>0</y>
      <width>743</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -124,11 +124,19 @@
     </property>
     <addaction name="actionAnalysis"/>
    </widget>
+   <widget class="QMenu" name="menu3D_Printing">
+    <property name="title">
+     <string>3D-Printing</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionSPH"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuAbout"/>
    <addaction name="menuAx_b"/>
    <addaction name="menuFEA"/>
+   <addaction name="menu3D_Printing"/>
   </widget>
   <action name="actionNew">
    <property name="icon">
@@ -256,6 +264,11 @@
   <action name="actionAnalysis">
    <property name="text">
     <string>StaticAnalysis</string>
+   </property>
+  </action>
+  <action name="actionSPH">
+   <property name="text">
+    <string>SPH</string>
    </property>
   </action>
  </widget>
