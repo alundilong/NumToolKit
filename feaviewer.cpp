@@ -16,6 +16,7 @@ FeaViewer::FeaViewer(QWidget *parent) :
     setAutoBufferSwap(true);
     mesh_ = NULL;
     meshLoadedState_ = false; // default is false
+    zoomVal_ = 0.0;
 }
 
 void FeaViewer::setMesh(Mesh *mesh)
@@ -37,6 +38,7 @@ void FeaViewer::initializeGL()
 
     static GLfloat lightPosition[4] = {0, 0, 10, 1.0};
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+
 }
 
 void FeaViewer::paintGL()
@@ -114,6 +116,13 @@ void FeaViewer::mouseMoveEvent(QMouseEvent *event)
     lastPos = event->pos();
 }
 
+void FeaViewer::wheelEvent(QWheelEvent *event)
+{
+    double delta = double(event->delta());
+    zoomVal_ += (delta/1200.0);
+    updateGL();
+}
+
 void FeaViewer::setXRotation(int angle)
 {
     qNormalizeAngle(angle);
@@ -146,14 +155,22 @@ void FeaViewer::setZRotation(int angle)
 
 void FeaViewer::draw()
 {
+    glDisable(GL_LIGHTING);
     qglColor(Qt::red);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+
+// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+// https://www.opengl.org/discussion_boards/showthread.php/132858-Draw-a-triangle-and-his-borders-too
+
+    glOrtho(-2-zoomVal(), +2+zoomVal(),\
+            -2-zoomVal(), +2+zoomVal(), \
+            1.0-zoomVal(), 15.0+zoomVal());
     glBegin(GL_QUADS);
         glNormal3f(0, 0, -1);
         glVertex3f(-1, -1, 0);
         glVertex3f(-1, 1, 0);
         glVertex3f(1, 1, 0);
         glVertex3f(1, -1, 0);
-
     glEnd();
 
     glBegin(GL_TRIANGLES);
@@ -179,7 +196,9 @@ void FeaViewer::draw()
         glVertex3f(-1,1,0);
         glVertex3f(-1,-1,0);
         glVertex3f(0,0,1.2);
-        glEnd();
+    glEnd();
+
+    glEnable(GL_LIGHTING);
 }
 
 void FeaViewer::drawMesh()
@@ -196,42 +215,61 @@ void FeaViewer::drawMesh()
     double xhig = msh->box().xhig;
     double ylow = msh->box().ylow;
     double yhig = msh->box().yhig;
-    glOrtho(xlow, xhig, ylow, yhig, -100.0, 100.0);
+    double zlow = msh->box().zlow;
+    double zhig = msh->box().zhig;
+    glOrtho(xlow-zoomVal(), xhig+zoomVal(), \
+            ylow-zoomVal(), yhig+zoomVal(), \
+            zlow-zoomVal(), zhig+zoomVal());
 
-    for (int faceI = 0 ; faceI < msh->nFaces(); faceI++) {
-        glBegin(GL_QUADS);
+    int ndraw = 0;
+    while(ndraw < 2) {
 
-        double nx = msh->faceNormals()[faceI].x();
-        double ny = msh->faceNormals()[faceI].y();
-        double nz = msh->faceNormals()[faceI].z();
+        if(ndraw == 1) {
+            qglColor(Qt::blue);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        if(ndraw == 0) {
+            qglColor(Qt::yellow);
+            glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+        }
+        ndraw++;
 
-        glNormal3f(nx, ny, nz);
-        double p1x = msh->points()[msh->faceNodes(faceI)[0]].x();
-        double p1y = msh->points()[msh->faceNodes(faceI)[0]].y();
-        double p1z = msh->points()[msh->faceNodes(faceI)[0]].z();
+        for (int faceI = 0 ; faceI < msh->nFaces(); faceI++) {
 
-        glColor3f(1.0f,0.0f,0.0f);
-        glVertex3f(p1x, p1y, p1z);
-        double p2x = msh->points()[msh->faceNodes(faceI)[1]].x();
-        double p2y = msh->points()[msh->faceNodes(faceI)[1]].y();
-        double p2z = msh->points()[msh->faceNodes(faceI)[1]].z();
+            glBegin(GL_QUADS);
 
-        glColor3f(0.0f,1.0f,0.0f);
-        glVertex3f(p2x, p2y, p2z);
-        double p3x = msh->points()[msh->faceNodes(faceI)[2]].x();
-        double p3y = msh->points()[msh->faceNodes(faceI)[2]].y();
-        double p3z = msh->points()[msh->faceNodes(faceI)[2]].z();
+            double nx = msh->faceNormals()[faceI].x();
+            double ny = msh->faceNormals()[faceI].y();
+            double nz = msh->faceNormals()[faceI].z();
 
-        glColor3f(0.0f,0.0f,1.0f);
-        glVertex3f(p3x, p3y, p3z);
-        double p4x = msh->points()[msh->faceNodes(faceI)[3]].x();
-        double p4y = msh->points()[msh->faceNodes(faceI)[3]].y();
-        double p4z = msh->points()[msh->faceNodes(faceI)[3]].z();
+            glNormal3f(nx, ny, nz);
+            double p1x = msh->points()[msh->faceNodes(faceI)[0]].x();
+            double p1y = msh->points()[msh->faceNodes(faceI)[0]].y();
+            double p1z = msh->points()[msh->faceNodes(faceI)[0]].z();
 
-        glColor3f(0.0f,0.5f,1.0f);
-        glVertex3f(p4x, p4y, p4z);
+//            glColor3f(1.0f,0.0f,0.0f);
+            glVertex3f(p1x, p1y, p1z);
+            double p2x = msh->points()[msh->faceNodes(faceI)[1]].x();
+            double p2y = msh->points()[msh->faceNodes(faceI)[1]].y();
+            double p2z = msh->points()[msh->faceNodes(faceI)[1]].z();
 
-        glEnd();
+//            glColor3f(0.0f,1.0f,0.0f);
+            glVertex3f(p2x, p2y, p2z);
+            double p3x = msh->points()[msh->faceNodes(faceI)[2]].x();
+            double p3y = msh->points()[msh->faceNodes(faceI)[2]].y();
+            double p3z = msh->points()[msh->faceNodes(faceI)[2]].z();
+
+//            glColor3f(0.0f,0.0f,1.0f);
+            glVertex3f(p3x, p3y, p3z);
+            double p4x = msh->points()[msh->faceNodes(faceI)[3]].x();
+            double p4y = msh->points()[msh->faceNodes(faceI)[3]].y();
+            double p4z = msh->points()[msh->faceNodes(faceI)[3]].z();
+
+//            glColor3f(0.0f,0.5f,1.0f);
+            glVertex3f(p4x, p4y, p4z);
+
+            glEnd();
+        }
     }
     glEnable(GL_LIGHTING);
 }

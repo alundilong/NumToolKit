@@ -26,6 +26,7 @@ protected:
     QSize sizeHint() const;
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
 
 signals:
     // signaling rotation from mouse movement
@@ -46,6 +47,7 @@ private:
     void drawMesh();
 
     inline const Mesh* mesh() const { return mesh_; }
+    inline const double zoomVal() const { return zoomVal_; }
 
     int xRot;
     int yRot;
@@ -54,6 +56,7 @@ private:
     Mesh *mesh_;
 
     QPoint lastPos;
+    double zoomVal_;
 
 };
 
