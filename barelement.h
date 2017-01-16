@@ -6,6 +6,7 @@
 class BarElement : public FEAElementBase
 {
 public:
+    // element numbering sequence
     enum location {LEFT, RIGHT};
     static const int  nNode;
     static const int nDOF;
