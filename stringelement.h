@@ -6,6 +6,8 @@
 class stringElement : public FEAElementOneD
 {
 public:
+    static const std::string typeName;
+
     stringElement();
     stringElement
     (

@@ -1,5 +1,7 @@
 #include "stringelement.h"
 
+//const std::string stringElement::typeName = "String";
+
 stringElement::stringElement()
 {
 
@@ -28,7 +30,7 @@ stringElement::~stringElement()
     delete [] baseStiff_;
 }
 
-addElementToRunTimeSelectionTable(ElementName, stringElement, FEAElementOneD)
+makeElement(ElementName, stringElement, FEAElementOneD, String)
 
 //FEAElementOneD::addElementNameConstructorToTable<stringElement>
 //addstringElementElementNameConstructorToFEAElementOneDTable_;
