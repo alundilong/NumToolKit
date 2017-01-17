@@ -12,7 +12,7 @@ FEAElementThreeD::FEAElementThreeD\
         const std::string &name, \
         const MaterialEle &m, \
         const GeometryEle &g\
-)
+) : FEAElementBase(dim, name, m, g)
 {
 
 }

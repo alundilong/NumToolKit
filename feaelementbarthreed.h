@@ -1,27 +1,25 @@
-#ifndef BARELEMENT_H
-#define BARELEMENT_H
+#ifndef FEAELEMENTBARTHREED_H
+#define FEAELEMENTBARTHREED_H
 
-#include "feaelementoned.h"
+#include "feaelementthreed.h"
 
-class BarElement : public FEAElementOneD
+class FEAElementBarThreeD : public FEAElementThreeD
 {
 public:
     static const std::string typeName;
     // element numbering sequence
-    enum location {LEFT, RIGHT};
     static const int  nNode;
     static const int nDOF;
 public:
-    BarElement();
-    BarElement
+    FEAElementBarThreeD();
+    FEAElementBarThreeD
     (
             const std::string & dim,
             const std::string & name,
             const MaterialEle & m,
             const GeometryEle & g
     );
-    ~BarElement();
-
+    ~FEAElementBarThreeD();
 };
 
-#endif // BARELEMENT_H
+#endif // FEAELEMENTBARTHREED_H

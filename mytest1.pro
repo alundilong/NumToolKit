@@ -35,7 +35,9 @@ SOURCES += main.cpp\
     sph3dprintpanel.cpp \
     feaelementoned.cpp \
     feaelementtwod.cpp \
-    feaelementthreed.cpp
+    feaelementthreed.cpp \
+    feaelementbarthreed.cpp \
+    feaelementlinearcubicalelement.cpp
 
 HEADERS  += mainwindow.h \
     form.h \
@@ -59,7 +61,10 @@ HEADERS  += mainwindow.h \
     runTimeSelectionTables.h \
     feaelementoned.h \
     feaelementtwod.h \
-    feaelementthreed.h
+    feaelementthreed.h \
+    MaterialOne.h \
+    feaelementbarthreed.h \
+    feaelementlinearcubicalelement.h
 
 FORMS    += mainwindow.ui \
     form.ui \

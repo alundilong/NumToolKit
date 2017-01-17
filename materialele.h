@@ -1,11 +1,17 @@
 #ifndef MATERIALELE_H
 #define MATERIALELE_H
 
+#include <string>
+#include <unordered_map>
+//#include "MaterialOne.h"
 
 class MaterialEle
 {
 
 public:
+
+//    static const std::unordered_map<std::string, MaterialOne> materiableLib[2];
+
     MaterialEle();
     MaterialEle(double rho, double E, double G);
     MaterialEle(MaterialEle &m);
