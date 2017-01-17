@@ -1,9 +1,9 @@
 #ifndef EULERBERNOULLIBEAM_H
 #define EULERBERNOULLIBEAM_H
 
-#include "feaelementbase.h"
+#include "feaelementoned.h"
 
-class EulerBernoulliBeam : public FEAElementBase
+class EulerBernoulliBeam : public FEAElementOneD
 {
 public:
     static const std::string typeName;

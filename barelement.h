@@ -1,9 +1,9 @@
 #ifndef BARELEMENT_H
 #define BARELEMENT_H
 
-#include "feaelementbase.h"
+#include "feaelementoned.h"
 
-class BarElement : public FEAElementBase
+class BarElement : public FEAElementOneD
 {
 public:
     static const std::string typeName;

@@ -12,7 +12,7 @@ stringElement::stringElement
         const MaterialEle &m,
         const GeometryEle &g
 ):
-    FEAElementBase(dimension, name, m, g)
+    FEAElementOneD(dimension, name, m, g)
 {
 
 }
@@ -27,3 +27,8 @@ stringElement::~stringElement()
     delete [] baseMass_;
     delete [] baseStiff_;
 }
+
+addElementToRunTimeSelectionTable(ElementName, stringElement, FEAElementOneD)
+
+//FEAElementOneD::addElementNameConstructorToTable<stringElement>
+//addstringElementElementNameConstructorToFEAElementOneDTable_;

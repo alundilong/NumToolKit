@@ -4,7 +4,7 @@ const std::string BarElement::typeName = "Bar";
 const int BarElement::nNode = 2;
 const int BarElement::nDOF = 1;
 
-BarElement::BarElement() : FEAElementBase()
+BarElement::BarElement() : FEAElementOneD()
 {
     log_ = "Bar Element is selected \n";
     dim_ = 1;
@@ -44,7 +44,7 @@ BarElement::BarElement
         const MaterialEle &m,
         const GeometryEle &g
 ) :
-    FEAElementBase(dimension, name, m, g)
+    FEAElementOneD(dimension, name, m, g)
 {
     log_ = "Bar Element is selected \n";
     dim_ = 1;
@@ -94,3 +94,9 @@ BarElement::~BarElement()
     delete [] baseMass_;
     delete [] baseStiff_;
 }
+
+addElementToRunTimeSelectionTable(ElementName, BarElement, FEAElementOneD)
+
+//FEAElementOneD::addElementNameConstructorToTable<BarElement>
+//addBarElementElementNameConstructorToFEAElementOneDTable_;
+

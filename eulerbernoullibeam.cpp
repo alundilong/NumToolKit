@@ -45,7 +45,7 @@ EulerBernoulliBeam::EulerBernoulliBeam
         const MaterialEle &m,
         const GeometryEle &g
 ):
-    FEAElementBase(dimension, name, m, g)
+    FEAElementOneD(dimension, name, m, g)
 {
     log_ = "Euler-Bernoulli Beam Element is selected \n";
     dim_ = 1;
@@ -104,3 +104,8 @@ EulerBernoulliBeam::~EulerBernoulliBeam()
     delete [] baseMass_;
     delete [] baseStiff_;
 }
+
+addElementToRunTimeSelectionTable(ElementName, EulerBernoulliBeam, FEAElementOneD)
+
+//FEAElementOneD::addElementNameConstructorToTable<EulerBernoulliBeam>
+//addEulerBernoulliBeamElementNameConstructorToFEAElementOneDTable_;

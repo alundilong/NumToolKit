@@ -1,8 +1,9 @@
 #ifndef STRINGELEMENT_H
 #define STRINGELEMENT_H
-#include "feaelementbase.h"
 
-class stringElement : public FEAElementBase
+#include "feaelementoned.h"
+
+class stringElement : public FEAElementOneD
 {
 public:
     stringElement();

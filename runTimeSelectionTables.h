@@ -48,7 +48,11 @@
         )\
         {\
            construct##argNames##ConstructorTables();\
-           if(!argNames##ConstructorTablePtr_->insert(lookup, New))\
+           argNames##ConstructorTablePtr_->insert\
+           (\
+               std::make_pair(lookup, New)\
+           );\
+           if(0)\
            {\
                 std::cerr << "Duplicate entry " << lookup\
                           << " in runtime selection table " << #baseType\
@@ -104,7 +108,7 @@
            construct##argNames##ConstructorTables();\
            argNames##ConstructorTablePtr_->insert\
            (\
-                std::make_pair(lookup, &New##baseType)\
+                std::make_pair(lookup, New##baseType)\
            );\
            if(\
                 0\

@@ -141,4 +141,10 @@ protected:
 };
 
 
+#define addElementToRunTimeSelectionTable(SS, elementType, baseElementType)\
+    \
+    baseElementType::add##SS##ConstructorToTable<elementType>\
+    \
+    add##elementType##SS##ConstructorTo##baseElementType##Table_;
+
 #endif // FEAELEMENTBASE_H
