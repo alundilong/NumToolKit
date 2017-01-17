@@ -62,7 +62,7 @@
     };\
 \
 
-    /* declear a run-time selection for derived classes
+    /* declare a run-time selection for derived classes
      * we need this as the 1D (2D, 3D) element has serves as
      * the 1st level base class. Each of them will has its
      * own New function to create its own element */
