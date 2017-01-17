@@ -132,7 +132,7 @@ void feaAnalysisPanel::solve1DBar()
         double e[3] = {length/nElement, 0.1, 0.1};
         MaterialEle *m = new MaterialEle(rho,E,G);
         GeometryEle *g = new GeometryEle(e);
-        BarElement *barEle = new BarElement(1,"Bar",*m,*g);
+        BarElement *barEle = new BarElement("OneD","Bar",*m,*g);
         elements.push_back(*barEle);
     }
 

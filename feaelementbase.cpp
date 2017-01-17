@@ -10,8 +10,8 @@ FEAElementBase::FEAElementBase()
 
 FEAElementBase::FEAElementBase
 (
-        const int & dim,
-        const QString & name,
+        const std::string & dim,
+        const std::string & name,
         const MaterialEle &m,
         const GeometryEle &g
 )
@@ -25,6 +25,27 @@ FEAElementBase::~FEAElementBase()
 {
 
 }
+
+std::auto_ptr<FEAElementBase> \
+FEAElementBase::New\
+(
+        const std::string & dimension, \
+        const std::string & name, \
+        const MaterialEle & m, \
+        const GeometryEle & g \
+)
+{
+    typename SpaceDimensionConstructorTable::iterator cstrIter =
+    SpaceDimensionConstructorTablePtr_->find(dimension);
+
+    return std::auto_ptr<FEAElementBase>
+    (
+        (cstrIter->second)(dimension, name, m, g)
+    );
+
+}
+
+defineRunTimeSelectionTable(FEAElementBase, SpaceDimension);
 
 //FEAElementBase::MaterialEle::MaterialEle()
 //{

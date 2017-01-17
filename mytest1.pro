@@ -7,7 +7,7 @@
 QT       += core gui printsupport opengl
 
 #LIBS += opengl32.lib
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,7 +32,10 @@ SOURCES += main.cpp\
     coordsystem.cpp \
     stlmesh.cpp \
     viewerwindow.cpp \
-    sph3dprintpanel.cpp
+    sph3dprintpanel.cpp \
+    feaelementoned.cpp \
+    feaelementtwod.cpp \
+    feaelementthreed.cpp
 
 HEADERS  += mainwindow.h \
     form.h \
@@ -52,7 +55,11 @@ HEADERS  += mainwindow.h \
     stlmesh.h \
     viewerwindow.h \
     sph3dprintpanel.h \
-    bound.h
+    bound.h \
+    runTimeSelectionTables.h \
+    feaelementoned.h \
+    feaelementtwod.h \
+    feaelementthreed.h
 
 FORMS    += mainwindow.ui \
     form.ui \

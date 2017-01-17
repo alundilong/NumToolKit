@@ -6,7 +6,7 @@
 class EulerBernoulliBeam : public FEAElementBase
 {
 public:
-    static const QString typeName;
+    static const std::string typeName;
     enum location {LEFT, RIGHT};
     static const int  nNode;
     static const int nDOF;
@@ -14,8 +14,8 @@ public:
     EulerBernoulliBeam();
     EulerBernoulliBeam
     (
-            const int & dim,
-            const QString & name,
+            const std::string & dimension,
+            const std::string & name,
             const MaterialEle &m,
             const GeometryEle &g
     );

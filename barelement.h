@@ -6,7 +6,7 @@
 class BarElement : public FEAElementBase
 {
 public:
-    static const QString typeName;
+    static const std::string typeName;
     // element numbering sequence
     enum location {LEFT, RIGHT};
     static const int  nNode;
@@ -15,8 +15,8 @@ public:
     BarElement();
     BarElement
     (
-            const int & dim,
-            const QString & name,
+            const std::string & dim,
+            const std::string & name,
             const MaterialEle &m,
             const GeometryEle &g
     );

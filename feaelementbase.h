@@ -25,31 +25,44 @@ public:
     (
             std::auto_ptr,
             FEAElementBase,
-            spaceDimension,
+            SpaceDimension,
             (
-                const int & dim,
-                const QString & name,
+                const std::string & dim,
+                const std::string & name,
                 const MaterialEle & m,
                 const GeometryEle & g
-             ),
+            ),
             (
                 dim,
                 name,
                 m,
                 g
             )
-    );
+    )
 
 public:
     FEAElementBase();
     FEAElementBase
     (
-            const int& dim,
-            const QString & name,
-            const MaterialEle &m,
-            const GeometryEle &g
+            const std::string & dim,
+            const std::string & name,
+            const MaterialEle & m,
+            const GeometryEle & g
     );
+
+
+    static std::auto_ptr<FEAElementBase> New
+    (
+            const std::string & dim,
+            const std::string & name,
+            const MaterialEle & m,
+            const GeometryEle & g
+    );
+
+
     ~FEAElementBase();
+
+
 
     QString getLog() {return log_;}
 
@@ -65,8 +78,6 @@ public:
     const GeometryEle & geometry() const { return *geoInfo_; }
     const MaterialEle * material() { return material_; }
     const GeometryEle * geometry() { return geoInfo_; }
-
-public:
 
 //    // material of this element
 //    class MaterialEle {
@@ -128,5 +139,6 @@ protected:
     int firstNode_;
 
 };
+
 
 #endif // FEAELEMENTBASE_H

@@ -1,6 +1,6 @@
 #include "eulerbernoullibeam.h"
 
-const QString EulerBernoulliBeam::typeName = "EulerBernoulliBeam";
+const std::string EulerBernoulliBeam::typeName = "EulerBernoulliBeam";
 const int EulerBernoulliBeam::nNode = 2;
 const int EulerBernoulliBeam::nDOF = 2;
 
@@ -40,8 +40,8 @@ EulerBernoulliBeam::EulerBernoulliBeam()
 
 EulerBernoulliBeam::EulerBernoulliBeam
 (
-        const int & dimension,
-        const QString & name,
+        const std::string & dimension,
+        const std::string & name,
         const MaterialEle &m,
         const GeometryEle &g
 ):

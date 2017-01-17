@@ -1,6 +1,6 @@
 #include "barelement.h"
 
-const QString BarElement::typeName = "Bar";
+const std::string BarElement::typeName = "Bar";
 const int BarElement::nNode = 2;
 const int BarElement::nDOF = 1;
 
@@ -39,8 +39,8 @@ BarElement::BarElement() : FEAElementBase()
 
 BarElement::BarElement
 (
-        const int & dimension,
-        const QString & name,
+        const std::string & dimension,
+        const std::string & name,
         const MaterialEle &m,
         const GeometryEle &g
 ) :

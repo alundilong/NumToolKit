@@ -12,6 +12,8 @@
 #include <auto_ptr.h>
 #include <QString>
 #include <iostream>
+#include <utility>
+#include <functional>
 
 
 #define declareRunTimeSelectionTable(auto_ptr, baseType, \
@@ -22,7 +24,7 @@
     typedef std::unordered_map<std::string,argNames##ConstructorPtr> \
     argNames##ConstructorTable;\
     \
-    static argNames##ConstructorTable* argNames##ConstructorPtr_; \
+    static argNames##ConstructorTable* argNames##ConstructorTablePtr_; \
     static void construct##argNames##ConstructorTables();\
     static void destroy##argNames##ConstructorTables();\
     \
@@ -46,7 +48,7 @@
         )\
         {\
            construct##argNames##ConstructorTables();\
-           if(!argNames##ConstructorTable* argNames##ConstructorPtr_->insert(lookup, New))\
+           if(!argNames##ConstructorTablePtr_->insert(lookup, New))\
            {\
                 std::cerr << "Duplicate entry " << lookup\
                           << " in runtime selection table " << #baseType\
@@ -67,6 +69,7 @@
      * we need this as the 1D (2D, 3D) element has serves as
      * the 1st level base class. Each of them will has its
      * own New function to create its own element */
+
 #define declareRunTimeNewSelectionTable(auto_ptr, baseType, \
     argNames, argList, parList)\
     \
@@ -75,7 +78,7 @@
     typedef std::unordered_map<std::string,argNames##ConstructorPtr> \
     argNames##ConstructorTable;\
     \
-    static argNames##ConstructorTable* argNames##ConstructorPtr_; \
+    static argNames##ConstructorTable* argNames##ConstructorTablePtr_; \
     static void construct##argNames##ConstructorTables();\
     static void destroy##argNames##ConstructorTables();\
     \
@@ -88,7 +91,7 @@
     \
         static auto_ptr<baseType> New##baseType argList\
         {\
-            return auto_ptr<baseType>(baseType##Type::New parList);\
+            return auto_ptr<baseType>((baseType##Type::New parList).get());\
         }\
         \
         \
@@ -99,7 +102,13 @@
         )\
         {\
            construct##argNames##ConstructorTables();\
-           if(!argNames##ConstructorPtr_->insert(lookup, New##baseType))\
+           argNames##ConstructorTablePtr_->insert\
+           (\
+                std::make_pair(lookup, &New##baseType)\
+           );\
+           if(\
+                0\
+             )\
            {\
                 std::cerr << "Duplicate entry " << lookup\
                           << " in runtime selection table " << #baseType\
@@ -123,7 +132,7 @@
         static bool constructed = false;\
         if(!constructed) {\
             constructed = true;\
-            baseType::argNames##ConstructorPtr_ \
+            baseType::argNames##ConstructorTablePtr_ \
                 = new baseType::argNames##ConstructorTable;\
         }\
     }\
@@ -133,9 +142,9 @@
     \
     void baseType::destroy##argNames##ConstructorTables()\
     {\
-        if(baseType::argNames##ConstructorPtr_) {\
-            delete baseType::argNames##ConstructorPtr_; \
-            baseType::argNames##ConstructorPtr_ = NULL;\
+        if(baseType::argNames##ConstructorTablePtr_) {\
+            delete baseType::argNames##ConstructorTablePtr_; \
+            baseType::argNames##ConstructorTablePtr_ = NULL;\
         }\
     }\
 
@@ -152,7 +161,6 @@
     defineRunTimeSelectionTablePtr(baseType, argNames);\
     defineRunTimeSelectionTableConstructor(baseType, argNames);\
     defineRunTimeSelectionTableDestructor(baseType, argNames)
-
 
 
 #endif // RUNTIMESELECTIONTABLES_H

@@ -7,8 +7,8 @@ stringElement::stringElement()
 
 stringElement::stringElement
 (
-        const int & dimension,
-        const QString & name,
+        const std::string & dimension,
+        const std::string & name,
         const MaterialEle &m,
         const GeometryEle &g
 ):

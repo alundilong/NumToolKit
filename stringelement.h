@@ -8,8 +8,8 @@ public:
     stringElement();
     stringElement
     (
-            const int & dim,
-            const QString & name,
+            const std::string & dimension,
+            const std::string & name,
             const MaterialEle &m,
             const GeometryEle &g
     );;
