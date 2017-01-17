@@ -1,5 +1,6 @@
 #include "eulerbernoullibeam.h"
 
+const QString EulerBernoulliBeam::typeName = "EulerBernoulliBeam";
 const int EulerBernoulliBeam::nNode = 2;
 const int EulerBernoulliBeam::nDOF = 2;
 

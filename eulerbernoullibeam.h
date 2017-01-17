@@ -6,6 +6,7 @@
 class EulerBernoulliBeam : public FEAElementBase
 {
 public:
+    static const QString typeName;
     enum location {LEFT, RIGHT};
     static const int  nNode;
     static const int nDOF;

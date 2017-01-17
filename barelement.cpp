@@ -1,5 +1,6 @@
 #include "barelement.h"
 
+const QString BarElement::typeName = "Bar";
 const int BarElement::nNode = 2;
 const int BarElement::nDOF = 1;
 
