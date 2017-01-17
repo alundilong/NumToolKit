@@ -6,6 +6,7 @@
 #include "materialele.h"
 #include "geometryele.h"
 #include "mathextension.h"
+#include "runTimeSelectionTables.h"
 
 /*
  * abstract class for finite element
