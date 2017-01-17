@@ -7,6 +7,7 @@
 #ifndef RUNTIMESELECTIONTABLES_H
 #define RUNTIMESELECTIONTABLES_H
 
+#include <memory>
 #include <unordered_map>
 #include <auto_ptr.h>
 #include <QString>
