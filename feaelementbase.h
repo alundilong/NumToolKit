@@ -142,9 +142,15 @@ protected:
 
 
 #define addElementToRunTimeSelectionTable(SS, elementType, baseElementType)\
+    /*const std::string elementType::typeName = "A";*/ \
     \
     baseElementType::add##SS##ConstructorToTable<elementType>\
     \
     add##elementType##SS##ConstructorTo##baseElementType##Table_;
+
+#define makeElement(SS, elementType, baseElementType, name) \
+    const std::string elementType::typeName = #name;\
+    \
+    addElementToRunTimeSelectionTable(SS, elementType, baseElementType)
 
 #endif // FEAELEMENTBASE_H

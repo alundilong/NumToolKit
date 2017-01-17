@@ -1,6 +1,6 @@
 #include "feaelementoned.h"
 
-const std::string FEAElementOneD::typeName = "OneD";
+//const std::string FEAElementOneD::typeName = "OneD";
 
 FEAElementOneD::FEAElementOneD()
 {
@@ -38,5 +38,5 @@ std::auto_ptr<FEAElementOneD> FEAElementOneD::New
 //FEAElementOneD::addSpaceDimensionConstructorToTable<FEAElementOneD>
 //addFEAElementOneDSpaceDimensionConstructorToFEAElementBaseTable_;
 
-addElementToRunTimeSelectionTable(SpaceDimension, FEAElementOneD, FEAElementOneD)
+makeElement(SpaceDimension, FEAElementOneD, FEAElementOneD, OneD)
 defineRunTimeSelectionTable(FEAElementOneD, ElementName);

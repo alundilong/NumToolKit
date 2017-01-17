@@ -1,6 +1,6 @@
 #include "feaelementtwod.h"
 
-const std::string FEAElementTwoD::typeName = "TwoD";
+//const std::string FEAElementTwoD::typeName = "TwoD";
 
 FEAElementTwoD::FEAElementTwoD()
 {
@@ -38,5 +38,5 @@ std::auto_ptr<FEAElementTwoD> FEAElementTwoD::New
 //FEAElementBase::addSpaceDimensionConstructorToTable<FEAElementTwoD>
 //addFEAElementTwoDSpaceDimensionConstructorToFEAElementBaseTable_;
 
-addElementToRunTimeSelectionTable(SpaceDimension, FEAElementTwoD, FEAElementBase)
+makeElement(SpaceDimension, FEAElementTwoD, FEAElementBase, TwoD)
 defineRunTimeSelectionTable(FEAElementTwoD, ElementName);

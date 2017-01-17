@@ -1,6 +1,6 @@
 #include "eulerbernoullibeam.h"
 
-const std::string EulerBernoulliBeam::typeName = "EulerBernoulliBeam";
+//const std::string EulerBernoulliBeam::typeName = "EulerBernoulliBeam";
 const int EulerBernoulliBeam::nNode = 2;
 const int EulerBernoulliBeam::nDOF = 2;
 
@@ -105,7 +105,7 @@ EulerBernoulliBeam::~EulerBernoulliBeam()
     delete [] baseStiff_;
 }
 
-addElementToRunTimeSelectionTable(ElementName, EulerBernoulliBeam, FEAElementOneD)
+makeElement(ElementName, EulerBernoulliBeam, FEAElementOneD, EulerBernoulliBeam)
 
 //FEAElementOneD::addElementNameConstructorToTable<EulerBernoulliBeam>
 //addEulerBernoulliBeamElementNameConstructorToFEAElementOneDTable_;

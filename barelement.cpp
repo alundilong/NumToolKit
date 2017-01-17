@@ -1,6 +1,6 @@
 #include "barelement.h"
 
-const std::string BarElement::typeName = "Bar";
+//const std::string BarElement::typeName = "Bar";
 const int BarElement::nNode = 2;
 const int BarElement::nDOF = 1;
 
@@ -95,7 +95,7 @@ BarElement::~BarElement()
     delete [] baseStiff_;
 }
 
-addElementToRunTimeSelectionTable(ElementName, BarElement, FEAElementOneD)
+makeElement(ElementName, BarElement, FEAElementOneD, Bar)
 
 //FEAElementOneD::addElementNameConstructorToTable<BarElement>
 //addBarElementElementNameConstructorToFEAElementOneDTable_;

@@ -1,6 +1,6 @@
 #include "feaelementthreed.h"
 
-const std::string FEAElementThreeD::typeName = "ThreeD";
+//const std::string FEAElementThreeD::typeName = "ThreeD";
 
 FEAElementThreeD::FEAElementThreeD()
 {
@@ -38,5 +38,5 @@ std::auto_ptr<FEAElementThreeD> FEAElementThreeD::New
 //FEAElementBase::addSpaceDimensionConstructorToTable<FEAElementThreeD>
 //addFEAElementThreeDSpaceDimensionConstructorToFEAElementBaseTable_;
 
-addElementToRunTimeSelectionTable(SpaceDimension, FEAElementThreeD, FEAElementBase)
+makeElement(SpaceDimension, FEAElementThreeD, FEAElementBase, ThreeD)
 defineRunTimeSelectionTable(FEAElementThreeD, ElementName);
