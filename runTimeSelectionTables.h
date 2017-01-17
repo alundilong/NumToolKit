@@ -13,22 +13,23 @@
 #include <QString>
 #include <iostream>
 
+
 #define declareRunTimeSelectionTable(auto_ptr, baseType, \
     argNames, argList, parList)\
     \
     typedef auto_ptr<baseType> (*argNames##ConstructorPtr)argList;\
     \
-    typedef unordered_map<QString,argNames##ConstructorPtr> \
+    typedef std::unordered_map<std::string,argNames##ConstructorPtr> \
     argNames##ConstructorTable;\
     \
-    static argName##ConstructorTable* argName##ConstructorPtr_; \
+    static argNames##ConstructorTable* argNames##ConstructorPtr_; \
     static void construct##argNames##ConstructorTables();\
     static void destroy##argNames##ConstructorTables();\
     \
     \
     /* derived class baseType##Type */\
     template<class baseType##Type>\
-    class add##argName##ConstructorToTable\
+    class add##argNames##ConstructorToTable\
     {\
     public:\
     \
@@ -39,13 +40,13 @@
         \
         \
         /* constructor of this subclass */\
-        add##argName##ConstructorToTable \
+        add##argNames##ConstructorToTable \
         (\
-            const QString & lookup = baseType##Type::typeName\
+            const std::string & lookup = baseType##Type::typeName\
         )\
         {\
            construct##argNames##ConstructorTables();\
-           if(!argName##ConstructorTable* argName##ConstructorPtr_->insert(lookup, New))\
+           if(!argNames##ConstructorTable* argNames##ConstructorPtr_->insert(lookup, New))\
            {\
                 std::cerr << "Duplicate entry " << lookup\
                           << " in runtime selection table " << #baseType\
@@ -55,7 +56,7 @@
            }\
         }\
         \
-        ~add##argName##ConstructorToTable()\
+        ~add##argNames##ConstructorToTable()\
         {\
             destroy##argNames##ConstructorTables();\
         }\
@@ -71,17 +72,17 @@
     \
     typedef auto_ptr<baseType> (*argNames##ConstructorPtr)argList;\
     \
-    typedef unordered_map<QString,argNames##ConstructorPtr> \
+    typedef std::unordered_map<std::string,argNames##ConstructorPtr> \
     argNames##ConstructorTable;\
     \
-    static argName##ConstructorTable* argName##ConstructorPtr_; \
+    static argNames##ConstructorTable* argNames##ConstructorPtr_; \
     static void construct##argNames##ConstructorTables();\
     static void destroy##argNames##ConstructorTables();\
     \
     \
     /* derived class baseType##Type */\
     template<class baseType##Type>\
-    class add##argName##ConstructorToTable\
+    class add##argNames##ConstructorToTable\
     {\
     public:\
     \
@@ -92,14 +93,13 @@
         \
         \
         /* constructor of this subclass */\
-        add##argName##ConstructorToTable \
+        add##argNames##ConstructorToTable \
         (\
-            const QString & lookup = baseType##Type::typeName\
+            const std::string & lookup = baseType##Type::typeName\
         )\
         {\
            construct##argNames##ConstructorTables();\
-           if(!argName##ConstructorTable* \
-            argName##ConstructorPtr_->insert(lookup, New##baseType))\
+           if(!argNames##ConstructorPtr_->insert(lookup, New##baseType))\
            {\
                 std::cerr << "Duplicate entry " << lookup\
                           << " in runtime selection table " << #baseType\
@@ -109,7 +109,7 @@
            }\
         }\
         \
-        ~add##argName##ConstructorToTable()\
+        ~add##argNames##ConstructorToTable()\
         {\
             destroy##argNames##ConstructorTables();\
         }\
@@ -123,7 +123,7 @@
         static bool constructed = false;\
         if(!constructed) {\
             constructed = true;\
-            baseType::argName##ConstructorPtr_ \
+            baseType::argNames##ConstructorPtr_ \
                 = new baseType::argNames##ConstructorTable;\
         }\
     }\
@@ -133,9 +133,9 @@
     \
     void baseType::destroy##argNames##ConstructorTables()\
     {\
-        if(baseType::argName##ConstructorPtr_) {\
-            delete baseType::argName##ConstructorPtr_; \
-            baseType::argName##ConstructorPtr_ = NULL;\
+        if(baseType::argNames##ConstructorPtr_) {\
+            delete baseType::argNames##ConstructorPtr_; \
+            baseType::argNames##ConstructorPtr_ = NULL;\
         }\
     }\
 

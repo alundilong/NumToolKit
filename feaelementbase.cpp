@@ -8,7 +8,13 @@ FEAElementBase::FEAElementBase()
     geoInfo_ = nullptr;
 }
 
-FEAElementBase::FEAElementBase(MaterialEle &m, GeometryEle &g)
+FEAElementBase::FEAElementBase
+(
+        const int & dim,
+        const QString & name,
+        const MaterialEle &m,
+        const GeometryEle &g
+)
 {
     material_ = &m;
     geoInfo_ = &g;

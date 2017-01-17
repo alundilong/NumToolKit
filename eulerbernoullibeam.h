@@ -12,7 +12,13 @@ public:
     static const int nDOF;
 public:
     EulerBernoulliBeam();
-    EulerBernoulliBeam(MaterialEle &m, GeometryEle &g);
+    EulerBernoulliBeam
+    (
+            const int & dim,
+            const QString & name,
+            const MaterialEle &m,
+            const GeometryEle &g
+    );
     ~EulerBernoulliBeam();
 };
 

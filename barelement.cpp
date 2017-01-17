@@ -37,8 +37,14 @@ BarElement::BarElement() : FEAElementBase()
     }
 }
 
-BarElement::BarElement(MaterialEle &m, GeometryEle &g) :
-    FEAElementBase(m, g)
+BarElement::BarElement
+(
+        const int & dimension,
+        const QString & name,
+        const MaterialEle &m,
+        const GeometryEle &g
+) :
+    FEAElementBase(dimension, name, m, g)
 {
     log_ = "Bar Element is selected \n";
     dim_ = 1;

@@ -20,9 +20,35 @@ class FEAElementBase
 public:
     enum component {XX, YY, ZZ};
 
+    // Declare run-time constructor selection table
+    declareRunTimeNewSelectionTable
+    (
+            std::auto_ptr,
+            FEAElementBase,
+            spaceDimension,
+            (
+                const int & dim,
+                const QString & name,
+                const MaterialEle & m,
+                const GeometryEle & g
+             ),
+            (
+                dim,
+                name,
+                m,
+                g
+            )
+    );
+
 public:
     FEAElementBase();
-    FEAElementBase(MaterialEle &m, GeometryEle &g);
+    FEAElementBase
+    (
+            const int& dim,
+            const QString & name,
+            const MaterialEle &m,
+            const GeometryEle &g
+    );
     ~FEAElementBase();
 
     QString getLog() {return log_;}
@@ -80,8 +106,8 @@ public:
 
 private:
 
-    MaterialEle *material_; // material of this element
-    GeometryEle *geoInfo_; // geometry info of this element
+    const MaterialEle *material_; // material of this element
+    const GeometryEle *geoInfo_; // geometry info of this element
 
 protected:
     int dim_;  // dimension of element

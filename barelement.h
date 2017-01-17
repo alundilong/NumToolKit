@@ -13,7 +13,13 @@ public:
     static const int nDOF;
 public:
     BarElement();
-    BarElement(MaterialEle &m, GeometryEle &g);
+    BarElement
+    (
+            const int & dim,
+            const QString & name,
+            const MaterialEle &m,
+            const GeometryEle &g
+    );
     ~BarElement();
 
 };

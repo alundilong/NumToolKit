@@ -6,7 +6,13 @@ class stringElement : public FEAElementBase
 {
 public:
     stringElement();
-    stringElement(MaterialEle &m, GeometryEle &g);
+    stringElement
+    (
+            const int & dim,
+            const QString & name,
+            const MaterialEle &m,
+            const GeometryEle &g
+    );;
     ~stringElement();
 };
 

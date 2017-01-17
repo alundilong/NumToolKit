@@ -38,8 +38,14 @@ EulerBernoulliBeam::EulerBernoulliBeam()
 
 }
 
-EulerBernoulliBeam::EulerBernoulliBeam(MaterialEle &m, GeometryEle &g) :
-    FEAElementBase(m, g)
+EulerBernoulliBeam::EulerBernoulliBeam
+(
+        const int & dimension,
+        const QString & name,
+        const MaterialEle &m,
+        const GeometryEle &g
+):
+    FEAElementBase(dimension, name, m, g)
 {
     log_ = "Euler-Bernoulli Beam Element is selected \n";
     dim_ = 1;

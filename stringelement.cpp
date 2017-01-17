@@ -5,7 +5,14 @@ stringElement::stringElement()
 
 }
 
-stringElement::stringElement(MaterialEle &m, GeometryEle &g)
+stringElement::stringElement
+(
+        const int & dimension,
+        const QString & name,
+        const MaterialEle &m,
+        const GeometryEle &g
+):
+    FEAElementBase(dimension, name, m, g)
 {
 
 }
