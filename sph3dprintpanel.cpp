@@ -127,6 +127,7 @@ void SPH3DPrintPanel::on_dumpButton_clicked()
                     QVector3D p3(points[(*it2++)]);
                     // face center
                     QVector3D p((p1+p2+p3)/3.0);
+                    sphParticles_.push_back(p);
                     line = QStringList();
                     line << QString::number(id) \
                          << QString::number(type) \
@@ -144,4 +145,138 @@ void SPH3DPrintPanel::on_dumpButton_clicked()
 
         }
     }
+}
+
+void SPH3DPrintPanel::on_SetPathToInFile_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,"Open the file");
+    QFile file(fileName);
+    if(!file.open(QFile::ReadOnly | QFile::Text)) {
+        QMessageBox::warning(this,"..", "file not open");
+        return;
+    }
+
+    QTextStream in(&file);
+    QString text = in.readAll();
+    ui->textBrowser->setText(text);
+    file.close();
+}
+
+void SPH3DPrintPanel::on_setPathToExe_clicked()
+{
+    path2ExE_ = QFileDialog::getExistingDirectory\
+            (this,\
+             "Path to lmp_serial",\
+             "~/home",\
+             QFileDialog::ShowDirsOnly);
+}
+
+void SPH3DPrintPanel::on_printButton_clicked()
+{
+    //QProcess to call lmp_serial
+
+//    QString fileName = path2ExE() + "/lmp_serial";
+//    // check if lmp_serial exist
+//    QFile file(QFileInfo(fileName).absoluteFilePath());
+//    if(file.exists()) {
+
+//    }
+
+
+    QString fileName = QFileDialog::getSaveFileName(this, \
+                                                    tr("Save printing data File"), \
+                                                    "..", \
+                                                    tr("Text Files (*.data)"));
+    if (fileName != "") {
+        QFile file(QFileInfo(fileName).absoluteFilePath());
+
+        if (file.exists())
+        {
+            QMessageBox::StandardButton chosenButton
+                    = QMessageBox::warning(this, \
+                                           tr("File exists"), \
+                                           tr("The file already exists. Do you want to overwrite it?"),
+                                           QMessageBox::Ok | QMessageBox::Cancel,
+                                           QMessageBox::Cancel);
+            if (chosenButton != QMessageBox::Ok)
+            {
+                return; //Save was cancelled
+            }
+        }
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Failed to save file"));
+            return; //Aborted
+        }
+
+        // Slicing the sphParticles to a number of boxes
+        int nx = ui->nxSpinBox->value();
+        int ny = ui->nySpinBox->value();
+        int nz = ui->nzSpinBox->value();
+        int ntotal = nx*ny*nz;
+
+        int type = ui->typeSpinBox->value();
+
+        double xlow = stlmesh()->box().xlow;
+        double xhig = stlmesh()->box().xhig;
+        double ylow = stlmesh()->box().ylow;
+        double yhig = stlmesh()->box().yhig;
+        double zlow = stlmesh()->box().zlow;
+        double zhig = stlmesh()->box().zhig;
+        double dx = (xhig-xlow)/nx;
+        double dy = (yhig-ylow)/ny;
+        double dz = (zhig-zlow)/nz;
+
+        QList<QList<QVector3D> > sphElements;
+
+        // create cell to face, using owner and neighbour
+        sphElements.reserve(ntotal);
+        for(int i = 0; i < ntotal; i++) {
+            QList<QVector3D> qv;
+            sphElements.append(qv);
+        }
+
+        QList<QVector3D>::const_iterator it;
+        for(it = sphParticles().begin(); it != sphParticles().end(); ++it) {
+
+            QVector3D p = *it;
+            int id = 0 ;
+            int iz = floor((p.z()-zlow)/dz);
+            int iy = floor((p.y()-ylow)/dy);
+            int ix = floor((p.x()-xlow)/dx);
+
+            id = iz*(nx*ny) + iy*nx + ix;
+//            qDebug() << QString("%1 %2 %3 %4\n").arg(ix).arg(iy).arg(iz).arg(id);
+            sphElements[id].push_back(p);
+        }
+
+        //All ok - save data
+        QTextStream outstream(&file);
+
+        QList<QList<QVector3D> >::const_iterator itt;
+        for(itt = sphElements.begin(); itt != sphElements.end(); ++itt) {
+            QList<QVector3D>::const_iterator itt2;
+            QStringList header;
+
+            if((*itt).size() < 1) continue;
+
+            header << "sphElement";
+            header << QString::number((*itt).size());
+            header << "\n";
+            outstream << header.join(" ");
+
+            for(itt2 = (*itt).begin(); itt2 != (*itt).end(); ++itt2) {
+                    QStringList data;
+                    data << QString::number(type);
+                    data << QString::number((*itt2).x());
+                    data << QString::number((*itt2).y());
+                    data << QString::number((*itt2).z());
+                    data << "\n";
+                    outstream << data.join(" ");
+            }
+        }
+
+        file.close();
+    }
+
 }

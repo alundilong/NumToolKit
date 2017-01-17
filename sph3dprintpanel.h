@@ -27,13 +27,23 @@ private slots:
 
     void on_dumpButton_clicked();
 
+    void on_SetPathToInFile_clicked();
+
+    void on_setPathToExe_clicked();
+
+    void on_printButton_clicked();
+
 private:
     Ui::SPH3DPrintPanel *ui;
     MainWindow *mw_;
     ViewerWindow *vwin_;
     STLMesh *stlmesh_;
+    QString path2ExE_;
+    QList<QVector3D> sphParticles_;
 
     inline const STLMesh* stlmesh() { return stlmesh_; }
+    inline const QString path2ExE() { return path2ExE_;}
+    inline const QList<QVector3D> sphParticles() { return sphParticles_; }
 };
 
 #endif // SPH3DPRINTPANEL_H
