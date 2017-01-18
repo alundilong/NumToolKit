@@ -44,11 +44,17 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     double v22 = (1.0 - 2.0*v)/2.;
     double abc8 = a*b*c/8.0;
     double N[8];
-    int Nx[8];
-    int Ny[8];
-    int Nz[8];
+    double Nx[8];
+    double Ny[8];
+    double Nz[8];
+    mathExtension::vectorZero<double,8>(N);
+    mathExtension::vectorZero<double,8>(Nx);
+    mathExtension::vectorZero<double,8>(Ny);
+    mathExtension::vectorZero<double,8>(Nz);
     double N1[6][24]; // 6 nDOF, 24 known // not zerized
     double N2[3][24];
+    mathExtension::matrixZero<double,6,24>(N1);
+    mathExtension::matrixZero<double,3,24>(N2);
     double Q[6][6] =\
     {
         {1-v,  v,   v,   0, 0, 0},\
@@ -67,17 +73,18 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
 
     // define stiff/mass matrix
     for (int i = 0; i < 2; i++) {
-        double x = mathExtension::gaussP(2, i);
+        long double x = mathExtension::gaussP(2, i);
         for (int j = 0; j < 2; j++) { //
-            double y = mathExtension::gaussP(2, j);
+            long double y = mathExtension::gaussP(2, j);
             for (int k = 0; k < 2; k++) {
-                double z = mathExtension::gaussP(2, j);
+                long double z = mathExtension::gaussP(2, j);
 
-                double wx = mathExtension::gaussW(2, i);
-                double wy = mathExtension::gaussW(2, j);
-                double wz = mathExtension::gaussW(2, k);
-                double weight = wx*wy*wz*abc8;
-                double xy = x*y; double yz = y*z; double zx = z*x; double xyz = x*y*z;
+                long double wx = mathExtension::gaussW(2, i);
+                long double wy = mathExtension::gaussW(2, j);
+                long double wz = mathExtension::gaussW(2, k);
+                long double weight = wx*wy*wz*abc8;
+                long double xy = x*y; long double yz = y*z; \
+                long double zx = z*x; long double xyz = x*y*z;
 
                 N[0] = (1-x-y-z+xy+yz+zx-xyz)/8.0;
                 N[1] = (1+x-y-z-xy+yz-zx+xyz)/8.0;
@@ -235,6 +242,15 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
             }
         }
     }
+
+    // coordinate system transformation
+    // from local to global
+
+    const coordSystem * cs = geometry()->localCoordinateSystem();
+    const QVector3D & e0 = cs->e0();
+    const QVector3D & e1 = cs->e1();
+    const QVector3D & e2 = cs->e2();
+
 }
 
 FEAElementLinearCubicalElement::~FEAElementLinearCubicalElement()

@@ -20,6 +20,11 @@ public:
 
     void setLocalCoordinateSystem(coordSystem *);
 
+//  each element should be able to refer it
+    const coordSystem * localCoordinateSystem() const { \
+        return localCoordinateSystem_;\
+    }
+
 private:
     double e_[3]; // length in x, y, z direction
     double A_;
