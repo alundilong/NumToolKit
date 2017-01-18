@@ -1,6 +1,8 @@
 #include "stringelement.h"
 
 //const std::string stringElement::typeName = "String";
+const int stringElement::nNode = 2;
+const int stringElement::nDOF = 2;
 
 stringElement::stringElement()
 {
@@ -21,7 +23,7 @@ stringElement::stringElement
 
 stringElement::~stringElement()
 {
-    int N = nNodeEle_;
+    int N = nNode*nDOF;
     for (int i = 0; i < N; i ++){
         delete [] baseMass_[i];
         delete [] baseStiff_[i];

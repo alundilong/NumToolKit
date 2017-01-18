@@ -7,6 +7,8 @@ class stringElement : public FEAElementOneD
 {
 public:
     static const std::string typeName;
+    static const int  nNode;
+    static const int nDOF;
 
     stringElement();
     stringElement

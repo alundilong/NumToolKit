@@ -56,7 +56,7 @@ FEAElementBarThreeD::FEAElementBarThreeD \
 
 FEAElementBarThreeD::~FEAElementBarThreeD()
 {
-    int N = nNodeEle_;
+    int N = nNode*nDOF;
     for (int i = 0; i < N; i ++){
         delete [] baseMass_[i];
         delete [] baseStiff_[i];
