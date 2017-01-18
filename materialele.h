@@ -3,14 +3,16 @@
 
 #include <string>
 #include <unordered_map>
-//#include "MaterialOne.h"
+#include "MaterialOne.h"
 
 class MaterialEle
 {
 
 public:
 
-//    static const std::unordered_map<std::string, MaterialOne> materiableLib[2];
+//    static const int nMaterialType = 2;
+    static const std::unordered_map<std::string, MaterialOne> \
+    materialType;
 
     MaterialEle();
     MaterialEle(double rho, double E, double G);
