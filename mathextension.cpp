@@ -117,3 +117,153 @@ long double mathExtension::gaussW(int nSize, int p) {
     }
     }
 }
+
+
+mathExtension::Matrix::Matrix()
+    :
+      nrow_(1),
+      ncol_(1),
+      data_(NULL)
+{
+    data_ = new double *[nrow()];
+    for (int i = 0; i < nrow(); i++) {
+        data_[i] = new double[ncol()];
+    }
+    zeroize();
+}
+
+mathExtension::Matrix::Matrix(int nr, int nc)
+    :
+      nrow_(nr),
+      ncol_(nc),
+      data_(NULL)
+{
+    data_ = new double *[nrow()];
+    for (int i = 0; i < nrow(); i++) {
+        data_[i] = new double[ncol()];
+    }
+    zeroize();
+}
+
+mathExtension::Matrix::Matrix(int nr, int nc, double ** array)
+    :
+    nrow_(nr),
+    ncol_(nc),
+    data_(NULL)
+{
+    data_ = new double *[nrow()];
+    for (int i = 0; i < nrow(); i++) {
+        data_[i] = new double[ncol()];
+    }
+
+    for (int i = 0; i < nrow(); i++) {
+        for (int j = 0; j < ncol(); j++) {
+            data_[i][j] = array[i][j];
+        }
+    }
+}
+
+mathExtension::Matrix::~Matrix()
+{
+    for (int i = 0; i < nrow(); i ++){
+        delete [] data_[i];
+    }
+    delete [] data_;
+}
+
+void mathExtension::Matrix::zeroize()
+{
+    for (int i = 0; i < nrow(); i++) {
+        for (int j = 0; j < ncol(); j++) {
+            data_[i][j] = 0.0;
+        }
+    }
+}
+
+mathExtension::Matrix mathExtension::Matrix::transpose()
+{
+    Matrix m(ncol(),nrow());
+
+    for (int i = 0; i < nrow(); i++) {
+        for (int j = 0; j < ncol(); j++) {
+            m[j][i] = (*this)[i][j];
+        }
+    }
+    return m;
+}
+
+void mathExtension::Matrix::operator=(const mathExtension::Matrix &m) const
+{
+    if((*this) == m) {
+        for (int i = 0; i < nrow(); i++) {
+            for (int j = 0; j < ncol(); j++) {
+                (*this)[i][j] = m[i][j];
+            }
+        }
+    }
+}
+
+mathExtension::Matrix mathExtension::Matrix::operator+(const mathExtension::Matrix &m) const
+{
+    if((*this) == m) {
+        Matrix mm(nrow(), ncol());
+        for (int i = 0; i < nrow(); i++) {
+            for (int j = 0; j < ncol(); j++) {
+                mm[i][j] = (*this)[i][j] + m[i][j];
+            }
+        }
+        return mm;
+    } else {
+        std::cout << " Error: Matrix size is NOT consisent!!!!" << std::endl;
+//        return;
+    }
+}
+
+mathExtension::Matrix mathExtension::Matrix::operator-(const mathExtension::Matrix &m) const
+{
+    if((*this) == m) {
+        Matrix mm(nrow(), ncol());
+        for (int i = 0; i < nrow(); i++) {
+            for (int j = 0; j < ncol(); j++) {
+                mm[i][j] = (*this)[i][j] - m[i][j];
+            }
+        }
+        return mm;
+    } else {
+        std::cout << " Error: Matrix size is NOT consisent!!!!" << std::endl;
+//        return;
+    }
+}
+
+mathExtension::Matrix mathExtension::Matrix::operator*(const mathExtension::Matrix &m) const
+{
+    if((*this).ncol() == m.nrow()) {
+        Matrix mm(nrow(), ncol());
+        for (int i = 0; i < nrow(); i++) {
+            for (int j = 0; j < ncol(); j++) {
+                for (int k = 0; k < nrow(); k++) {
+                    mm[i][j] += (*this)[i][k]*m[k][j];
+                }
+            }
+        }
+        return mm;
+    } else {
+        std::cout << " Error: Matrix size is NOT consisent!!!!" << std::endl;
+//        return;
+    }
+}
+
+bool mathExtension::Matrix::operator==(const mathExtension::Matrix &m) const
+{
+    return ((*this).ncol() == m.ncol() && ((*this).nrow() == m.nrow()));
+}
+
+bool mathExtension::Matrix::operator!=(const mathExtension::Matrix &m) const
+{
+    return (!(*this == m));
+}
+
+double *mathExtension::Matrix::operator[](const int i) const
+{
+    return (*this).data_[i];
+}

@@ -52,6 +52,7 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     mathExtension::vectorZero<double,8>(Ny);
     mathExtension::vectorZero<double,8>(Nz);
     double N1[6][24]; // 6 nDOF, 24 known // not zerized
+//    mathExtension::Matrix NN(6,24,N1);
     double N2[3][24];
     mathExtension::matrixZero<double,6,24>(N1);
     mathExtension::matrixZero<double,3,24>(N2);
