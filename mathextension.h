@@ -17,7 +17,11 @@ void matrixMultiplyMatrix(T (&array1)[rows][cols], T(&array2)[rows][cols], T(&ar
 template <typename T , size_t rows, size_t cols>
 void matrixMultiplyVector(T (&array1)[rows][cols], T(&array2)[rows], T(&array)[rows]);
 
-// gauss point integration
+// gauss point and weight look-up table
+
+long double gaussP(int nSize, int p);
+
+long double gaussW(int nSize, int p);
 
 }
 

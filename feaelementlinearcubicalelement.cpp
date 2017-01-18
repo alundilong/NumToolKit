@@ -67,15 +67,16 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
 
     // define stiff/mass matrix
     for (int i = 0; i < 2; i++) {
-        double x = 0; // GaussP(2, i);
+        double x = mathExtension::gaussP(2, i);
         for (int j = 0; j < 2; j++) { //
-            double y = 0; // GaussP(2, j);
+            double y = mathExtension::gaussP(2, j);
             for (int k = 0; k < 2; k++) {
-                double z = 0; // GaussP(2, j)
-                double wx = 0; // GaussW(2, i);
-                double wy = 0; // GaussW(2, j);
-                double wz = 0; // GaussW(2, k);
-                double weight = wx*wy*wz*abc8; //GaussW(2, i)
+                double z = mathExtension::gaussP(2, j);
+
+                double wx = mathExtension::gaussW(2, i);
+                double wy = mathExtension::gaussW(2, j);
+                double wz = mathExtension::gaussW(2, k);
+                double weight = wx*wy*wz*abc8;
                 double xy = x*y; double yz = y*z; double zx = z*x; double xyz = x*y*z;
 
                 N[0] = (1-x-y-z+xy+yz+zx-xyz)/8.0;
