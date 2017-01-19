@@ -14,12 +14,15 @@ BarElement::BarElement() : FEAElementOneD()
     log_ += QString("%1D Element : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
 
     int N = nNodeEle()*nNodeEle();
-    baseMass_ = new double *[N];
-    baseStiff_ = new double *[N];
-    for (int i = 0; i < N; i++) {
-        baseMass_[i] = new double[N];
-        baseStiff_[i] = new double[N];
-    }
+//    baseMass_ = new double *[N];
+//    baseStiff_ = new double *[N];
+//    for (int i = 0; i < N; i++) {
+//        baseMass_[i] = new double[N];
+//        baseStiff_[i] = new double[N];
+//    }
+
+    baseMass_ = mathExtension::Matrix(N,N);
+    baseStiff_ = mathExtension::Matrix(N,N);
 
     baseMass_[0][0] = 2; baseMass_[0][1] = 1;
     baseMass_[1][0] = 1; baseMass_[1][1] = 2;
@@ -54,12 +57,15 @@ BarElement::BarElement
     log_ += QString("%1D Element : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
 
     const int N = nNode*nDOF;
-    baseMass_ = new double *[N];
-    baseStiff_ = new double *[N];
-    for (int i = 0; i < N; i++) {
-        baseMass_[i] = new double[N];
-        baseStiff_[i] = new double[N];
-    }
+//    baseMass_ = new double *[N];
+//    baseStiff_ = new double *[N];
+//    for (int i = 0; i < N; i++) {
+//        baseMass_[i] = new double[N];
+//        baseStiff_[i] = new double[N];
+//    }
+
+    baseMass_ = mathExtension::Matrix(N,N);
+    baseStiff_ = mathExtension::Matrix(N,N);
 
     const double mass = m.rho()*g.volume();
     const double *eL = g.e();
@@ -86,13 +92,13 @@ BarElement::BarElement
 
 BarElement::~BarElement()
 {
-    int N = nNode*nDOF;
-    for (int i = 0; i < N; i ++){
-        delete [] baseMass_[i];
-        delete [] baseStiff_[i];
-    }
-    delete [] baseMass_;
-    delete [] baseStiff_;
+//    int N = nNode*nDOF;
+//    for (int i = 0; i < N; i ++){
+//        delete [] baseMass_[i];
+//        delete [] baseStiff_[i];
+//    }
+//    delete [] baseMass_;
+//    delete [] baseStiff_;
 }
 
 makeElement(ElementName, BarElement, FEAElementOneD, Bar)

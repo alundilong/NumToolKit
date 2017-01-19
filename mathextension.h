@@ -5,6 +5,12 @@
 
 namespace mathExtension {
 
+struct pos {
+    int start;
+    int step;
+    int end;
+};
+
 // Matrix changed, useful in forming base Matrix for each element
 void matrixMultiplyScalar(double **m, int nrow, int ncol, double s);// m will be modified
 
@@ -101,6 +107,7 @@ public:
     ~Matrix();
 
     void set(const int i, const Vector &v);
+    void setColValues(const int iCol, const pos & Cols, const Vector & v);
     inline const int nrow() const { return nrow_;}
     inline const int ncol() const { return ncol_;}
 
@@ -129,7 +136,7 @@ public:
     // multiplication x matrix
     Matrix operator*(const Matrix &m) const;
     // multiplication x vector
-    Matrix operator*(const Vector &v) const;
+    Vector operator*(const Vector &v) const;
     // multiplication x scalar
     Matrix operator*(const double &s) const;
 

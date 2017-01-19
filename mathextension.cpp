@@ -178,6 +178,19 @@ void mathExtension::Matrix::set(const int i, const Vector &v)
     }
 }
 
+void mathExtension::Matrix::setColValues(\
+        const int iCol, \
+        const mathExtension::pos &Cols, \
+        const mathExtension::Vector &v)
+{
+    const int start = Cols.start;
+    const int step = Cols.step;
+    const int end = Cols.end;
+    for (int c = start; c < end; c = c+step ) {
+        data_[iCol][c-1] = v[c-1];
+    }
+}
+
 void mathExtension::Matrix::zeroize()
 {
     for (int i = 0; i < nrow(); i++) {
@@ -260,7 +273,7 @@ mathExtension::Matrix mathExtension::Matrix::operator*(const mathExtension::Matr
     }
 }
 
-mathExtension::Matrix mathExtension::Matrix::operator*(const mathExtension::Vector &v) const
+mathExtension::Vector mathExtension::Matrix::operator*(const mathExtension::Vector &v) const
 {
     Vector vv(nrow());
     for (int i = 0; i < nrow(); i++) {
@@ -268,6 +281,7 @@ mathExtension::Matrix mathExtension::Matrix::operator*(const mathExtension::Vect
             vv[i] = (*this).data()[i][j]*v[j];
         }
     }
+    return vv;
 }
 
 mathExtension::Matrix mathExtension::Matrix::operator*(const double &s) const
@@ -278,6 +292,7 @@ mathExtension::Matrix mathExtension::Matrix::operator*(const double &s) const
             mm[i][j] *= s;
         }
     }
+    return mm;
 }
 
 bool mathExtension::Matrix::operator==(const mathExtension::Matrix &m) const

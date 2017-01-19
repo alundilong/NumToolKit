@@ -18,18 +18,20 @@ stringElement::stringElement
 ):
     FEAElementOneD(dimension, name, m, g)
 {
-
+    const int N = nNode*nDOF;
+    baseMass_ = mathExtension::Matrix(N,N);
+    baseStiff_ = mathExtension::Matrix(N,N);
 }
 
 stringElement::~stringElement()
 {
-    int N = nNode*nDOF;
-    for (int i = 0; i < N; i ++){
-        delete [] baseMass_[i];
-        delete [] baseStiff_[i];
-    }
-    delete [] baseMass_;
-    delete [] baseStiff_;
+//    int N = nNode*nDOF;
+//    for (int i = 0; i < N; i ++){
+//        delete [] baseMass_[i];
+//        delete [] baseStiff_[i];
+//    }
+//    delete [] baseMass_;
+//    delete [] baseStiff_;
 }
 
 makeElement(ElementName, stringElement, FEAElementOneD, String)

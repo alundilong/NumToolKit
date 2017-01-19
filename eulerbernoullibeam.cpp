@@ -14,12 +14,14 @@ EulerBernoulliBeam::EulerBernoulliBeam()
     log_ += QString("%1D Element : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
 
     int N = nNodeEle()*nNodeEle();
-    baseMass_ = new double *[N];
-    baseStiff_ = new double *[N];
-    for (int i = 0; i < N; i++) {
-        baseMass_[i] = new double[N];
-        baseStiff_[i] = new double[N];
-    }
+//    baseMass_ = new double *[N];
+//    baseStiff_ = new double *[N];
+//    for (int i = 0; i < N; i++) {
+//        baseMass_[i] = new double[N];
+//        baseStiff_[i] = new double[N];
+//    }
+    baseMass_ = mathExtension::Matrix(N,N);
+    baseStiff_ = mathExtension::Matrix(N,N);
 
 //    baseMass_[0][0] = 2; baseMass_[0][1] = 1;
 //    baseMass_[1][0] = 1; baseMass_[1][1] = 2;
@@ -55,12 +57,14 @@ EulerBernoulliBeam::EulerBernoulliBeam
     log_ += QString("%1D Element : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
 
     int N = nNodeEle()*nNodeEle();
-    baseMass_ = new double *[N];
-    baseStiff_ = new double *[N];
-    for (int i = 0; i < N; i++) {
-        baseMass_[i] = new double[N];
-        baseStiff_[i] = new double[N];
-    }
+//    baseMass_ = new double *[N];
+//    baseStiff_ = new double *[N];
+//    for (int i = 0; i < N; i++) {
+//        baseMass_[i] = new double[N];
+//        baseStiff_[i] = new double[N];
+//    }
+    baseMass_ = mathExtension::Matrix(N,N);
+    baseStiff_ = mathExtension::Matrix(N,N);
 
     const double mass = m.rho()*g.volume();
     const double *eL = g.e();
@@ -72,7 +76,8 @@ EulerBernoulliBeam::EulerBernoulliBeam
     baseMass_[2][0] = 54;       baseMass_[2][1] = 13*ex;      baseMass_[2][2] = 156;      baseMass_[2][3] = -22.0*ex;
     baseMass_[3][0] = -13.0*ex; baseMass_[3][1] = -3.0*ex*ex; baseMass_[3][2] = -22.0*ex; baseMass_[3][3] = 4*ex*ex;
 
-    mathExtension::matrixMultiplyScalar(baseMass_, 4, 4, coeffMass);
+//    mathExtension::matrixMultiplyScalar(baseMass_, 4, 4, coeffMass);
+    baseMass_ = baseMass_*coeffMass;
 
     // compute moment of inertia
     const double ey = eL[GeometryEle::Y];
@@ -90,19 +95,20 @@ EulerBernoulliBeam::EulerBernoulliBeam
     baseStiff_[2][0] = -12;  baseStiff_[2][1] = -6*ex;     baseStiff_[2][2] = 12;      baseStiff_[2][3] = -6.0*ex;
     baseStiff_[3][0] = 6*ex; baseStiff_[3][1] = 2.0*ex*ex; baseStiff_[3][2] = -6.0*ex; baseStiff_[3][3] = 4*ex*ex;
 
-    mathExtension::matrixMultiplyScalar(baseStiff_, 4, 4, coeffStiff);
+//    mathExtension::matrixMultiplyScalar(baseStiff_, 4, 4, coeffStiff);
+    baseStiff_ = baseMass_*coeffStiff;
 
 }
 
 EulerBernoulliBeam::~EulerBernoulliBeam()
 {
-    int N = nNode*nDOF;
-    for (int i = 0; i < N; i ++){
-        delete [] baseMass_[i];
-        delete [] baseStiff_[i];
-    }
-    delete [] baseMass_;
-    delete [] baseStiff_;
+//    int N = nNode*nDOF;
+//    for (int i = 0; i < N; i ++){
+//        delete [] baseMass_[i];
+//        delete [] baseStiff_[i];
+//    }
+//    delete [] baseMass_;
+//    delete [] baseStiff_;
 }
 
 makeElement(ElementName, EulerBernoulliBeam, FEAElementOneD, EulerBernoulliBeam)

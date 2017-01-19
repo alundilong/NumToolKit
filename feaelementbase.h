@@ -71,8 +71,8 @@ public:
     const int & nDOFEle() const { return nDOFEle_;}
     const int & nNodeEle() const { return nNodeEle_;}
     const QString & name() const { return name_;}
-    double** baseMass() const { return baseMass_;}
-    double** baseStiff() const { return baseStiff_;}
+    const mathExtension::Matrix baseMass() const { return baseMass_;}
+    const mathExtension::Matrix baseStiff() const { return baseStiff_;}
 
     const MaterialEle & material() const { return *material_; }
     const GeometryEle & geometry() const { return *geoInfo_; }
@@ -129,8 +129,8 @@ protected:
 
     double I[3];// moment of inertia
 
-    double **baseMass_; // mass matrix
-    double **baseStiff_; // stiffiness matrix
+    mathExtension::Matrix baseMass_; // mass matrix
+    mathExtension::Matrix baseStiff_; // stiffiness matrix
 
     // firstNode label of this type element
     // it serves as the origin of the local
