@@ -83,7 +83,7 @@ BarElement::BarElement
     I[FEAElementBase::component::XX] = mass*(ey*ey+ez*ez)/12.;
     I[FEAElementBase::component::YY] = mass*(ex*ex+ez*ez)/12.;
     I[FEAElementBase::component::ZZ] = mass*(ex*ex+ey*ey)/12.;
-    qDebug() << "444444444444444444";
+
 }
 
 BarElement::~BarElement()
