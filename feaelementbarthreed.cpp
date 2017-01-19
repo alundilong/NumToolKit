@@ -55,6 +55,19 @@ FEAElementBarThreeD::FEAElementBarThreeD \
 //    I[FEAElementBase::component::XX] = mass*(ey*ey+ez*ez)/12.;
 //    I[FEAElementBase::component::YY] = mass*(ex*ex+ez*ez)/12.;
 //    I[FEAElementBase::component::ZZ] = mass*(ex*ex+ey*ey)/12.;
+
+    // coordinate system transformation
+    // from local to global
+
+    const coordSystem * cs = geometry()->localCoordinateSystem();
+    const QVector3D & e0 = cs->e0();
+    const QVector3D & e1 = cs->e1();
+    const QVector3D & e2 = cs->e2();
+
+    mathExtension::Matrix G(3,3);
+
+    baseStiff_ = G.transpose()*baseStiff_*G;
+    baseMass_ = G.transpose()*baseMass_*G;
 }
 
 FEAElementBarThreeD::~FEAElementBarThreeD()

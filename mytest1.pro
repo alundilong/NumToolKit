@@ -64,7 +64,8 @@ HEADERS  += mainwindow.h \
     MaterialOne.h \
     feaelementbarthreed.h \
     feaelementlinearcubicalelement.h \
-    mathExtensionTemplate.h
+    mathExtensionTemplate.h \
+    mathExtensionIO.h
 
 FORMS    += mainwindow.ui \
     form.ui \

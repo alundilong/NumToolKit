@@ -166,15 +166,7 @@ mathExtension::Matrix::Matrix(int nr, int nc, double ** array)
 mathExtension::Matrix::~Matrix()
 {
     if(data_!= NULL) {
-        std::cout << "Destruction" << std::endl;
-        std::cout << "size: "<< nrow() << " " << ncol() << std::endl;
-        std::cout << "elem: " << std::endl;
-        for(int i = 0; i < nrow(); i++) {
-            for (int j = 0; j < ncol(); j++) {
-                std::cout << data_[i][j] << " ";
-            }
-            std::cout << std::endl;
-        }
+
         for (int i = 0; i < nrow(); i ++){
             delete [] data_[i];
         }
@@ -199,6 +191,31 @@ void mathExtension::Matrix::setColValues(\
     const int end = Cols.end;
     for (int c = start; c < end; c = c+step ) {
         data_[iCol][c-1] = v[c-1];
+    }
+}
+
+void mathExtension::Matrix::setSubMatrix(\
+        const mathExtension::pos &Rows, \
+        const mathExtension::pos &Cols, \
+        const mathExtension::Matrix &subM)
+{
+    const int rStart = Rows.start;
+    const int rStep =  Rows.step;
+    const int rEnd = Rows.end;
+
+    const int cStart = Cols.start;
+    const int cStep =  Cols.step;
+    const int cEnd = Cols.end;
+
+    int rc = 0;
+    int cc = 0;
+    for (int i = rStart; i < rEnd; i = i + rStep) {
+        for (int j = cStart; j < cEnd; j = j + cStep) {
+            data_[i-1][j-1] = subM[rc][cc];
+            cc++;
+        }
+        rc++;
+        cc = 0;
     }
 }
 
@@ -340,16 +357,7 @@ double *mathExtension::Matrix::operator[](const int i) const
     return (*this).data_[i];
 }
 
-//void mathExtension::Matrix::operator<<(const mathExtension::Matrix &m)
-//{
-//    for (int i = 0; i < nrow(); i++) {
-//        for (int j = 0; j < ncol(); j++) {
-//            std::cout << m[i][j] << " ";
-//        }
-//        std::cout << std::endl;
-//    }
 
-//}
 
 
 mathExtension::Vector::Vector()

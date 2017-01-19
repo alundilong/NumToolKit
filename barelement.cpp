@@ -14,12 +14,6 @@ BarElement::BarElement() : FEAElementOneD()
     log_ += QString("%1D Element : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
 
     int N = nNodeEle()*nNodeEle();
-//    baseMass_ = new double *[N];
-//    baseStiff_ = new double *[N];
-//    for (int i = 0; i < N; i++) {
-//        baseMass_[i] = new double[N];
-//        baseStiff_[i] = new double[N];
-//    }
 
     baseMass_ = mathExtension::Matrix(N,N);
     baseStiff_ = mathExtension::Matrix(N,N);
@@ -60,6 +54,7 @@ BarElement::BarElement
 
     baseMass_ = mathExtension::Matrix(N,N);
     baseStiff_ = mathExtension::Matrix(N,N);
+    std::cout << baseMass_ << std::endl;
 
     const double mass = m.rho()*g.volume();
     const double *eL = g.e();
@@ -84,6 +79,12 @@ BarElement::BarElement
     I[FEAElementBase::component::YY] = mass*(ex*ex+ez*ez)/12.;
     I[FEAElementBase::component::ZZ] = mass*(ex*ex+ey*ey)/12.;
 
+    // coordinate system transformation
+    // from local to global
+
+    // for 1D element, there is no local to global coordination transformation
+    baseStiff_ = G.transpose()*baseStiff_*G;
+    baseMass_ = G.transpose()*baseMass_*G;
 }
 
 BarElement::~BarElement()

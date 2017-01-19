@@ -108,6 +108,7 @@ public:
 
     void set(const int i, const Vector &v);
     void setColValues(const int iCol, const pos & Cols, const Vector & v);
+    void setSubMatrix(const pos&Rows, const pos&Cols, const Matrix & subM);
     inline const int nrow() const { return nrow_;}
     inline const int ncol() const { return ncol_;}
 
@@ -150,10 +151,20 @@ public:
     // get value
     double *operator[](const int i) const;
 
-//    void operator<<(const Matrix &m);
+    friend std::ostream &operator<<(std::ostream& os, const Matrix&m){
+        int nr = m.nrow();
+        int nc = m.ncol();
+        for(int i = 0; i < nr; i++ ) {
+            for(int j = 0; j < nc; j++) {
+                os << m[i][j] << ' ';
+            }
+            os << '\n';
+        }
+        return os;
+    }
 };
 
-
+//#include "mathExtensionIO.h"
 // gauss point and weight look-up table
 
 long double gaussP(int nSize, int p);

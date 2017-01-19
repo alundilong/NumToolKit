@@ -153,126 +153,18 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
                 colPos = {2, 3, 24};
                 N1.setColValues(5, colPos, Nx);
 
-                /*for (int l = 0; l < 6; l++) {
-                    // l==0
-                    if(l==0){
-                        int c = 0;
-                        for (int m = 0; m < 24; m=m+3) {
-                            N1[l][m] = Nx[c];
-                            c++;
-                        }
-                    }
-
-                    // l==1
-                    if(l==1){
-                        int c = 0;
-                        for (int m = 1; m<24; m=m+3) {
-                            N1[l][m] = Ny[c];
-                            c++;
-                        }
-                    }
-
-                    // l==2
-                    if(l==2){
-                        int c = 0;
-                        for (int m = 2; m<24; m=m+3) {
-                            N1[l][m] = Nz[c];
-                            c++;
-                        }
-                    }
-
-                    // l==3
-                    if(l==3){
-                        int c = 0;
-                        for (int m = 1; m<24; m=m+3) {
-                            N1[l][m] = Nz[c];
-                            c++;
-                        }
-                        c = 0;
-                        for (int m = 2; m<24; m=m+3) {
-                            N1[l][m] = Ny[c];
-                            c++;
-                        }
-                    }
-
-                    // l==4
-                    if(l==4) {
-                        int c = 0;
-                        for (int m = 0; m<24; m=m+3) {
-                            N1[l][m] = Nz[c];
-                            c++;
-                        }
-                        c = 0;
-                        for (int m = 2; m<24; m=m+3) {
-                            N1[l][m] = Nx[c];
-                            c++;
-                        }
-                    }
-
-                    // l==5
-                    if(l==5){
-                        int c = 0;
-                        for (int m = 0; m<24; m=m+3) {
-                            N1[l][m] = Ny[c];
-                            c++;
-                        }
-                        c = 0;
-                        for (int m = 1; m<24; m=m+3) {
-                            N1[l][m] = Nx[c];
-                            c++;
-                        }
-                    }
-                }*/
-
-
-                // find stiff matrix
-                for (int i = 0; i < 24; i++) {
-                    for (int j = 0; j < 24; j++) {
-                        baseStiff_[i][j] += N1[j][i]*Q[i][j]*N1[i][j]*weight;// double check!!!
-                    }
-                }
-
                 baseStiff_ = baseStiff_ + N1.transpose()*Q*N1*weight;
 
-                // find mass matrix
-                for (int i = 0; i < 3; i++) {
-
-                    // i==0
-                    if(i==0) {
-                        int c = 0;
-                        for (int j = 0; j < 24; j=j+3){
-                            N2[i][j] = N[c];
-                            c++;
-                        }
-                    }
-
-                    // i==1
-                    if(i==1) {
-                        int c = 0;
-                        for (int j = 1; j < 24; j=j+3){
-                            N2[i][j] = N[c];
-                            c++;
-                        }
-                    }
-
-                    // i==2
-                    if(i==2) {
-                        int c = 0;
-                        for (int j = 2; j < 24; j=j+3){
-                            N2[i][j] = N[c];
-                            c++;
-                        }
-                    }
-                }
+                // prepare for mass matrix
+                colPos = {1, 3, 24};
+                N2.setColValues(0, colPos, N);
+                colPos = {2, 3, 24};
+                N2.setColValues(1, colPos, N);
+                colPos = {3, 3, 24};
+                N2.setColValues(2, colPos, N);
 
                 // find mass matrix
-                for (int i = 0; i < 24; i++) {
-                    for (int j = 0; j < 24; j++) {
-                        baseMass_[i][j] += N2[j][i]*(N2[i][j]*weight*rho);// double check!!!
-                    }
-                }
-
-//                N2.transpose()*(N2*weight*rho);
+                baseMass_ = baseMass_ + N2.transpose()*(N2*weight*rho);
 
             }
         }
@@ -285,8 +177,26 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     const QVector3D & e0 = cs->e0();
     const QVector3D & e1 = cs->e1();
     const QVector3D & e2 = cs->e2();
+    const QVector3D eg0 = QVector3D(1,0,0);
+    const QVector3D eg1 = QVector3D(0,1,0);
+    const QVector3D eg2 = QVector3D(0,0,1);
 
     mathExtension::Matrix G(24,24);
+    int step = 3;
+    for (int i = 0; i < 24; i = i+step) {
+        mathExtension::pos rowRange = {1+step,1,3+step};
+        mathExtension::pos colRange = {1+step,1,3+step};
+        mathExtension::Matrix T(3,3);
+        //T = ;
+        T[0][0] = QVector3D::dotProduct(eg0, e0); T[0][1] = QVector3D::dotProduct(eg0, e1); T[0][2] = QVector3D::dotProduct(eg0, e2);
+        T[1][0] = QVector3D::dotProduct(eg1, e0); T[1][1] = QVector3D::dotProduct(eg1, e1); T[1][2] = QVector3D::dotProduct(eg1, e2);
+        T[2][0] = QVector3D::dotProduct(eg2, e0); T[2][1] = QVector3D::dotProduct(eg2, e1); T[2][2] = QVector3D::dotProduct(eg2, e2);
+        G.setSubMatrix(rowRange, colRange, T);
+    }
+
+    baseStiff_ = G.transpose()*baseStiff_*G;
+    baseMass_ = G.transpose()*baseMass_*G;
+
 
 }
 

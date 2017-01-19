@@ -25,10 +25,14 @@ public:
         return localCoordinateSystem_;\
     }
 
+    const QList<int> pointIdList() const { return pointIdList; }
+
 private:
     double e_[3]; // length in x, y, z direction
     double A_;
     double volume_;
+
+    QList<int> pointIdList;
 
     coordSystem *localCoordinateSystem_;
 };
