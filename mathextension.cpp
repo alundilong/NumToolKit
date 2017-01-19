@@ -165,10 +165,21 @@ mathExtension::Matrix::Matrix(int nr, int nc, double ** array)
 
 mathExtension::Matrix::~Matrix()
 {
-    for (int i = 0; i < nrow(); i ++){
-        delete [] data_[i];
+    if(data_!= NULL) {
+        std::cout << "Destruction" << std::endl;
+        std::cout << "size: "<< nrow() << " " << ncol() << std::endl;
+        std::cout << "elem: " << std::endl;
+        for(int i = 0; i < nrow(); i++) {
+            for (int j = 0; j < ncol(); j++) {
+                std::cout << data_[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        for (int i = 0; i < nrow(); i ++){
+            delete [] data_[i];
+        }
+        delete [] data_;
     }
-    delete [] data_;
 }
 
 void mathExtension::Matrix::set(const int i, const Vector &v)
@@ -212,12 +223,31 @@ mathExtension::Matrix mathExtension::Matrix::transpose()
     return m;
 }
 
-void mathExtension::Matrix::operator=(const mathExtension::Matrix &m) const
+void mathExtension::Matrix::operator=(const mathExtension::Matrix &m)
 {
     if((*this) == m) {
         for (int i = 0; i < nrow(); i++) {
             for (int j = 0; j < ncol(); j++) {
                 (*this)[i][j] = m[i][j];
+            }
+        }
+    } else {
+        // reset the size of this matrix
+        for (int i = 0; i < nrow(); i++) {
+            delete [] data_[i];
+        }
+        delete [] data_;
+
+        const_cast<int&>(nrow_) = m.nrow();
+        const_cast<int&>(ncol_) = m.ncol();
+        data_ = new double *[nrow()];
+        for (int i = 0; i < nrow(); i++) {
+            data_[i] = new double[ncol()];
+        }
+
+        for (int i = 0; i < nrow(); i++) {
+            for (int j = 0; j < ncol(); j++) {
+                data_[i][j] = m[i][j];
             }
         }
     }
@@ -309,6 +339,17 @@ double *mathExtension::Matrix::operator[](const int i) const
 {
     return (*this).data_[i];
 }
+
+//void mathExtension::Matrix::operator<<(const mathExtension::Matrix &m)
+//{
+//    for (int i = 0; i < nrow(); i++) {
+//        for (int j = 0; j < ncol(); j++) {
+//            std::cout << m[i][j] << " ";
+//        }
+//        std::cout << std::endl;
+//    }
+
+//}
 
 
 mathExtension::Vector::Vector()

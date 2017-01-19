@@ -164,6 +164,8 @@ void feaAnalysisPanel::solve1DBar()
             int nodeI_Id = i + k; // to be general, a list of nodeId for each element should be defined (MeshData)
             for (int j = 0; j < nNodeEle; j++) {
                 int nodeJ_Id = j + k;
+                qDebug() << nodeI_Id << " " << nodeJ_Id;
+                qDebug() << barEle.baseMass()[i][j] << " " << barEle.baseStiff()[i][j];
                 M[nodeI_Id][nodeJ_Id] += barEle.baseMass()[i][j];
                 K[nodeI_Id][nodeJ_Id] += barEle.baseStiff()[i][j];
 

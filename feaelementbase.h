@@ -50,7 +50,6 @@ public:
             const GeometryEle & g
     );
 
-
     static std::auto_ptr<FEAElementBase> New
     (
             const std::string & dim,
@@ -59,10 +58,7 @@ public:
             const GeometryEle & g
     );
 
-
     ~FEAElementBase();
-
-
 
     QString getLog() {return log_;}
 
@@ -71,8 +67,8 @@ public:
     const int & nDOFEle() const { return nDOFEle_;}
     const int & nNodeEle() const { return nNodeEle_;}
     const QString & name() const { return name_;}
-    const mathExtension::Matrix baseMass() const { return baseMass_;}
-    const mathExtension::Matrix baseStiff() const { return baseStiff_;}
+    const mathExtension::Matrix & baseMass() const { return baseMass_;}
+    const mathExtension::Matrix & baseStiff() const { return baseStiff_;}
 
     const MaterialEle & material() const { return *material_; }
     const GeometryEle & geometry() const { return *geoInfo_; }

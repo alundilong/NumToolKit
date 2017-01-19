@@ -113,6 +113,8 @@ public:
 
 private:
 
+// disallow copy constructor
+//    Matrix(const Matrix& m) = delete;
     const int nrow_, ncol_;
     double **data_;
     void zeroize();
@@ -128,7 +130,7 @@ public:
 
     // operator overload
     // copy
-    void operator=(const Matrix &m) const;
+    void operator=(const Matrix &m);
     // addition
     Matrix operator+(const Matrix &m) const;
     // subtraction
@@ -147,6 +149,8 @@ public:
 
     // get value
     double *operator[](const int i) const;
+
+//    void operator<<(const Matrix &m);
 };
 
 

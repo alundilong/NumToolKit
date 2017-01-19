@@ -3,16 +3,20 @@
 //const std::string FEAElementThreeD::typeName = "ThreeD";
 
 FEAElementThreeD::FEAElementThreeD()
+    :
+      FEAElementBase()
 {
 }
 
 FEAElementThreeD::FEAElementThreeD\
 (\
-        const std::string &dim, \
+        const std::string &dimension, \
         const std::string &name, \
         const MaterialEle &m, \
         const GeometryEle &g\
-) : FEAElementBase(dim, name, m, g)
+)
+    :
+    FEAElementBase(dimension, name, m, g)
 {
 
 }
