@@ -41,6 +41,52 @@ void matrixMultiplyVector(T (&array1)[r1][c1], T(&array2)[r2], T(&array)[r1]);
 
 #include "mathExtensionTemplate.h"
 
+
+
+// Class Vector defined to handle vector operation
+
+class Vector {
+
+public:
+
+    Vector();
+    Vector(int nrow);
+    // construct from
+    Vector(int nr, double *array);
+    ~Vector();
+    void set(const int i, double val);
+    inline const int nrow() const { return nrow_;}
+
+private:
+
+    const int nrow_;
+    double *data_;
+    void zeroize();
+
+    inline double *data() const { return data_;}
+
+public:
+
+    // operator overload
+    // copy
+    void operator=(const Vector &v) const;
+    // addition
+    Vector operator+(const Vector &v) const;
+    // subtraction
+    Vector operator-(const Vector &v) const;
+    // dot product
+    double operator*(const Vector &v) const;
+
+    // equivalence (check size only)
+    bool operator==(const Vector &v) const;
+    // equivalence (check size only)
+    bool operator!=(const Vector &v) const;
+
+    // get value
+    double &operator[](const int i) const;
+};
+
+
 // Class Matrix defined to handle matrix operation
 
 class Matrix {
@@ -54,13 +100,16 @@ public:
 //    Matrix(int nr, int nc, double array[][nc]);
     ~Matrix();
 
+    void set(const int i, const Vector &v);
+    inline const int nrow() const { return nrow_;}
+    inline const int ncol() const { return ncol_;}
+
 private:
 
     const int nrow_, ncol_;
     double **data_;
     void zeroize();
-    inline const int nrow() const { return nrow_;}
-    inline const int ncol() const { return ncol_;}
+
     inline double **data() const { return data_;}
 
 public:
@@ -77,8 +126,12 @@ public:
     Matrix operator+(const Matrix &m) const;
     // subtraction
     Matrix operator-(const Matrix &m) const;
-    // multiplication
+    // multiplication x matrix
     Matrix operator*(const Matrix &m) const;
+    // multiplication x vector
+    Matrix operator*(const Vector &v) const;
+    // multiplication x scalar
+    Matrix operator*(const double &s) const;
 
     // equivalence (check size only)
     bool operator==(const Matrix &m) const;

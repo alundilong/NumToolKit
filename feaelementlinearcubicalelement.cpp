@@ -43,33 +43,38 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
 
     double v22 = (1.0 - 2.0*v)/2.;
     double abc8 = a*b*c/8.0;
-    double N[8];
-    double Nx[8];
-    double Ny[8];
-    double Nz[8];
-    mathExtension::vectorZero<double,8>(N);
-    mathExtension::vectorZero<double,8>(Nx);
-    mathExtension::vectorZero<double,8>(Ny);
-    mathExtension::vectorZero<double,8>(Nz);
-    double N1[6][24]; // 6 nDOF, 24 known // not zerized
-//    mathExtension::Matrix NN(6,24,N1);
-    double N2[3][24];
-    mathExtension::matrixZero<double,6,24>(N1);
-    mathExtension::matrixZero<double,3,24>(N2);
-    double Q[6][6] =\
+    mathExtension::Vector N(8);
+    mathExtension::Vector Nx(8);
+    mathExtension::Vector Ny(8);
+    mathExtension::Vector Nz(8);
+
+    mathExtension::Matrix N1(6,24);
+
+    mathExtension::Matrix N2(3,24);
+
+    double QQ[6][6] = \
     {
-        {1-v,  v,   v,   0, 0, 0},\
-        {v,  1-v,  v,   0, 0, 0},\
-        {v,   v,  1-v,  0, 0, 0},\
-        {0,  0,  0, v22,  0,   0},\
-        {0,  0,  0,  0,  v22,  0},\
-        {0,  0,  0,  0,   0,  v22}\
+        {1-v,  v,    v,   0,   0,     0},\
+        {v,    1-v,  v,   0,   0,     0},\
+        {v,    v,    1-v, 0,   0,     0},\
+        {0,    0,    0,   v22, 0,     0},\
+        {0,    0,    0,   0,   v22,   0},\
+        {0,    0,    0,   0,   0,   v22}\
     };
 
     for(int i = 0; i < 6; i++) {
         for (int j = 0; j < 6; j++) {
-            Q[i][j] *= E/(1.0+v)/(1.0 - 2*v);
+            QQ[i][j] *= E/(1.0+v)/(1.0 - 2*v);
         }
+    }
+
+    mathExtension::Matrix Q(6,6);
+    mathExtension::Vector V(6);
+    for(int i = 0; i < Q.nrow(); i++) {
+        for (int j = 0; j < Q.ncol(); j++) {
+            V.set(i,QQ[i][j]);
+        }
+        Q.set(i,V);
     }
 
     // define stiff/mass matrix
@@ -202,6 +207,8 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
                     }
                 }
 
+//                N1.transpose()*Q*N1*weight;
+
                 // find mass matrix
                 for (int i = 0; i < 3; i++) {
 
@@ -239,6 +246,8 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
                         baseMass_[i][j] += N2[j][i]*(N2[i][j]*weight*rho);// double check!!!
                     }
                 }
+
+//                N2.transpose()*(N2*weight*rho);
 
             }
         }

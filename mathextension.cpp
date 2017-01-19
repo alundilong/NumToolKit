@@ -171,6 +171,13 @@ mathExtension::Matrix::~Matrix()
     delete [] data_;
 }
 
+void mathExtension::Matrix::set(const int i, const Vector &v)
+{
+    for (int j = 0; j < v.nrow(); j++) {
+        data_[i][j] = v[j];
+    }
+}
+
 void mathExtension::Matrix::zeroize()
 {
     for (int i = 0; i < nrow(); i++) {
@@ -253,6 +260,26 @@ mathExtension::Matrix mathExtension::Matrix::operator*(const mathExtension::Matr
     }
 }
 
+mathExtension::Matrix mathExtension::Matrix::operator*(const mathExtension::Vector &v) const
+{
+    Vector vv(nrow());
+    for (int i = 0; i < nrow(); i++) {
+        for (int j = 0; j < ncol(); j++) {
+            vv[i] = (*this).data()[i][j]*v[j];
+        }
+    }
+}
+
+mathExtension::Matrix mathExtension::Matrix::operator*(const double &s) const
+{
+    Matrix mm(nrow(), ncol());
+    for (int i = 0; i < nrow(); i++) {
+        for (int j = 0; j < ncol(); j++) {
+            mm[i][j] *= s;
+        }
+    }
+}
+
 bool mathExtension::Matrix::operator==(const mathExtension::Matrix &m) const
 {
     return ((*this).ncol() == m.ncol() && ((*this).nrow() == m.nrow()));
@@ -266,4 +293,101 @@ bool mathExtension::Matrix::operator!=(const mathExtension::Matrix &m) const
 double *mathExtension::Matrix::operator[](const int i) const
 {
     return (*this).data_[i];
+}
+
+
+mathExtension::Vector::Vector()
+    :
+      nrow_(1),
+      data_(NULL)
+{
+
+}
+
+mathExtension::Vector::Vector(int nrow)
+    :
+      nrow_(nrow),
+      data_(NULL)
+{
+    data_ = new double[nrow];
+    zeroize();
+}
+
+mathExtension::Vector::Vector(int nrow,double *array)
+    :
+      nrow_(nrow),
+      data_(NULL)
+{
+    data_ = new double[nrow];
+    for (int i = 0; i < nrow; i++) {
+        data_[i] = array[i];
+    }
+}
+
+mathExtension::Vector::~Vector()
+{
+    delete [] data_;
+}
+
+void mathExtension::Vector::set(const int i, double val)
+{
+    data_[i] = val;
+}
+
+void mathExtension::Vector::zeroize()
+{
+    for(int i = 0; i < nrow(); i++) {
+        data_[i] = 0.0;
+    }
+}
+
+void mathExtension::Vector::operator=(const mathExtension::Vector &v) const
+{
+    if(nrow() == v.nrow()) {
+        for(int i = 0; i < nrow(); i++) {
+            data_[i] = v[i];
+        }
+    }
+}
+
+mathExtension::Vector mathExtension::Vector::operator+(const mathExtension::Vector &v) const
+{
+    Vector vv(nrow());
+    for(int i = 0; i < nrow(); i++) {
+        vv[i] = (*this)[i] + v[i];
+    }
+    return vv;
+}
+
+mathExtension::Vector mathExtension::Vector::operator-(const mathExtension::Vector &v) const
+{
+    Vector vv(nrow());
+    for(int i = 0; i < nrow(); i++) {
+        vv[i] = (*this)[i] - v[i];
+    }
+    return vv;
+}
+
+double mathExtension::Vector::operator*(const mathExtension::Vector &v) const
+{
+    double sum = 0;
+    for (int i = 0; i < nrow(); i++) {
+        sum += (*this)[i]*v[i];
+    }
+    return sum;
+}
+
+bool mathExtension::Vector::operator==(const mathExtension::Vector &v) const
+{
+    return ((*this).nrow() == v.nrow());
+}
+
+bool mathExtension::Vector::operator!=(const mathExtension::Vector &v) const
+{
+    return !((*this) == v);
+}
+
+double &mathExtension::Vector::operator[](const int i) const
+{
+    return data_[i];
 }
