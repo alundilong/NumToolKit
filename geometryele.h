@@ -2,6 +2,7 @@
 #define GEOMETRYELE_H
 
 #include "coordsystem.h"
+#include <QList>
 
 class GeometryEle
 {
@@ -25,14 +26,14 @@ public:
         return localCoordinateSystem_;\
     }
 
-    const QList<int> pointIdList() const { return pointIdList; }
+    const QList<int> pointIdList() const { return pointIdList_; }
 
 private:
     double e_[3]; // length in x, y, z direction
     double A_;
     double volume_;
 
-    QList<int> pointIdList;
+    QList<int> pointIdList_;
 
     coordSystem *localCoordinateSystem_;
 };

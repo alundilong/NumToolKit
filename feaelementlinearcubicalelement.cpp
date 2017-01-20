@@ -25,12 +25,6 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     log_ += QString("%3D LinearCubicalElement : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
 
     const int Nunknown = nNode*nDOF;
-//    baseMass_ = new double *[Nunknown];
-//    baseStiff_ = new double *[Nunknown];
-//    for (int i = 0; i < Nunknown; i++) {
-//        baseMass_[i] = new double[Nunknown];
-//        baseStiff_[i] = new double[Nunknown];
-//    }
 
     baseMass_ = mathExtension::Matrix(Nunknown,Nunknown);
     baseStiff_ = mathExtension::Matrix(Nunknown,Nunknown);
@@ -165,7 +159,6 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
 
                 // find mass matrix
                 baseMass_ = baseMass_ + N2.transpose()*(N2*weight*rho);
-
             }
         }
     }
@@ -174,12 +167,31 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     // from local to global
 
     const coordSystem * cs = geometry()->localCoordinateSystem();
-    const QVector3D & e0 = cs->e0();
-    const QVector3D & e1 = cs->e1();
-    const QVector3D & e2 = cs->e2();
-    const QVector3D eg0 = QVector3D(1,0,0);
-    const QVector3D eg1 = QVector3D(0,1,0);
-    const QVector3D eg2 = QVector3D(0,0,1);
+    mathExtension::Vector e0(3);
+    mathExtension::Vector e1(3);
+    mathExtension::Vector e2(3);
+    double x = cs->e0().x();
+    double y = cs->e0().y();
+    double z = cs->e0().z();
+    e0.set(0,x); e0.set(1,y); e0.set(2,z);
+    x = cs->e1().x();
+    y = cs->e1().y();
+    z = cs->e1().z();
+    e1.set(0,x); e1.set(1,y); e1.set(2,z);
+    x = cs->e2().x();
+    y = cs->e2().y();
+    z = cs->e2().z();
+    e2.set(0,x); e2.set(1,y); e2.set(2,z);
+
+    mathExtension::Vector eg0(3);
+    mathExtension::Vector eg1(3);
+    mathExtension::Vector eg2(3);
+    eg0.set(0,1.0);
+    eg1.set(1,1.0);
+    eg2.set(2,1.0);
+
+    // could be further optimized since the transformation
+    // matrix is exactly same to each node of the element
 
     mathExtension::Matrix G(24,24);
     int step = 3;
@@ -187,28 +199,26 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
         mathExtension::pos rowRange = {1+step,1,3+step};
         mathExtension::pos colRange = {1+step,1,3+step};
         mathExtension::Matrix T(3,3);
-        //T = ;
-        T[0][0] = QVector3D::dotProduct(eg0, e0); T[0][1] = QVector3D::dotProduct(eg0, e1); T[0][2] = QVector3D::dotProduct(eg0, e2);
-        T[1][0] = QVector3D::dotProduct(eg1, e0); T[1][1] = QVector3D::dotProduct(eg1, e1); T[1][2] = QVector3D::dotProduct(eg1, e2);
-        T[2][0] = QVector3D::dotProduct(eg2, e0); T[2][1] = QVector3D::dotProduct(eg2, e1); T[2][2] = QVector3D::dotProduct(eg2, e2);
+        //Transformation matrix
+        T[0][0] = eg0.cos(e0);//QVector3D::dotProduct(eg0, e0);
+        T[0][1] = eg0.cos(e1);//QVector3D::dotProduct(eg0, e1);
+        T[0][2] = eg0.cos(e2);//QVector3D::dotProduct(eg0, e2);
+        T[1][0] = eg1.cos(e0);//QVector3D::dotProduct(eg1, e0);
+        T[1][1] = eg1.cos(e1);//QVector3D::dotProduct(eg1, e1);
+        T[1][2] = eg1.cos(e2);//QVector3D::dotProduct(eg1, e2);
+        T[2][0] = eg2.cos(e0);//QVector3D::dotProduct(eg2, e0);
+        T[2][1] = eg2.cos(e1);//QVector3D::dotProduct(eg2, e1);
+        T[2][2] = eg2.cos(e2);//QVector3D::dotProduct(eg2, e2);
         G.setSubMatrix(rowRange, colRange, T);
     }
 
     baseStiff_ = G.transpose()*baseStiff_*G;
     baseMass_ = G.transpose()*baseMass_*G;
 
-
 }
 
 FEAElementLinearCubicalElement::~FEAElementLinearCubicalElement()
 {
-//    int N = nNode*nDOF;
-//    for (int i = 0; i < N; i ++){
-//        delete [] baseMass_[i];
-//        delete [] baseStiff_[i];
-//    }
-//    delete [] baseMass_;
-//    delete [] baseStiff_;
 }
 
 makeElement(ElementName, \

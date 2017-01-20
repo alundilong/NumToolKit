@@ -54,7 +54,7 @@ BarElement::BarElement
 
     baseMass_ = mathExtension::Matrix(N,N);
     baseStiff_ = mathExtension::Matrix(N,N);
-    std::cout << baseMass_ << std::endl;
+//    std::cout << baseMass_ << std::endl;
 
     const double mass = m.rho()*g.volume();
     const double *eL = g.e();
@@ -83,20 +83,18 @@ BarElement::BarElement
     // from local to global
 
     // for 1D element, there is no local to global coordination transformation
-    baseStiff_ = G.transpose()*baseStiff_*G;
-    baseMass_ = G.transpose()*baseMass_*G;
+    mathExtension::Matrix G(2,2);
+    G[0][0] = 1.0; G[0][1] = 0.0;
+    G[1][0] = 0.0; G[1][1] = 1.0;
+
+//    baseStiff_ = G.transpose()*baseStiff_*G;
+//    std::cout<< baseMass();
+//    baseMass_ = G.transpose()*baseMass_*G;
+//    std::cout << baseMass();
 }
 
 BarElement::~BarElement()
-{
-//    int N = nNode*nDOF;
-//    for (int i = 0; i < N; i ++){
-//        delete [] baseMass_[i];
-//        delete [] baseStiff_[i];
-//    }
-//    delete [] baseMass_;
-//    delete [] baseStiff_;
-}
+{}
 
 makeElement(ElementName, BarElement, FEAElementOneD, Bar)
 
