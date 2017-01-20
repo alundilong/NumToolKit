@@ -2,6 +2,7 @@
 #define MATHEXTENSION_H
 
 #include <iostream>
+#include "math.h"
 
 namespace mathExtension {
 
@@ -51,6 +52,7 @@ void matrixMultiplyVector(T (&array1)[r1][c1], T(&array2)[r2], T(&array)[r1]);
 
 // Class Vector defined to handle vector operation
 
+class Point;
 class Vector {
 
 public:
@@ -59,9 +61,12 @@ public:
     Vector(int nrow);
     // construct from
     Vector(int nr, double *array);
+    // construct form Point
+    Vector(const Point &p);
     ~Vector();
     void set(const int i, double val);
     inline const int nrow() const { return nrow_;}
+
 
 private:
 
@@ -90,6 +95,11 @@ public:
 
     // get value
     double &operator[](const int i) const;
+
+    // find cos of two vector
+    double cos(const Vector &v);
+    double dotProduct(const Vector &v);
+    double norm(const Vector &v1);
 };
 
 
@@ -162,6 +172,36 @@ public:
         }
         return os;
     }
+};
+
+class sparseMatrix {
+
+public:
+    sparseMatrix();
+    ~sparseMatrix();
+
+private:
+    int *lowPtr_,*diaPtr_, *upperPtr_;
+
+};
+
+
+class Point {
+public:
+    Point();
+    Point(double x, double y, double z);
+    ~Point();
+
+    const double x() const { return x_;}
+    const double y() const { return y_;}
+    const double z() const { return z_;}
+
+    void operator=(const Vector &v);
+
+private:
+    double x_;
+    double y_;
+    double z_;
 };
 
 //#include "mathExtensionIO.h"

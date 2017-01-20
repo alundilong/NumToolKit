@@ -272,8 +272,9 @@ void mathExtension::Matrix::operator=(const mathExtension::Matrix &m)
 
 mathExtension::Matrix mathExtension::Matrix::operator+(const mathExtension::Matrix &m) const
 {
+    Matrix mm(nrow(), ncol());
     if((*this) == m) {
-        Matrix mm(nrow(), ncol());
+
         for (int i = 0; i < nrow(); i++) {
             for (int j = 0; j < ncol(); j++) {
                 mm[i][j] = (*this)[i][j] + m[i][j];
@@ -288,8 +289,8 @@ mathExtension::Matrix mathExtension::Matrix::operator+(const mathExtension::Matr
 
 mathExtension::Matrix mathExtension::Matrix::operator-(const mathExtension::Matrix &m) const
 {
+    Matrix mm(nrow(), ncol());
     if((*this) == m) {
-        Matrix mm(nrow(), ncol());
         for (int i = 0; i < nrow(); i++) {
             for (int j = 0; j < ncol(); j++) {
                 mm[i][j] = (*this)[i][j] - m[i][j];
@@ -304,11 +305,16 @@ mathExtension::Matrix mathExtension::Matrix::operator-(const mathExtension::Matr
 
 mathExtension::Matrix mathExtension::Matrix::operator*(const mathExtension::Matrix &m) const
 {
-    if((*this).ncol() == m.nrow()) {
-        Matrix mm(nrow(), ncol());
-        for (int i = 0; i < nrow(); i++) {
-            for (int j = 0; j < ncol(); j++) {
-                for (int k = 0; k < nrow(); k++) {
+    int nr = nrow();
+    int nc = m.ncol();
+
+    Matrix mm(nr, nc);
+
+    if(ncol() == m.nrow()) {
+        int ne = ncol();
+        for (int i = 0; i < nr; i++) {
+            for (int j = 0; j < nc; j++) {
+                for (int k = 0; k < ne; k++) {
                     mm[i][j] += (*this)[i][k]*m[k][j];
                 }
             }
@@ -358,14 +364,12 @@ double *mathExtension::Matrix::operator[](const int i) const
 }
 
 
-
-
 mathExtension::Vector::Vector()
     :
       nrow_(1),
       data_(NULL)
 {
-
+    data_ = new double[1];
 }
 
 mathExtension::Vector::Vector(int nrow)
@@ -388,6 +392,16 @@ mathExtension::Vector::Vector(int nrow,double *array)
     }
 }
 
+mathExtension::Vector::Vector(const mathExtension::Point &p):
+    nrow_(3),
+    data_(NULL)
+{
+    data_ = new double[3];
+    data_[0] = p.x();
+    data_[1] = p.y();
+    data_[2] = p.z();
+}
+
 mathExtension::Vector::~Vector()
 {
     delete [] data_;
@@ -405,20 +419,27 @@ void mathExtension::Vector::zeroize()
     }
 }
 
+//
 void mathExtension::Vector::operator=(const mathExtension::Vector &v) const
 {
     if(nrow() == v.nrow()) {
         for(int i = 0; i < nrow(); i++) {
             data_[i] = v[i];
         }
+    } else {
+        std::cout << "Inconsistency of size is not allowed!" << std::endl;
     }
 }
 
 mathExtension::Vector mathExtension::Vector::operator+(const mathExtension::Vector &v) const
 {
     Vector vv(nrow());
-    for(int i = 0; i < nrow(); i++) {
-        vv[i] = (*this)[i] + v[i];
+    if(nrow() == v.nrow()) {
+        for(int i = 0; i < nrow(); i++) {
+            vv[i] = (*this)[i] + v[i];
+        }
+    } else {
+        std::cout << "Inconsistency of size is not allowed!" << std::endl;
     }
     return vv;
 }
@@ -426,8 +447,12 @@ mathExtension::Vector mathExtension::Vector::operator+(const mathExtension::Vect
 mathExtension::Vector mathExtension::Vector::operator-(const mathExtension::Vector &v) const
 {
     Vector vv(nrow());
-    for(int i = 0; i < nrow(); i++) {
-        vv[i] = (*this)[i] - v[i];
+    if(nrow() == v.nrow()) {
+        for(int i = 0; i < nrow(); i++) {
+            vv[i] = (*this)[i] - v[i];
+        }
+    } else {
+        std::cout << "Inconsistency of size is not allowed!" << std::endl;
     }
     return vv;
 }
@@ -435,8 +460,12 @@ mathExtension::Vector mathExtension::Vector::operator-(const mathExtension::Vect
 double mathExtension::Vector::operator*(const mathExtension::Vector &v) const
 {
     double sum = 0;
-    for (int i = 0; i < nrow(); i++) {
-        sum += (*this)[i]*v[i];
+    if(nrow() == v.nrow()) {
+        for (int i = 0; i < nrow(); i++) {
+            sum += (*this)[i]*v[i];
+        }
+    } else {
+        std::cout << "Inconsistency of size is not allowed!" << std::endl;
     }
     return sum;
 }
@@ -454,4 +483,46 @@ bool mathExtension::Vector::operator!=(const mathExtension::Vector &v) const
 double &mathExtension::Vector::operator[](const int i) const
 {
     return data_[i];
+}
+
+double mathExtension::Vector::cos(const mathExtension::Vector &v)
+{
+    double n1 = norm(*this);
+    double n2 = norm(v);
+
+    double dot = (*this)*v;
+    return dot/n1/n2;
+}
+
+double mathExtension::Vector::dotProduct(const mathExtension::Vector &v)
+{
+    return (*this)*v;
+}
+
+double mathExtension::Vector::norm(const mathExtension::Vector &v1)
+{
+    int size = v1.nrow();
+    double sum = 0;
+    for (int i = 0; i < size; i++) {
+        sum += v1[i]*v1[i];
+    }
+
+    return sqrt(sum);
+}
+
+
+mathExtension::Point::Point(double x, double y, double z)
+{
+    x_ = x;
+    y_ = y;
+    z_ = z;
+}
+
+void mathExtension::Point::operator=(const mathExtension::Vector &v)
+{
+    if(v.nrow() == 3) {
+        x_ = v[0];
+        y_ = v[1];
+        z_ = v[2];
+    }
 }
