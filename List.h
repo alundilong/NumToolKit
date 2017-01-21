@@ -23,35 +23,45 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef EULERBERNOULLIBEAM_H
-#define EULERBERNOULLIBEAM_H
+#ifndef LIST_H
+#define LIST_H
 
-#include "FeaElementOneD.h"
+#include "cstddef"
 
-namespace NumToolKit {
+namespace NumToolKit{
 
-namespace Fea {
+//template<typename T, size_t size>
+//class List
+//{
+//public:
+//    List();
+//    ~List();
 
-class EulerBernoulliBeam : public FEAElementOneD
+//    // access to the data
+//    inline const T* data() const { return data_; }
+//    const T & operator[](size_t & index) { return data_[index]; }
+
+//private:
+//    T *data_;
+//};
+
+template<typename T>
+class List
 {
 public:
-    static const std::string typeName;
-    enum location {LEFT, RIGHT};
-    static const int  nNode;
-    static const int nDOF;
-public:
-    EulerBernoulliBeam();
-    EulerBernoulliBeam
-    (
-            const std::string & dimension,
-            const std::string & name,
-            const MaterialEle &m,
-            const GeometryEle &g
-    );
-    ~EulerBernoulliBeam();
+    List(const size_t & size);
+    ~List();
+
+    // access to the data
+    inline const T* data() const { return data_; }
+    const T & operator[](int & index) const { return data_[index]; }
+    inline const int size() const { return size_; }
+
+private:
+    T *data_;
+    int size_;
 };
 
-}
+}// end of NumToolKit
 
-}
-#endif // EULERBERNOULLIBEAM_H
+#endif // LIST_H

@@ -28,6 +28,11 @@
 
 #include "FeaElementBase.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
+
 class FEAElementOneD : public FEAElementBase
 {
 public:
@@ -72,5 +77,9 @@ public:
             const GeometryEle & g
     );
 };
+
+}
+
+}
 
 #endif // FEAELEMENTONED_H

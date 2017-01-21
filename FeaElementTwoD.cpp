@@ -25,6 +25,10 @@
 
 #include "FeaElementTwoD.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 //const std::string FEAElementTwoD::typeName = "TwoD";
 
 FEAElementTwoD::FEAElementTwoD()
@@ -69,3 +73,7 @@ std::auto_ptr<FEAElementTwoD> FEAElementTwoD::New
 
 makeElement(SpaceDimension, FEAElementTwoD, FEAElementBase, TwoD)
 defineRunTimeSelectionTable(FEAElementTwoD, ElementName);
+
+}
+
+}

@@ -28,6 +28,11 @@
 
 #include "FeaElementOneD.h"
 
+
+namespace NumToolKit {
+
+namespace Fea {
+
 class stringElement : public FEAElementOneD
 {
 public:
@@ -46,4 +51,7 @@ public:
     ~stringElement();
 };
 
+}
+
+}
 #endif // STRINGELEMENT_H

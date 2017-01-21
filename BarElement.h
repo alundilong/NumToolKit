@@ -28,6 +28,9 @@
 
 #include "FeaElementOneD.h"
 
+namespace NumToolKit {
+namespace Fea {
+
 class BarElement : public FEAElementOneD
 {
 public:
@@ -48,5 +51,10 @@ public:
     ~BarElement();
 
 };
+
+}
+
+}
+
 
 #endif // BARELEMENT_H

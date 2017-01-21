@@ -25,6 +25,10 @@
 
 #include "EulerBernoulliBeam.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 //const std::string EulerBernoulliBeam::typeName = "EulerBernoulliBeam";
 const int EulerBernoulliBeam::nNode = 2;
 const int EulerBernoulliBeam::nDOF = 2;
@@ -140,3 +144,7 @@ makeElement(ElementName, EulerBernoulliBeam, FEAElementOneD, EulerBernoulliBeam)
 
 //FEAElementOneD::addElementNameConstructorToTable<EulerBernoulliBeam>
 //addEulerBernoulliBeamElementNameConstructorToFEAElementOneDTable_;
+
+}
+
+}

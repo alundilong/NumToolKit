@@ -35,6 +35,10 @@
  * this would be merged with mesh class
 */
 
+namespace NumToolKit {
+
+namespace Fea {
+
 
 class STLMesh
 {
@@ -77,5 +81,9 @@ private:
 
     bound box_;
 };
+
+}
+
+}
 
 #endif // STLMESH_H

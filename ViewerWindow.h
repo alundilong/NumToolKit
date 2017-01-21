@@ -31,6 +31,7 @@
 #include "STLMesh.h"
 
 using namespace std;
+using namespace NumToolKit::Fea;
 // #include <QOpenGLWidget>
 
 class ViewerWindow : public QGLWidget

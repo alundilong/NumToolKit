@@ -25,6 +25,9 @@
 
 #include "FeaElementLinearCubicalElement.h"
 
+namespace NumToolKit {
+
+namespace Fea {
 
 const int FEAElementLinearCubicalElement::nNode = 8;
 const int FEAElementLinearCubicalElement::nDOF = 3;
@@ -250,3 +253,7 @@ makeElement(ElementName, \
             FEAElementLinearCubicalElement, \
             FEAElementThreeD, \
             LinearCubicalElementBarThreeD)
+
+}
+
+}

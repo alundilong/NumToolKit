@@ -25,6 +25,10 @@
 
 #include "StringElement.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 //const std::string stringElement::typeName = "String";
 const int stringElement::nNode = 2;
 const int stringElement::nDOF = 2;
@@ -63,3 +67,6 @@ makeElement(ElementName, stringElement, FEAElementOneD, String)
 
 //FEAElementOneD::addElementNameConstructorToTable<stringElement>
 //addstringElementElementNameConstructorToFEAElementOneDTable_;
+}
+
+}

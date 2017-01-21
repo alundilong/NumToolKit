@@ -25,6 +25,10 @@
 
 #include "FeaElementThreeD.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 //const std::string FEAElementThreeD::typeName = "ThreeD";
 
 FEAElementThreeD::FEAElementThreeD()
@@ -69,3 +73,7 @@ std::auto_ptr<FEAElementThreeD> FEAElementThreeD::New
 
 makeElement(SpaceDimension, FEAElementThreeD, FEAElementBase, ThreeD)
 defineRunTimeSelectionTable(FEAElementThreeD, ElementName);
+
+}
+
+}

@@ -34,6 +34,7 @@
 #include "Form.h"
 #include <QFileDialog>
 
+using namespace NumToolKit::Fea;
 
 feaAnalysisPanel::feaAnalysisPanel(QWidget *parent) :
     QWidget(parent),

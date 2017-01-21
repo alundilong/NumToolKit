@@ -32,6 +32,10 @@
 #include <QMap>
 #include "Bound.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 class Mesh
 {
 public:
@@ -107,5 +111,9 @@ private:
     bound box_;
 
 };
+
+}
+
+}
 
 #endif // MESH_H

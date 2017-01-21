@@ -29,6 +29,10 @@
 #include "CoordSystem.h"
 #include <QList>
 
+namespace NumToolKit {
+
+namespace Fea {
+
 class GeometryEle
 {
 public:
@@ -62,5 +66,9 @@ private:
 
     coordSystem *localCoordinateSystem_;
 };
+
+}
+
+}
 
 #endif // GEOMETRYELE_H

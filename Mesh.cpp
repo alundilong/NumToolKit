@@ -30,6 +30,10 @@
 #include <QMessageBox>
 #include <QDebug>
 
+namespace NumToolKit {
+
+namespace Fea {
+
 const QString Mesh::boundaryFileName = "/boundary";
 const QString Mesh::faceFileName = "/faces";
 const QString Mesh::ownerFileName = "/owner";
@@ -410,3 +414,6 @@ void Mesh::createFaceNormals()
     }
 }
 
+}
+
+}

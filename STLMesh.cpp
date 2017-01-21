@@ -29,6 +29,10 @@
 #include <QMessageBox>
 #include <QDebug>
 
+namespace NumToolKit {
+
+namespace Fea {
+
 STLMesh::STLMesh()
 {
 }
@@ -142,4 +146,8 @@ const QList<int> STLMesh::faceNodes(int faceId) const
 const QList<int> STLMesh::cellFaces(int cellId) const
 {
     return cellFace_[cellId];
+}
+
+}
+
 }

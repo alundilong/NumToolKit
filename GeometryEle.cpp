@@ -25,6 +25,10 @@
 
 #include "GeometryEle.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 GeometryEle::GeometryEle()
 {
 
@@ -59,4 +63,8 @@ GeometryEle::~GeometryEle()
 void GeometryEle::setLocalCoordinateSystem(coordSystem *cs)
 {
     localCoordinateSystem_ = cs;
+}
+
+}
+
 }

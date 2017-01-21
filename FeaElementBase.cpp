@@ -27,6 +27,10 @@
 #include "MaterialEle.h"
 #include "GeometryEle.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 FEAElementBase::FEAElementBase()
 {
     material_ = nullptr;
@@ -72,6 +76,9 @@ FEAElementBase::New\
 
 defineRunTimeSelectionTable(FEAElementBase, SpaceDimension);
 
+}
+
+}
 //FEAElementBase::MaterialEle::MaterialEle()
 //{
 

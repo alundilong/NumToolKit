@@ -28,6 +28,10 @@
 
 #include "FeaElementThreeD.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 class FEAElementLinearCubicalElement : public FEAElementThreeD
 {
 public:
@@ -48,4 +52,7 @@ public:
     ~FEAElementLinearCubicalElement();
 };
 
+}
+
+}
 #endif // FEAELEMENTLINEARCUBICALELEMENT_H

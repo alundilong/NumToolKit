@@ -1,6 +1,8 @@
 #ifndef BOUND_H
 #define BOUND_H
 
+namespace NumToolKit {
+
 struct bound {
     double xlow;
     double xhig;
@@ -9,5 +11,8 @@ struct bound {
     double zlow;
     double zhig;
 };
+
+}
+
 
 #endif // BOUND_H

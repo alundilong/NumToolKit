@@ -28,6 +28,12 @@
 
 #include <QString>
 
+
+namespace NumToolKit {
+
+namespace Fea {
+
+
 class linearAlgebraSolver
 {
 public:
@@ -63,5 +69,9 @@ private:
 
 
 };
+
+}
+
+}
 
 #endif // LINEARALGEBRASOLVER_H

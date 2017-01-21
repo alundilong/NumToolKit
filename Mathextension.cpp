@@ -244,6 +244,29 @@ void mathExtension::Matrix::setSubMatrix(\
     }
 }
 
+// for direct method usage
+void mathExtension::Matrix::setSubMatrix\
+(\
+        const List<int> &Rows, \
+        const List<int> &Cols, \
+        const mathExtension::Matrix &subM\
+)
+{
+    const int & sizeR = Rows.size();
+    const int & sizeC = Cols.size();
+    const int & sizeMR = subM.nrow();
+    const int & sizeMC = subM.ncol();
+    if (sizeR == sizeC && sizeMR == sizeMC && sizeR == sizeMR) {
+        for (int i = 0; i < sizeMR; i++) {
+            const int & ri = Rows[i];
+            for (int j = 0; j < sizeMR; j++) {
+                const int & cj = Cols[j];
+                data_[ri][cj] = subM[i][j];
+            }
+        }
+    }
+}
+
 void mathExtension::Matrix::zeroize()
 {
     for (int i = 0; i < nrow(); i++) {

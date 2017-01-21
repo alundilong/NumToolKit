@@ -29,6 +29,11 @@
 #include <QTextStream>
 #include <QFile>
 
+namespace NumToolKit {
+
+namespace Fea {
+
+
 class OpenFOAMQTextStream : public QTextStream
 {
 public:
@@ -36,4 +41,7 @@ public:
     void ignore(QString, int);
 };
 
+}
+
+}
 #endif // OPENFOAMQTEXTSTREAM_H

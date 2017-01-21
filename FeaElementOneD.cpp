@@ -25,6 +25,10 @@
 
 #include "FeaElementOneD.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 //const std::string FEAElementOneD::typeName = "OneD";
 
 FEAElementOneD::FEAElementOneD()
@@ -69,3 +73,7 @@ std::auto_ptr<FEAElementOneD> FEAElementOneD::New
 
 makeElement(SpaceDimension, FEAElementOneD, FEAElementOneD, OneD)
 defineRunTimeSelectionTable(FEAElementOneD, ElementName);
+
+}
+
+}

@@ -25,6 +25,10 @@
 
 #include "FeaElementBarThreeD.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 const int FEAElementBarThreeD::nNode = 8;
 const int FEAElementBarThreeD::nDOF = 6;
 
@@ -107,3 +111,7 @@ FEAElementBarThreeD::~FEAElementBarThreeD()
 }
 
 makeElement(ElementName, FEAElementBarThreeD, FEAElementThreeD, BarThreeD)
+
+}
+
+}

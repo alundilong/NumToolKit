@@ -18,7 +18,6 @@ SOURCES += main.cpp\
     BarElement.cpp \
     CoordSystem.cpp \
     EulerBernoulliBeam.cpp \
-    FeaaAnlysisPanel.cpp \
     FeaElementBarThreeD.cpp \
     FeaElementBase.cpp \
     FeaElementLinearCubicalElement.cpp \
@@ -36,7 +35,9 @@ SOURCES += main.cpp\
     SPH3DPrintPanel.cpp \
     STLMesh.cpp \
     StringElement.cpp \
-    ViewerWindow.cpp
+    ViewerWindow.cpp \
+    FeaAnlysisPanel.cpp \
+    List.cpp
 
 HEADERS  += \
     MaterialOne.h \
@@ -67,7 +68,8 @@ HEADERS  += \
     StringElement.h \
     ViewerWindow.h \
     SPH3DPrintPanel.h \
-    License.h
+    License.h \
+    List.h
 
 FORMS    += mainwindow.ui \
     form.ui \

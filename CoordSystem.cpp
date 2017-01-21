@@ -25,6 +25,10 @@
 
 #include "CoordSystem.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 coordSystem::coordSystem()
     :
       origin0_(QVector3D(0, 0, 0)),
@@ -48,5 +52,9 @@ coordSystem::coordSystem\
       e1_(axisY),
       e2_(axisZ)
 {
+
+}
+
+}
 
 }

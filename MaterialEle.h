@@ -30,6 +30,10 @@
 #include <unordered_map>
 #include "MaterialOne.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 class MaterialEle
 {
 
@@ -54,5 +58,9 @@ private:
     double G_;
 
 };
+
+}
+
+}
 
 #endif // MATERIALELE_H

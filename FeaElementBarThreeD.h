@@ -28,6 +28,10 @@
 
 #include "FeaElementThreeD.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 class FEAElementBarThreeD : public FEAElementThreeD
 {
 public:
@@ -46,5 +50,9 @@ public:
     );
     ~FEAElementBarThreeD();
 };
+
+}
+
+}
 
 #endif // FEAELEMENTBARTHREED_H

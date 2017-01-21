@@ -27,6 +27,10 @@
 #include <QDebug>
 #include "math.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 linearAlgebraSolver::linearAlgebraSolver()
 {
 }
@@ -264,4 +268,8 @@ void linearAlgebraSolver::printx()
     for (int i = 0; i < N; i++) {
       qDebug() << x_[i];
     }
+}
+
+}
+
 }

@@ -28,6 +28,9 @@
 
 #include <iostream>
 #include "math.h"
+#include "List.h"
+
+using namespace NumToolKit;
 
 namespace mathExtension {
 
@@ -143,7 +146,8 @@ public:
 
     void set(const int i, const Vector &v);
     void setColValues(const int iCol, const pos & Cols, const Vector & v);
-    void setSubMatrix(const pos&Rows, const pos&Cols, const Matrix & subM);
+    void setSubMatrix(const pos & Rows, const pos & Cols, const Matrix & subM);
+    void setSubMatrix(const List<int> & Rows, const List<int> & Cols, const Matrix & subM);
     inline const int nrow() const { return nrow_;}
     inline const int ncol() const { return ncol_;}
 

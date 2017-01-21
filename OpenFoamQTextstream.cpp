@@ -26,6 +26,10 @@
 #include "OpenFoamQTextstream.h"
 #include <QDebug>
 
+namespace NumToolKit {
+
+namespace Fea {
+
 OpenFOAMQTextStream::OpenFOAMQTextStream(QFile* qf) : QTextStream(qf)
 {
 }
@@ -43,4 +47,8 @@ void OpenFOAMQTextStream::ignore(QString target, int max)
         }
         if (c == max) break;
     }
+}
+
+}
+
 }

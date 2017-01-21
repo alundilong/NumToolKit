@@ -27,6 +27,9 @@
 #define COORDSYSTEM_H
 
 #include <QVector3D>
+namespace NumToolKit {
+
+namespace Fea{
 
 class coordSystem
 {
@@ -50,5 +53,9 @@ private:
     // origin0 of coordinate system
     const QVector3D origin0_;
 };
+
+}
+
+}
 
 #endif // COORDSYSTEM_H

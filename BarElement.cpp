@@ -25,6 +25,10 @@
 
 #include "BarElement.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 //const std::string BarElement::typeName = "Bar";
 const int BarElement::nNode = 2;
 const int BarElement::nDOF = 1;
@@ -125,4 +129,9 @@ makeElement(ElementName, BarElement, FEAElementOneD, Bar)
 
 //FEAElementOneD::addElementNameConstructorToTable<BarElement>
 //addBarElementElementNameConstructorToFEAElementOneDTable_;
+
+}
+
+}
+
 

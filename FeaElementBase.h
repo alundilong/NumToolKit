@@ -36,6 +36,10 @@
 /*
  * abstract class for finite element
  */
+namespace NumToolKit {
+
+namespace Fea {
+
 
 //class MaterialEle;
 //class GeometryEle;
@@ -174,4 +178,7 @@ protected:
     \
     addElementToRunTimeSelectionTable(SS, elementType, baseElementType)
 
+}
+
+}
 #endif // FEAELEMENTBASE_H

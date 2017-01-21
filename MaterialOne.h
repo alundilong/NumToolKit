@@ -26,6 +26,10 @@
 #ifndef MATERIALONE_H
 #define MATERIALONE_H
 
+namespace NumToolKit {
+
+namespace Fea {
+
 struct MaterialOne {
 
     double rho;
@@ -34,5 +38,9 @@ struct MaterialOne {
     double nu;
 
 };
+
+}
+
+}
 
 #endif // MATERIALONE_H

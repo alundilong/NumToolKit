@@ -25,6 +25,10 @@
 
 #include "MaterialEle.h"
 
+namespace NumToolKit {
+
+namespace Fea {
+
 const std::unordered_map<std::string, MaterialOne> \
 MaterialEle::materialType \
 = \
@@ -55,5 +59,9 @@ MaterialEle::MaterialEle(MaterialEle &m)
 
 MaterialEle::~MaterialEle()
 {
+
+}
+
+}
 
 }
