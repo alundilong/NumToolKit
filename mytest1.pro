@@ -72,7 +72,9 @@ HEADERS  += \
     src/ui/MainWindow.h \
     src/ui/RunTimeSelectionTables.h \
     src/ui/SPH3DPrintPanel.h \
-    src/ui/ViewerWindow.h
+    src/ui/ViewerWindow.h \
+    src/macro/RunTimeElementNodeTables.h \
+    src/macro/RunTimeElementNodeDOFTables.h
 
 FORMS    += \
     src/ui/feaanalysispanel.ui \

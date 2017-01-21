@@ -30,15 +30,15 @@ namespace NumToolKit {
 namespace Fea {
 
 //const std::string stringElement::typeName = "String";
-const int stringElement::nNode = 2;
-const int stringElement::nDOF = 2;
+const int StringElement::nNode = 2;
+const int StringElement::nDOF = 2;
 
-stringElement::stringElement()
+StringElement::StringElement()
 {
 
 }
 
-stringElement::stringElement
+StringElement::StringElement
 (
         const std::string & dimension,
         const std::string & name,
@@ -52,7 +52,7 @@ stringElement::stringElement
     baseStiff_ = mathExtension::Matrix(N,N);
 }
 
-stringElement::~stringElement()
+StringElement::~StringElement()
 {
 //    int N = nNode*nDOF;
 //    for (int i = 0; i < N; i ++){
@@ -63,8 +63,9 @@ stringElement::~stringElement()
 //    delete [] baseStiff_;
 }
 
-makeElement(ElementName, stringElement, FEAElementOneD, String)
-
+makeElement(ElementName, StringElement, FEAElementOneD, String)
+makeElementNode(ElementName, StringElement, FEAElementBase)
+makeElementNodeDOF(ElementName, StringElement, FEAElementBase)
 //FEAElementOneD::addElementNameConstructorToTable<stringElement>
 //addstringElementElementNameConstructorToFEAElementOneDTable_;
 }

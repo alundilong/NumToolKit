@@ -32,6 +32,8 @@
 #include "../geometry/GeometryEle.h"
 #include "../math/MathExtension.h"
 #include "../../macro/RunTimeSelectionTables.h"
+#include "../../macro/RunTimeElementNodeTables.h"
+#include "../../macro/RunTimeElementNodeDOFTables.h"
 
 /*
  * abstract class for finite element
@@ -39,7 +41,6 @@
 namespace NumToolKit {
 
 namespace Fea {
-
 
 //class MaterialEle;
 //class GeometryEle;
@@ -67,6 +68,20 @@ public:
                 m,
                 g
             )
+    )
+
+    // Declare run-time ElementNode selection table
+    declareRunTimeElementNodeTable
+    (
+            FEAElementBase,
+            ElementName
+    )
+
+    // Declare run-time ElementNode selection table
+    declareRunTimeElementNodeDOFTable
+    (
+            FEAElementBase,
+            ElementName
     )
 
 public:
@@ -178,6 +193,25 @@ protected:
     \
     addElementToRunTimeSelectionTable(SS, elementType, baseElementType)
 
+/* add element node information into top-level table */
+#define addElementNodeToRunTimeElementNodeTable(SS, elementType, baseElementType)\
+    \
+    baseElementType::add##SS##ElementNodeToTable<elementType>\
+    \
+    add##elementType##SS##ElementNodeTo##baseElementType##Table_;
+
+#define makeElementNode(SS, elementType, baseElementType) \
+    addElementNodeToRunTimeElementNodeTable(SS, elementType, baseElementType)
+
+/* add element node dof information into top-level table */
+#define addElementNodeDOFToRunTimeElementNodeDOFTable(SS, elementType, baseElementType)\
+    \
+    baseElementType::add##SS##ElementNodeDOFToTable<elementType>\
+    \
+    add##elementType##SS##ElementNodeDOFTo##baseElementType##Table_;
+
+#define makeElementNodeDOF(SS, elementType, baseElementType) \
+    addElementNodeDOFToRunTimeElementNodeDOFTable(SS, elementType, baseElementType)
 }
 
 }

@@ -126,6 +126,8 @@ BarElement::~BarElement()
 {}
 
 makeElement(ElementName, BarElement, FEAElementOneD, Bar)
+makeElementNode(ElementName, BarElement, FEAElementBase)
+makeElementNodeDOF(ElementName, BarElement, FEAElementBase)
 
 //FEAElementOneD::addElementNameConstructorToTable<BarElement>
 //addBarElementElementNameConstructorToFEAElementOneDTable_;

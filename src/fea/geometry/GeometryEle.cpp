@@ -34,6 +34,14 @@ GeometryEle::GeometryEle()
 
 }
 
+//GeometryEle::GeometryEle(const Mesh &mesh, const List<int> & vertex)
+//{
+//    const int & size = vertex.size();
+//    for (int i = 0; i < size; i++) {
+//        mesh.points()[vertex[i]];
+//    }
+//}
+
 GeometryEle::GeometryEle(double e[])
 {
     for (int i = 0; i < 3; i++) {

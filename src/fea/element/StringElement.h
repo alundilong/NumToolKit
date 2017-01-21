@@ -33,22 +33,22 @@ namespace NumToolKit {
 
 namespace Fea {
 
-class stringElement : public FEAElementOneD
+class StringElement : public FEAElementOneD
 {
 public:
     static const std::string typeName;
     static const int  nNode;
     static const int nDOF;
 
-    stringElement();
-    stringElement
+    StringElement();
+    StringElement
     (
             const std::string & dimension,
             const std::string & name,
             const MaterialEle &m,
             const GeometryEle &g
     );;
-    ~stringElement();
+    ~StringElement();
 };
 
 }

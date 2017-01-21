@@ -49,6 +49,7 @@ template<typename T>
 class List
 {
 public:
+    List();
     List(const size_t & size);
     ~List();
 
@@ -63,5 +64,6 @@ private:
 };
 
 }// end of NumToolKit
+
 
 #endif // LIST_H

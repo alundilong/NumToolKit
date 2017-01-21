@@ -28,6 +28,14 @@
 namespace NumToolKit{
 
 template<typename T>
+List<T>::List()
+    :
+      data_(NULL), size_(1)
+{
+    data_ = new T[size_];
+}
+
+template<typename T>
 List<T>::List(const size_t &size)
     :
       data_(NULL), size_(size)
@@ -42,6 +50,8 @@ List<T>::~List()
         delete [] data_;
     }
 }
+
+template class List<int>;
 
 //template<typename T, size_t size>
 //List::List()
@@ -58,4 +68,5 @@ List<T>::~List()
 //        delete [] data_;
 //    }
 //}
-}
+
+} // end of namespace

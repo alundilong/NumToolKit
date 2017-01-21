@@ -153,6 +153,7 @@ void feaAnalysisPanel::solve1DBar()
     const double E = 1e9; // Pa // Young's Modulus
     const double G = 1e10; // Pa
 
+    // meshing manually
     QList<BarElement> elements;
     for (int i = 0; i < nElement; i++) {
         double e[3] = {length/nElement, 0.1, 0.1};
@@ -163,6 +164,9 @@ void feaAnalysisPanel::solve1DBar()
     }
 
     // assembly the matrix
+    // it will be done in a much better way
+    // 1. direct method, using full Matrix.setsubmatrix()
+    // 2. iterative method, using sparseMatrix
     const int N = nNodes; // total unknown before BC applied
     double **M = new double*[N]; // full mass matrix
     double **K = new double*[N]; // full stiff matrix
@@ -214,6 +218,7 @@ void feaAnalysisPanel::solve1DBar()
     int eleIDEOM = nElement-1; // element ID with Equation of Motion
     Q[eleIDEOM*nDOFEle + BarElement::RIGHT] = 100;
 
+    // innecessary! reset coefficient to the original matrix will be better
     // reconstruct M, K, and Q
 
     int N_p = N - nGBC;

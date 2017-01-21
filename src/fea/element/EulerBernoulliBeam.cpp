@@ -141,7 +141,8 @@ EulerBernoulliBeam::~EulerBernoulliBeam()
 }
 
 makeElement(ElementName, EulerBernoulliBeam, FEAElementOneD, EulerBernoulliBeam)
-
+makeElementNode(ElementName, EulerBernoulliBeam, FEAElementBase)
+makeElementNodeDOF(ElementName, EulerBernoulliBeam, FEAElementBase)
 //FEAElementOneD::addElementNameConstructorToTable<EulerBernoulliBeam>
 //addEulerBernoulliBeamElementNameConstructorToFEAElementOneDTable_;
 

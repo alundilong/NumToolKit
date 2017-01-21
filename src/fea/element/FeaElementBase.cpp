@@ -74,7 +74,9 @@ FEAElementBase::New\
 
 }
 
-defineRunTimeSelectionTable(FEAElementBase, SpaceDimension);
+defineRunTimeSelectionTable(FEAElementBase, SpaceDimension)
+defineRunTimeElementNodeTable(FEAElementBase, ElementName)
+defineRunTimeElementNodeDOFTable(FEAElementBase, ElementName)
 
 }
 

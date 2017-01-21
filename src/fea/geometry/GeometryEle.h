@@ -27,6 +27,8 @@
 #define GEOMETRYELE_H
 
 #include "../../coordinateSystem/CoordSystem.h"
+#include "../mesh/Mesh.h"
+#include "../../container/List.h"
 #include <QList>
 
 namespace NumToolKit {
@@ -39,7 +41,10 @@ public:
     enum component {X, Y, Z};
 public:
     GeometryEle();
-    GeometryEle(double e[3]);
+    // our mesh is always 3D
+    // 2D or 1D problem, variables will be reduced in sepcial way
+    //GeometryEle(const Mesh &mesh, const List<int> & vertex);
+    GeometryEle(double e[]);
     GeometryEle(GeometryEle &g);
     ~GeometryEle();
 
@@ -55,14 +60,14 @@ public:
         return localCoordinateSystem_;\
     }
 
-    const QList<int> pointIdList() const { return pointIdList_; }
+    const List<int> & vertexIds() const { return vertexIds_; }
 
 private:
     double e_[3]; // length in x, y, z direction
     double A_;
     double volume_;
 
-    QList<int> pointIdList_;
+    List<int> vertexIds_;
 
     coordSystem *localCoordinateSystem_;
 };

@@ -72,7 +72,7 @@ std::auto_ptr<FEAElementOneD> FEAElementOneD::New
 //addFEAElementOneDSpaceDimensionConstructorToFEAElementBaseTable_;
 
 makeElement(SpaceDimension, FEAElementOneD, FEAElementOneD, OneD)
-defineRunTimeSelectionTable(FEAElementOneD, ElementName);
+defineRunTimeSelectionTable(FEAElementOneD, ElementName)
 
 }
 

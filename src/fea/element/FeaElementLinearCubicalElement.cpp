@@ -254,6 +254,10 @@ makeElement(ElementName, \
             FEAElementThreeD, \
             LinearCubicalElementBarThreeD)
 
+makeElementNode(ElementName, FEAElementLinearCubicalElement, FEAElementBase)
+
+makeElementNodeDOF(ElementName, FEAElementLinearCubicalElement, FEAElementBase)
+
 }
 
 }
