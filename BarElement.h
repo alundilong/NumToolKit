@@ -23,16 +23,30 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#ifndef BARELEMENT_H
+#define BARELEMENT_H
 
-struct MaterialOne {
+#include "FeaElementOneD.h"
 
-    double rho;
-    double E;
-    double G;
-    double nu;
+class BarElement : public FEAElementOneD
+{
+public:
+    static const std::string typeName;
+    // element numbering sequence
+    enum location {LEFT, RIGHT};
+    static const int  nNode;
+    static const int nDOF;
+public:
+    BarElement();
+    BarElement
+    (
+            const std::string & dim,
+            const std::string & name,
+            const MaterialEle & m,
+            const GeometryEle & g
+    );
+    ~BarElement();
 
 };
 
-#endif // MATERIALONE_H
+#endif // BARELEMENT_H

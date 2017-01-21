@@ -23,16 +23,36 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#ifndef MATERIALELE_H
+#define MATERIALELE_H
 
-struct MaterialOne {
+#include <string>
+#include <unordered_map>
+#include "MaterialOne.h"
 
-    double rho;
-    double E;
-    double G;
-    double nu;
+class MaterialEle
+{
+
+public:
+
+//    static const int nMaterialType = 2;
+    static const std::unordered_map<std::string, MaterialOne> \
+    materialType;
+
+    MaterialEle();
+    MaterialEle(double rho, double E, double G);
+    MaterialEle(MaterialEle &m);
+    ~MaterialEle();
+
+    const double & rho() const { return rho_; }
+    const double & E() const { return E_; }
+    const double & G() const { return G_; }
+
+private:
+    double rho_;
+    double E_;
+    double G_;
 
 };
 
-#endif // MATERIALONE_H
+#endif // MATERIALELE_H

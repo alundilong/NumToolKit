@@ -23,16 +23,27 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#ifndef STRINGELEMENT_H
+#define STRINGELEMENT_H
 
-struct MaterialOne {
+#include "FeaElementOneD.h"
 
-    double rho;
-    double E;
-    double G;
-    double nu;
+class stringElement : public FEAElementOneD
+{
+public:
+    static const std::string typeName;
+    static const int  nNode;
+    static const int nDOF;
 
+    stringElement();
+    stringElement
+    (
+            const std::string & dimension,
+            const std::string & name,
+            const MaterialEle &m,
+            const GeometryEle &g
+    );;
+    ~stringElement();
 };
 
-#endif // MATERIALONE_H
+#endif // STRINGELEMENT_H

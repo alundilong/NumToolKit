@@ -23,16 +23,44 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#ifndef GEOMETRYELE_H
+#define GEOMETRYELE_H
 
-struct MaterialOne {
+#include "CoordSystem.h"
+#include <QList>
 
-    double rho;
-    double E;
-    double G;
-    double nu;
+class GeometryEle
+{
+public:
+    enum component {X, Y, Z};
+public:
+    GeometryEle();
+    GeometryEle(double e[3]);
+    GeometryEle(GeometryEle &g);
+    ~GeometryEle();
 
+    const double & e(component comp) const { return e_[comp]; }
+    const double * e() const { return e_; }
+    const double & A() const { return A_; }
+    const double & volume() const { return volume_; }
+
+    void setLocalCoordinateSystem(coordSystem *);
+
+//  each element should be able to refer it
+    const coordSystem * localCoordinateSystem() const { \
+        return localCoordinateSystem_;\
+    }
+
+    const QList<int> pointIdList() const { return pointIdList_; }
+
+private:
+    double e_[3]; // length in x, y, z direction
+    double A_;
+    double volume_;
+
+    QList<int> pointIdList_;
+
+    coordSystem *localCoordinateSystem_;
 };
 
-#endif // MATERIALONE_H
+#endif // GEOMETRYELE_H

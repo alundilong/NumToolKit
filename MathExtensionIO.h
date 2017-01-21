@@ -23,16 +23,21 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#ifndef MATHEXTENSIONIO_H
+#define MATHEXTENSIONIO_H
 
-struct MaterialOne {
+std::ostream &operator<<(std::ostream& os, const mathExtension::Matrix &m)
+{
+    int nr = m.nrow();
+    int nc = m.ncol();
+    for(int i = 0; i < nr; i++ ) {
+        for(int j = 0; j < nc; j++) {
+            os << m[i][j] << ' ';
+        }
+        os << '\n';
+    }
+    return os;
+}
 
-    double rho;
-    double E;
-    double G;
-    double nu;
 
-};
-
-#endif // MATERIALONE_H
+#endif // MATHEXTENSIONIO_H

@@ -23,16 +23,17 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#ifndef ELMENTSTYLE_H
+#define ELMENTSTYLE_H
 
-struct MaterialOne {
+// 1D Element
+#include "BarElement.h"
+#include "EulerBernoulliBeam.h"
+#include "StringElement.h"
 
-    double rho;
-    double E;
-    double G;
-    double nu;
+// 2D Element
 
-};
+// 3D Element
+#include "FeaElementLinearCubicalElement.h"
 
-#endif // MATERIALONE_H
+#endif // ELMENTSTYLE_H

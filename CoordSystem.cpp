@@ -23,16 +23,30 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#include "CoordSystem.h"
 
-struct MaterialOne {
+coordSystem::coordSystem()
+    :
+      origin0_(QVector3D(0, 0, 0)),
+      e0_(QVector3D(1,0,0)),
+      e1_(QVector3D(0,1,0)),
+      e2_(QVector3D(0,0,1))
+{
 
-    double rho;
-    double E;
-    double G;
-    double nu;
+}
 
-};
+coordSystem::coordSystem\
+(\
+        QVector3D origin0, \
+        QVector3D axisX, \
+        QVector3D axisY, \
+        QVector3D axisZ\
+)
+    :
+      origin0_(origin0),
+      e0_(axisX),
+      e1_(axisY),
+      e2_(axisZ)
+{
 
-#endif // MATERIALONE_H
+}

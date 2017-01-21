@@ -23,16 +23,24 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#include "OpenFoamQTextstream.h"
+#include <QDebug>
 
-struct MaterialOne {
+OpenFOAMQTextStream::OpenFOAMQTextStream(QFile* qf) : QTextStream(qf)
+{
+}
 
-    double rho;
-    double E;
-    double G;
-    double nu;
 
-};
-
-#endif // MATERIALONE_H
+void OpenFOAMQTextStream::ignore(QString target, int max)
+{
+    int c = 0;
+    QString tmp;
+    OpenFOAMQTextStream & in = *this;
+    while(!in.atEnd()) {
+        (*this) >> tmp;
+        if(tmp.compare(target) == 0) {
+            c++;
+        }
+        if (c == max) break;
+    }
+}

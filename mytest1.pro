@@ -15,57 +15,59 @@ TARGET = mytest1
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    form.cpp \
-    linearalgebrasolver.cpp \
-    feaanalysispanel.cpp \
-    feaelementbase.cpp \
-    stringelement.cpp \
-    barelement.cpp \
-    eulerbernoullibeam.cpp \
-    materialele.cpp \
-    geometryele.cpp \
-    mathextension.cpp \
-    mesh.cpp \
-    openfoamqtextstream.cpp \
-    coordsystem.cpp \
-    stlmesh.cpp \
-    viewerwindow.cpp \
-    sph3dprintpanel.cpp \
-    feaelementoned.cpp \
-    feaelementtwod.cpp \
-    feaelementthreed.cpp \
-    feaelementbarthreed.cpp \
-    feaelementlinearcubicalelement.cpp
+    BarElement.cpp \
+    CoordSystem.cpp \
+    EulerBernoulliBeam.cpp \
+    FeaaAnlysisPanel.cpp \
+    FeaElementBarThreeD.cpp \
+    FeaElementBase.cpp \
+    FeaElementLinearCubicalElement.cpp \
+    FeaElementOneD.cpp \
+    FeaElementThreeD.cpp \
+    FeaElementTwoD.cpp \
+    Form.cpp \
+    GeometryEle.cpp \
+    LinearAlgebraSolver.cpp \
+    MainWindow.cpp \
+    MaterialEle.cpp \
+    Mathextension.cpp \
+    Mesh.cpp \
+    OpenFoamQTextstream.cpp \
+    SPH3DPrintPanel.cpp \
+    STLMesh.cpp \
+    StringElement.cpp \
+    ViewerWindow.cpp
 
-HEADERS  += mainwindow.h \
-    form.h \
-    linearalgebrasolver.h \
-    feaanalysispanel.h \
-    feaelementbase.h \
-    stringelement.h \
-    barelement.h \
-    elementstyle.h \
-    eulerbernoullibeam.h \
-    materialele.h \
-    geometryele.h \
-    mathextension.h \
-    mesh.h \
-    openfoamqtextstream.h \
-    coordsystem.h \
-    stlmesh.h \
-    viewerwindow.h \
-    sph3dprintpanel.h \
-    bound.h \
-    runTimeSelectionTables.h \
-    feaelementoned.h \
-    feaelementtwod.h \
-    feaelementthreed.h \
+HEADERS  += \
     MaterialOne.h \
-    feaelementbarthreed.h \
-    feaelementlinearcubicalelement.h \
-    mathExtensionTemplate.h \
-    mathExtensionIO.h
+    BarElement.h \
+    Bound.h \
+    CoordSystem.h \
+    ElementStyle.h \
+    EulerBernoulliBeam.h \
+    FeaAnalysisPanel.h \
+    FeaElementBarThreeD.h \
+    FeaElementBase.h \
+    FeaElementLinearCubicalElement.h \
+    FeaElementOneD.h \
+    FeaElementThreeD.h \
+    FeaElementTwoD.h \
+    Form.h \
+    GeometryEle.h \
+    LinearAlgebraSolver.h \
+    MainWindow.h \
+    MaterialEle.h \
+    MathExtension.h \
+    MathExtensionIO.h \
+    MathExtensionTemplate.h \
+    Mesh.h \
+    OpenFoamQTextstream.h \
+    RunTimeSelectionTables.h \
+    STLMesh.h \
+    StringElement.h \
+    ViewerWindow.h \
+    SPH3DPrintPanel.h \
+    License.h
 
 FORMS    += mainwindow.ui \
     form.ui \

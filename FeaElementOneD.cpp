@@ -23,16 +23,49 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#include "FeaElementOneD.h"
 
-struct MaterialOne {
+//const std::string FEAElementOneD::typeName = "OneD";
 
-    double rho;
-    double E;
-    double G;
-    double nu;
+FEAElementOneD::FEAElementOneD()
+    :
+      FEAElementBase()
+{
+}
 
-};
+FEAElementOneD::FEAElementOneD\
+(\
+        const std::string &dimension, \
+        const std::string &name, \
+        const MaterialEle &m, \
+        const GeometryEle &g\
+)
+    :
+    FEAElementBase(dimension, name, m, g)
+{
 
-#endif // MATERIALONE_H
+}
+
+std::auto_ptr<FEAElementOneD> FEAElementOneD::New
+(
+        const std::string &dimension,
+        const std::string &name,
+        const MaterialEle &m,
+        const GeometryEle &g
+)
+{
+    typename ElementNameConstructorTable::iterator cstrIter =
+    ElementNameConstructorTablePtr_->find(name);
+
+    return std::auto_ptr<FEAElementOneD>
+    (
+        ((cstrIter->second))(dimension, name, m, g)
+    );
+}
+
+
+//FEAElementOneD::addSpaceDimensionConstructorToTable<FEAElementOneD>
+//addFEAElementOneDSpaceDimensionConstructorToFEAElementBaseTable_;
+
+makeElement(SpaceDimension, FEAElementOneD, FEAElementOneD, OneD)
+defineRunTimeSelectionTable(FEAElementOneD, ElementName);

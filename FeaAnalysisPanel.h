@@ -23,16 +23,55 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#ifndef FEAANALYSISPANEL_H
+#define FEAANALYSISPANEL_H
 
-struct MaterialOne {
+#include <QWidget>
+#include "Mesh.h"
+#include "ViewerWindow.h"
 
-    double rho;
-    double E;
-    double G;
-    double nu;
+namespace Ui {
+class feaAnalysisPanel;
+}
 
+class MainWindow;
+
+class feaAnalysisPanel : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit feaAnalysisPanel(QWidget *parent = 0);
+    explicit feaAnalysisPanel(MainWindow *mw, ViewerWindow *vwin, QWidget *parent = 0);
+    ~feaAnalysisPanel();
+    const QString & getLog() {
+        return log_;
+    }
+
+signals:
+    void meshLoaded();
+
+private slots:
+
+    void on_radio2DElement_toggled(bool checked);
+
+    void on_radio1DElement_toggled(bool checked);
+
+    void on_radio3DElement_toggled(bool checked);
+
+    void on_buttonRun_clicked();
+
+    void on_loadMesh_clicked();
+
+private:
+    Ui::feaAnalysisPanel *ui;
+    MainWindow *mw_;
+    ViewerWindow *vwin_;
+    QString log_;
+    Mesh *mesh_;
+
+    inline const Mesh* mesh() { return mesh_; }
+    void solve1DBar();
 };
 
-#endif // MATERIALONE_H
+#endif // FEAANALYSISPANEL_H

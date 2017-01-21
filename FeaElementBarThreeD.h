@@ -23,16 +23,28 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#ifndef FEAELEMENTBARTHREED_H
+#define FEAELEMENTBARTHREED_H
 
-struct MaterialOne {
+#include "FeaElementThreeD.h"
 
-    double rho;
-    double E;
-    double G;
-    double nu;
-
+class FEAElementBarThreeD : public FEAElementThreeD
+{
+public:
+    static const std::string typeName;
+    // element numbering sequence
+    static const int  nNode;
+    static const int nDOF;
+public:
+    FEAElementBarThreeD();
+    FEAElementBarThreeD
+    (
+            const std::string & dim,
+            const std::string & name,
+            const MaterialEle & m,
+            const GeometryEle & g
+    );
+    ~FEAElementBarThreeD();
 };
 
-#endif // MATERIALONE_H
+#endif // FEAELEMENTBARTHREED_H

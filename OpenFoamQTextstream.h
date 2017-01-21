@@ -23,16 +23,17 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef MATERIALONE_H
-#define MATERIALONE_H
+#ifndef OPENFOAMQTEXTSTREAM_H
+#define OPENFOAMQTEXTSTREAM_H
 
-struct MaterialOne {
+#include <QTextStream>
+#include <QFile>
 
-    double rho;
-    double E;
-    double G;
-    double nu;
-
+class OpenFOAMQTextStream : public QTextStream
+{
+public:
+    OpenFOAMQTextStream(QFile* qf);
+    void ignore(QString, int);
 };
 
-#endif // MATERIALONE_H
+#endif // OPENFOAMQTEXTSTREAM_H
