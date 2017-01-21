@@ -26,9 +26,9 @@
 #include "FeaAnalysisPanel.h"
 #include "ui_feaanalysispanel.h"
 #include "MainWindow.h"
-#include "LinearAlgebraSolver.h"
+#include "../fea/math/LinearAlgebraSolver.h"
 
-#include "ElementStyle.h"
+#include "../fea/element/ElementStyle.h"
 
 #include <QDebug>
 #include "Form.h"

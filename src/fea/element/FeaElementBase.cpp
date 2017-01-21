@@ -24,8 +24,8 @@
 ------------------------------------------------------------------------- */
 
 #include "FeaElementBase.h"
-#include "MaterialEle.h"
-#include "GeometryEle.h"
+#include "../material/MaterialEle.h"
+#include "../geometry/GeometryEle.h"
 
 namespace NumToolKit {
 

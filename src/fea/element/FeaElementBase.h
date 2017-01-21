@@ -28,10 +28,10 @@
 
 #include <QString>
 #include <QDebug>
-#include "MaterialEle.h"
-#include "GeometryEle.h"
-#include "MathExtension.h"
-#include "RunTimeSelectionTables.h"
+#include "../material/MaterialEle.h"
+#include "../geometry/GeometryEle.h"
+#include "../math/MathExtension.h"
+#include "../../macro/RunTimeSelectionTables.h"
 
 /*
  * abstract class for finite element

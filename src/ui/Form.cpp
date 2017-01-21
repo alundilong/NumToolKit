@@ -26,7 +26,7 @@
 #include "Form.h"
 #include "ui_form.h"
 #include <QMessageBox>
-#include "LinearAlgebraSolver.h"
+#include "../fea/math/LinearAlgebraSolver.h"
 #include "MainWindow.h"
 #include <QDebug>
 

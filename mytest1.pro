@@ -14,67 +14,71 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = mytest1
 TEMPLATE = app
 
-SOURCES += main.cpp\
-    BarElement.cpp \
-    CoordSystem.cpp \
-    EulerBernoulliBeam.cpp \
-    FeaElementBarThreeD.cpp \
-    FeaElementBase.cpp \
-    FeaElementLinearCubicalElement.cpp \
-    FeaElementOneD.cpp \
-    FeaElementThreeD.cpp \
-    FeaElementTwoD.cpp \
-    Form.cpp \
-    GeometryEle.cpp \
-    LinearAlgebraSolver.cpp \
-    MainWindow.cpp \
-    MaterialEle.cpp \
-    Mathextension.cpp \
-    Mesh.cpp \
-    OpenFoamQTextstream.cpp \
-    SPH3DPrintPanel.cpp \
-    STLMesh.cpp \
-    StringElement.cpp \
-    ViewerWindow.cpp \
-    FeaAnlysisPanel.cpp \
-    List.cpp
+SOURCES += \
+    src/container/List.cpp \
+    src/coordinateSystem/CoordSystem.cpp \
+    src/fea/element/BarElement.cpp \
+    src/fea/element/EulerBernoulliBeam.cpp \
+    src/fea/element/FeaElementBarThreeD.cpp \
+    src/fea/element/FeaElementBase.cpp \
+    src/fea/element/FeaElementLinearCubicalElement.cpp \
+    src/fea/element/FeaElementOneD.cpp \
+    src/fea/element/FeaElementThreeD.cpp \
+    src/fea/element/FeaElementTwoD.cpp \
+    src/fea/element/StringElement.cpp \
+    src/fea/geometry/GeometryEle.cpp \
+    src/fea/material/MaterialEle.cpp \
+    src/fea/math/LinearAlgebraSolver.cpp \
+    src/fea/math/Mathextension.cpp \
+    src/fea/mesh/FeaMesh.cpp \
+    src/fea/mesh/Mesh.cpp \
+    src/fea/mesh/OpenFoamQTextstream.cpp \
+    src/fea/mesh/STLMesh.cpp \
+    src/ui/FeaAnlysisPanel.cpp \
+    src/ui/Form.cpp \
+    src/ui/main.cpp \
+    src/ui/MainWindow.cpp \
+    src/ui/SPH3DPrintPanel.cpp \
+    src/ui/ViewerWindow.cpp
 
 HEADERS  += \
-    MaterialOne.h \
-    BarElement.h \
-    Bound.h \
-    CoordSystem.h \
-    ElementStyle.h \
-    EulerBernoulliBeam.h \
-    FeaAnalysisPanel.h \
-    FeaElementBarThreeD.h \
-    FeaElementBase.h \
-    FeaElementLinearCubicalElement.h \
-    FeaElementOneD.h \
-    FeaElementThreeD.h \
-    FeaElementTwoD.h \
-    Form.h \
-    GeometryEle.h \
-    LinearAlgebraSolver.h \
-    MainWindow.h \
-    MaterialEle.h \
-    MathExtension.h \
-    MathExtensionIO.h \
-    MathExtensionTemplate.h \
-    Mesh.h \
-    OpenFoamQTextstream.h \
-    RunTimeSelectionTables.h \
-    STLMesh.h \
-    StringElement.h \
-    ViewerWindow.h \
-    SPH3DPrintPanel.h \
-    License.h \
-    List.h
+    src/container/List.h \
+    src/coordinateSystem/CoordSystem.h \
+    src/fea/element/BarElement.h \
+    src/fea/element/ElementStyle.h \
+    src/fea/element/EulerBernoulliBeam.h \
+    src/fea/element/FeaElementBarThreeD.h \
+    src/fea/element/FeaElementBase.h \
+    src/fea/element/FeaElementLinearCubicalElement.h \
+    src/fea/element/FeaElementOneD.h \
+    src/fea/element/FeaElementThreeD.h \
+    src/fea/element/FeaElementTwoD.h \
+    src/fea/element/StringElement.h \
+    src/fea/geometry/GeometryEle.h \
+    src/fea/material/MaterialEle.h \
+    src/fea/material/MaterialOne.h \
+    src/fea/math/LinearAlgebraSolver.h \
+    src/fea/math/MathExtension.h \
+    src/fea/math/MathExtensionIO.h \
+    src/fea/math/MathExtensionTemplate.h \
+    src/fea/mesh/Bound.h \
+    src/fea/mesh/FeaMesh.h \
+    src/fea/mesh/Mesh.h \
+    src/fea/mesh/OpenFoamQTextstream.h \
+    src/fea/mesh/STLMesh.h \
+    src/macro/RunTimeSelectionTables.h \
+    src/ui/FeaAnalysisPanel.h \
+    src/ui/Form.h \
+    src/ui/MainWindow.h \
+    src/ui/RunTimeSelectionTables.h \
+    src/ui/SPH3DPrintPanel.h \
+    src/ui/ViewerWindow.h
 
-FORMS    += mainwindow.ui \
-    form.ui \
-    feaanalysispanel.ui \
-    sph3dprintpanel.ui
+FORMS    += \
+    src/ui/feaanalysispanel.ui \
+    src/ui/form.ui \
+    src/ui/mainwindow.ui \
+    src/ui/sph3dprintpanel.ui
 
 RESOURCES += \
     resource.qrc

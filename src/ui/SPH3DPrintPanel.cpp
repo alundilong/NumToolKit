@@ -28,7 +28,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDebug>
-#include "STLMesh.h"
+#include "../fea/mesh/STLMesh.h"
 
 SPH3DPrintPanel::SPH3DPrintPanel(QWidget *parent) :
     QWidget(parent),

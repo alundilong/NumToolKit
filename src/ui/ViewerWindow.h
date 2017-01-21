@@ -27,8 +27,8 @@
 #define VIEWERWINDOW_H
 
 #include <QGLWidget>
-#include "Mesh.h"
-#include "STLMesh.h"
+#include "../fea/mesh/Mesh.h"
+#include "../fea/mesh/STLMesh.h"
 
 using namespace std;
 using namespace NumToolKit::Fea;

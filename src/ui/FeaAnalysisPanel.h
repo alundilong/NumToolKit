@@ -27,7 +27,7 @@
 #define FEAANALYSISPANEL_H
 
 #include <QWidget>
-#include "Mesh.h"
+#include "../fea/mesh/Mesh.h"
 #include "ViewerWindow.h"
 
 namespace Ui {

@@ -29,6 +29,7 @@
 #include "FeaElementOneD.h"
 
 namespace NumToolKit {
+
 namespace Fea {
 
 class BarElement : public FEAElementOneD
