@@ -53,12 +53,14 @@ public:
     const double & E() const { return E_; }
     const double & G() const { return G_; }
     const double & nu() const { return nu_; }
+    const std::string & name() const { return name_; }
 
 private:
     double rho_;
     double E_;
     double G_;
     double nu_;
+    std::string name_;
 
 };
 

@@ -50,31 +50,43 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     nDOFEle_ = 3;
     nNodeEle_ = 8;
     name_ = "LinearCubicalElement3D";
-    log_ += QString("%3D LinearCubicalElement : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
+    qDebug() << log_;
+    qDebug() << name_;
+    qDebug() << "-----------------------";
+    log_ += QString(\
+                "%1D LinearCubicalElement : nNode = %2 : DOF = %3 \n"\
+                ).arg(dim()).arg(nNodeEle()).arg(nDOFEle());
 
     const int Nunknown = nNode*nDOF;
 
     baseMass_ = mathExtension::Matrix(Nunknown,Nunknown);
     baseStiff_ = mathExtension::Matrix(Nunknown,Nunknown);
 
-    // not general (XX, YY, ZZ for local coordinate only)
-    double a = geometry()->e(GeometryEle::X);
-    double b = geometry()->e(GeometryEle::Y);
-    double c = geometry()->e(GeometryEle::Z);
+    // for this element we know how to compute e
 
-    double v = 0; // from material type
+    QVector3D p1 = geometry()->mesh().points()[geometry()->vertexIds()[1-1]];
+    QVector3D p4 = geometry()->mesh().points()[geometry()->vertexIds()[4-1]];
+    QVector3D p5 = geometry()->mesh().points()[geometry()->vertexIds()[5-1]];
+    QVector3D p2 = geometry()->mesh().points()[geometry()->vertexIds()[2-1]];
+
+    double ex = p1.distanceToPoint(p4);
+    double ey = p1.distanceToPoint(p5);
+    double ez = p1.distanceToPoint(p2);
+    double a = ex;
+    double b = ey;
+    double c = ez;
+
+    double v = material()->nu(); // from material type
     double E = material()->E();
     double rho = material()->rho();
 
     double v22 = (1.0 - 2.0*v)/2.;
     double abc8 = a*b*c/8.0;
+
     mathExtension::Vector N(8);
     mathExtension::Vector Nx(8);
     mathExtension::Vector Ny(8);
     mathExtension::Vector Nz(8);
-
-    mathExtension::Matrix N1(6,24);
-    mathExtension::Matrix N2(3,24);
 
     double QQ[6][6] = \
     {
@@ -96,7 +108,7 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     mathExtension::Vector V(6);
     for(int i = 0; i < Q.nrow(); i++) {
         for (int j = 0; j < Q.ncol(); j++) {
-            V.set(i,QQ[i][j]);
+            V.set(j,QQ[i][j]);
         }
         Q.set(i,V);
     }
@@ -152,38 +164,42 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
                 Nz[6] = (1+y+x+xy)/4.0/c;
                 Nz[7] = (1+y-x-xy)/4.0/c;
 
+
+                mathExtension::Matrix N1(6,24);
+                mathExtension::Matrix N2(3,24);
+
                 mathExtension::pos colPos;
                 colPos = {1, 3, 24};
-                N1.setColValues(0, colPos, Nx);
+                N1.setColValues(1, colPos, Nx);
                 colPos = {2, 3, 24};
-                N1.setColValues(1, colPos, Ny);
+                N1.setColValues(2, colPos, Ny);
                 colPos = {3, 3, 24};
-                N1.setColValues(1, colPos, Nz);
+                N1.setColValues(2, colPos, Nz);
 
                 colPos = {2, 3, 24};
-                N1.setColValues(3, colPos, Nz);
-                colPos = {3, 3, 24};
-                N1.setColValues(3, colPos, Ny);
-
-                colPos = {1, 3, 24};
                 N1.setColValues(4, colPos, Nz);
                 colPos = {3, 3, 24};
-                N1.setColValues(4, colPos, Nx);
+                N1.setColValues(4, colPos, Ny);
 
                 colPos = {1, 3, 24};
-                N1.setColValues(5, colPos, Ny);
-                colPos = {2, 3, 24};
+                N1.setColValues(5, colPos, Nz);
+                colPos = {3, 3, 24};
                 N1.setColValues(5, colPos, Nx);
+
+                colPos = {1, 3, 24};
+                N1.setColValues(6, colPos, Ny);
+                colPos = {2, 3, 24};
+                N1.setColValues(6, colPos, Nx);
 
                 baseStiff_ = baseStiff_ + N1.transpose()*Q*N1*weight;
 
                 // prepare for mass matrix
                 colPos = {1, 3, 24};
-                N2.setColValues(0, colPos, N);
-                colPos = {2, 3, 24};
                 N2.setColValues(1, colPos, N);
-                colPos = {3, 3, 24};
+                colPos = {2, 3, 24};
                 N2.setColValues(2, colPos, N);
+                colPos = {3, 3, 24};
+                N2.setColValues(3, colPos, N);
 
                 // find mass matrix
                 baseMass_ = baseMass_ + N2.transpose()*(N2*weight*rho);
@@ -224,8 +240,8 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     mathExtension::Matrix G(24,24);
     int step = 3;
     for (int i = 0; i < 24; i = i+step) {
-        mathExtension::pos rowRange = {1+step,1,3+step};
-        mathExtension::pos colRange = {1+step,1,3+step};
+        mathExtension::pos rowRange = {i+1,1,i+1+step};
+        mathExtension::pos colRange = {i+1,1,i+1+step};
         mathExtension::Matrix T(3,3);
         //Transformation matrix
         T[0][0] = eg0.cos(e0);//QVector3D::dotProduct(eg0, e0);
@@ -237,12 +253,12 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
         T[2][0] = eg2.cos(e0);//QVector3D::dotProduct(eg2, e0);
         T[2][1] = eg2.cos(e1);//QVector3D::dotProduct(eg2, e1);
         T[2][2] = eg2.cos(e2);//QVector3D::dotProduct(eg2, e2);
+
         G.setSubMatrix(rowRange, colRange, T);
     }
 
     baseStiff_ = G.transpose()*baseStiff_*G;
     baseMass_ = G.transpose()*baseMass_*G;
-
 }
 
 FEAElementLinearCubicalElement::~FEAElementLinearCubicalElement()

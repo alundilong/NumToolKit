@@ -50,7 +50,7 @@ FEAElementTwoD::FEAElementTwoD\
 
 }
 
-std::auto_ptr<FEAElementTwoD> FEAElementTwoD::New
+std::unique_ptr<FEAElementTwoD> FEAElementTwoD::New
 (
         const std::string &dimension,
         const std::string &name,
@@ -61,7 +61,7 @@ std::auto_ptr<FEAElementTwoD> FEAElementTwoD::New
     typename ElementNameConstructorTable::iterator cstrIter =
     ElementNameConstructorTablePtr_->find(name);
 
-    return std::auto_ptr<FEAElementTwoD>
+    return std::unique_ptr<FEAElementTwoD>
     (
         ((cstrIter->second))(dimension, name, m, g)
     );
@@ -72,7 +72,7 @@ std::auto_ptr<FEAElementTwoD> FEAElementTwoD::New
 //addFEAElementTwoDSpaceDimensionConstructorToFEAElementBaseTable_;
 
 makeElement(SpaceDimension, FEAElementTwoD, FEAElementBase, TwoD)
-defineRunTimeSelectionTable(FEAElementTwoD, ElementName);
+defineRunTimeSelectionTable(FEAElementTwoD, ElementName)
 
 }
 

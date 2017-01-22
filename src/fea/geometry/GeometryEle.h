@@ -43,13 +43,15 @@ public:
 //    GeometryEle(const Mesh & mesh);
     // our mesh is always 3D
     // 2D or 1D problem, variables will be reduced in sepcial way
-    GeometryEle(const Mesh & mesh, const List<int> & vertex);
+    GeometryEle(const Mesh & mesh, const QList<int> & vertex);
 //    GeometryEle(const Mesh & mesh, double e[]);
     GeometryEle(const GeometryEle &g);
     ~GeometryEle();
 
     const double & e(component comp) const { return e_[comp]; }
+    void sete(component comp, double val) { e_[comp] = val; }
     const double * e() const { return e_; }
+    double *e() { return e_; }
     const double & A() const { return A_; }
     const double & volume() const { return volume_; }
 
@@ -60,7 +62,7 @@ public:
         return localCoordinateSystem_;\
     }
 
-    const List<int> & vertexIds() const { return vertexIds_; }
+    const QList<int> & vertexIds() const { return vertexIds_; }
     const Mesh & mesh() const { return mesh_; }
 
 private:
@@ -69,7 +71,7 @@ private:
     double A_;
     double volume_;
 
-    const List<int>& vertexIds_;
+    const QList<int>& vertexIds_;
 
     coordSystem *localCoordinateSystem_;
 };

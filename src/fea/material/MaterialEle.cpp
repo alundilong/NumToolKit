@@ -61,12 +61,13 @@ MaterialEle::MaterialEle(MaterialEle &m)
 MaterialEle::MaterialEle(std::string &name)
 {
     std::unordered_map<std::string, MaterialOne>::const_iterator it;
-    it = materialType.find("A");
+    it = materialType.find(name);
     if(it != materialType.end()) {
         rho_ = (it->second).rho;
         E_ = (it->second).E;
         G_ = (it->second).G;
         nu_ = (it->second).nu;
+        name_ = name;
     }
 }
 

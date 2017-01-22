@@ -27,6 +27,11 @@
 #define LIST_H
 
 #include "cstddef"
+#include <iostream>
+
+
+// need shallowcopy
+// need deep copy
 
 namespace NumToolKit{
 
@@ -56,14 +61,27 @@ public:
     // access to the data
     // allow to assign new value
     inline const T* data() const { return data_; }
+    inline T* data() { return data_; }
     T & operator[](const int & index) { return data_[index]; }
     // allow to get value
     const T operator[](const int & index) const { return data_[index]; }
+    //
+    void operator=(List<T> & list);
+
+    friend std::ostream &operator<<(std::ostream& os, const List<T>&v){
+        int nr = v.size();
+        for(int i = 0; i < nr; i++ ) {
+            os << v[i] << ' ';
+        }
+        return os;
+    }
+
     inline const int size() const { return size_; }
 
 private:
     T *data_;
     int size_;
+//    void zeroize();
 };
 
 }// end of NumToolKit

@@ -53,7 +53,7 @@ public:
     // Declare run-time constructor selection table
     declareRunTimeNewSelectionTable
     (
-            std::auto_ptr,
+            std::unique_ptr,
             FEAElementBase,
             SpaceDimension,
             (
@@ -94,7 +94,7 @@ public:
             const GeometryEle & g
     );
 
-    static std::auto_ptr<FEAElementBase> New
+    static std::unique_ptr<FEAElementBase>  & New
     (
             const std::string & dim,
             const std::string & name,
@@ -118,6 +118,7 @@ public:
 //    const GeometryEle & geometry() const { return *geoInfo_; }
     const MaterialEle * material() const { return material_; }
     const GeometryEle * geometry() const { return geoInfo_; }
+
 
 //    // material of this element
 //    class MaterialEle {

@@ -55,7 +55,7 @@ FEAElementBase::~FEAElementBase()
 
 }
 
-std::auto_ptr<FEAElementBase> \
+std::unique_ptr<FEAElementBase> &  \
 FEAElementBase::New\
 (
         const std::string & dimension, \
@@ -67,11 +67,26 @@ FEAElementBase::New\
     typename SpaceDimensionConstructorTable::iterator cstrIter =
     SpaceDimensionConstructorTablePtr_->find(dimension);
 
-    return std::auto_ptr<FEAElementBase>
-    (
-        (cstrIter->second)(dimension, name, m, g)
-    );
+    std::cout << dimension << std::endl;
+    std::cout << name << std::endl;
 
+    if(cstrIter == SpaceDimensionConstructorTablePtr_->end()) {
+        std::cout << "Error : Failure to find " \
+                  << dimension \
+                  << " Element " << std::endl;
+        std::cout << "Valid Elements are :" << std::endl;
+
+        for (cstrIter = SpaceDimensionConstructorTablePtr_->begin(); \
+             cstrIter != SpaceDimensionConstructorTablePtr_->end();\
+             ++cstrIter) {
+            std::cout << cstrIter->first << " Elements" << std::endl;
+        }
+    }
+    std::unique_ptr<FEAElementBase> ptr = \
+        (
+            ((cstrIter->second))(dimension, name, m, g)
+        );
+    return ptr;
 }
 
 defineRunTimeSelectionTable(FEAElementBase, SpaceDimension)

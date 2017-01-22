@@ -50,7 +50,7 @@ FEAElementOneD::FEAElementOneD\
 
 }
 
-std::auto_ptr<FEAElementOneD> FEAElementOneD::New
+std::unique_ptr<FEAElementOneD> FEAElementOneD::New
 (
         const std::string &dimension,
         const std::string &name,
@@ -61,7 +61,7 @@ std::auto_ptr<FEAElementOneD> FEAElementOneD::New
     typename ElementNameConstructorTable::iterator cstrIter =
     ElementNameConstructorTablePtr_->find(name);
 
-    return std::auto_ptr<FEAElementOneD>
+    return std::unique_ptr<FEAElementOneD>
     (
         ((cstrIter->second))(dimension, name, m, g)
     );

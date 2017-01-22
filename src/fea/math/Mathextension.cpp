@@ -214,8 +214,10 @@ void mathExtension::Matrix::setColValues(\
     const int start = Cols.start;
     const int step = Cols.step;
     const int end = Cols.end;
+    int cc = 0;
     for (int c = start; c < end; c = c+step ) {
-        data_[iCol][c-1] = v[c-1];
+        data_[iCol-1][c-1] = v[cc];
+        cc++;
     }
 }
 
@@ -261,7 +263,7 @@ void mathExtension::Matrix::setSubMatrix\
             const int & ri = Rows[i];
             for (int j = 0; j < sizeMR; j++) {
                 const int & cj = Cols[j];
-                data_[ri][cj] = subM[i][j];
+                data_[ri-1][cj-1] = subM[i][j];
             }
         }
     }
@@ -390,7 +392,7 @@ mathExtension::Matrix mathExtension::Matrix::operator*(const double &s) const
     Matrix mm(nrow(), ncol());
     for (int i = 0; i < nrow(); i++) {
         for (int j = 0; j < ncol(); j++) {
-            mm[i][j] *= s;
+            mm[i][j] = data()[i][j]*s;
         }
     }
     return mm;
@@ -590,3 +592,4 @@ mathExtension::Point mathExtension::Point::operator-(\
 {
     return Point(x()-p.x(), y()-p.y(), z() - p.z());
 }
+

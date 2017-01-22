@@ -140,54 +140,58 @@ void feaAnalysisPanel::solveFEA()
     const Mesh & polyMesh = (*mesh());
 // pre-unkown the shape of each cell (cube)
 // find element's numbering sequence
-    const List< List<int> > vertexList \
-            = polyMesh.numberSequence(Mesh::Cubic);
+    QList<QList<int> > vertexList;
+    polyMesh.numberSequence(Mesh::Cubic, vertexList);
 
-    const int nElement = polyMesh.nCells();
+    const int nElement = 1;//polyMesh.nCells();
     const int nNodes = polyMesh.nNodes();
 
     std::string nameMat = "Aluminum";
-    // meshing manually
-    QList<FEAElementLinearCubicalElement> elements;
+    QList<FEAElementLinearCubicalElement*> elements;
     for (int i = 0; i < nElement; i++) {
+
+        qDebug() << "Material";
         MaterialEle *m = new MaterialEle(nameMat);
-        const List<int> & vertex = vertexList[i];
+        qDebug() << "Vertex";
+        const QList<int> & vertex = vertexList[i];
+        qDebug() << "GeometryInfo";
         GeometryEle *g = new GeometryEle(polyMesh, vertex);
-        auto_ptr<FEAElementBase> parentEle = \
-                FEAElementBase::New(\
+        qDebug() << "Contruct Parent";
+        std::unique_ptr<FEAElementThreeD>& parentEle = \
+                FEAElementThreeD::New(\
                     "ThreeD",\
                     "LinearCubicalElementBarThreeD",\
                     *m,\
                     *g);
         FEAElementLinearCubicalElement *lce =\
-                dynamic_cast<FEAElementLinearCubicalElement*>(parentEle.get());
-        elements.push_back(*lce);
+                static_cast<FEAElementLinearCubicalElement*>(parentEle.get());
+        elements.push_back(lce);
     }
 
-    mathExtension::Matrix A(nNodes, nNodes);
+//    mathExtension::Matrix A(nNodes, nNodes);
 
-    QList<FEAElementLinearCubicalElement>::const_iterator it;
-    for(it = elements.begin(); it != elements.end(); ++it) {
-        const FEAElementLinearCubicalElement & ele = *it;
-        const List<int> & Rows = ele.geometry()->vertexIds();
-        A.setSubMatrix(Rows, Rows, ele.baseStiff());
-    }
+//    QList<FEAElementLinearCubicalElement>::const_iterator it;
+//    for(it = elements.begin(); it != elements.end(); ++it) {
+//        const FEAElementLinearCubicalElement & ele = *it;
+//        const List<int> & Rows = ele.geometry()->vertexIds();
+//        A.setSubMatrix(Rows, Rows, ele.baseStiff());
+//    }
 
-    mathExtension::Vector b(nNodes);
-    mathExtension::Vector x(nNodes);
+//    mathExtension::Vector b(nNodes);
+//    mathExtension::Vector x(nNodes);
 
-    linearAlgebraSolver las(A, b, x);
-    las.GaussElimination(); // coefficient will be changed
+//    linearAlgebraSolver las(A, b, x);
+//    las.GaussElimination(); // coefficient will be changed
 
 //    Form *tmp = new Form(N_p, K_p, Q_p, mw);
 //    tmp->show();
 
-    log_ += las.mylog();
-    log_ += "\n Results of this Bar Problem is :\n";
-    for (int i = 0; i < x.nrow(); i++) {
-        log_ += QString("Element %1 : Disp = %2 m\n").arg(i).arg(QString::number(x[i]));
-    }
-    mw_->retrieveLogFromFEAWindow();
+//    log_ += las.mylog();
+//    log_ += "\n Results of this Bar Problem is :\n";
+//    for (int i = 0; i < x.nrow(); i++) {
+//        log_ += QString("Element %1 : Disp = %2 m\n").arg(i).arg(QString::number(x[i]));
+//    }
+//    mw_->retrieveLogFromFEAWindow();
 
 }
 

@@ -34,17 +34,17 @@
 
 #include <memory>
 #include <unordered_map>
-#include <auto_ptr.h>
+//#include <unique_ptr.h>
 #include <QString>
 #include <iostream>
 #include <utility>
 #include <functional>
 
 
-#define declareRunTimeSelectionTable(auto_ptr, baseType, \
+#define declareRunTimeSelectionTable(unique_ptr, baseType, \
     argNames, argList, parList)\
     \
-    typedef auto_ptr<baseType> (*argNames##ConstructorPtr)argList;\
+    typedef unique_ptr<baseType> (*argNames##ConstructorPtr)argList;\
     \
     typedef std::unordered_map<std::string,argNames##ConstructorPtr> \
     argNames##ConstructorTable;\
@@ -60,9 +60,9 @@
     {\
     public:\
     \
-        static auto_ptr<baseType> New argList\
+        static unique_ptr<baseType> New argList\
         {\
-            return auto_ptr<baseType>(new baseType##Type parList);\
+            return unique_ptr<baseType>(new baseType##Type parList);\
         }\
         \
         \
@@ -99,10 +99,10 @@
      * the 1st level base class. Each of them will has its
      * own New function to create its own element */
 
-#define declareRunTimeNewSelectionTable(auto_ptr, baseType, \
+#define declareRunTimeNewSelectionTable(unique_ptr, baseType, \
     argNames, argList, parList)\
     \
-    typedef auto_ptr<baseType> (*argNames##ConstructorPtr)argList;\
+    typedef unique_ptr<baseType> (*argNames##ConstructorPtr)argList;\
     \
     typedef std::unordered_map<std::string,argNames##ConstructorPtr> \
     argNames##ConstructorTable;\
@@ -118,9 +118,9 @@
     {\
     public:\
     \
-        static auto_ptr<baseType> New##baseType argList\
+        static unique_ptr<baseType> New##baseType argList\
         {\
-            return auto_ptr<baseType>((baseType##Type::New parList).get());\
+            return unique_ptr<baseType>((baseType##Type::New parList).get());\
         }\
         \
         \

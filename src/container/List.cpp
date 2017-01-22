@@ -33,6 +33,7 @@ List<T>::List()
       data_(NULL), size_(1)
 {
     data_ = new T[size_];
+//    zeroize();
 }
 
 template<typename T>
@@ -41,6 +42,7 @@ List<T>::List(const size_t &size)
       data_(NULL), size_(size)
 {
     data_ = new T[size_];
+//    zeroize();
 }
 
 template<typename T>
@@ -50,6 +52,24 @@ List<T>::~List()
         delete [] data_;
     }
 }
+
+template<typename T>
+void List<T>::operator=(List<T> &list)
+{
+    size_ = list.size();
+//    data_ = list.data();
+    for (int i = 0; i < size(); i++) {
+        data_[i] = list.data()[i];
+    }
+}
+
+//template<typename T>
+//void List::zeroize()
+//{
+//    for (int i = 0; i < size(); i++) {
+//        data_[i] = 0.0;
+//    }
+//}
 
 template class List<int>;
 template class List< List<int> >;

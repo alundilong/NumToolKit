@@ -40,7 +40,7 @@ public:
     // Declare run-time constructor selection table
     declareRunTimeSelectionTable
     (
-            std::auto_ptr,
+            std::unique_ptr,
             FEAElementThreeD,
             ElementName,
             (
@@ -68,7 +68,7 @@ public:
     );
 
     // Selector
-    static std::auto_ptr<FEAElementThreeD> New
+    static std::unique_ptr<FEAElementThreeD> &New
     (
             const std::string &  dim,
             const std::string & name,

@@ -236,6 +236,12 @@ public:
 
     void operator=(const Vector &v);
     Point operator-(const Point &p) const;
+    double operator[](const int &index) const;
+
+    friend std::ostream &operator<<(std::ostream& os, const Point&p){
+        os << p.x() << ' ' << p.y() << ' ' << p.z() << '\n';
+        return os;
+    }
 
 private:
     double x_;

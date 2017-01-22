@@ -23,7 +23,7 @@
       <item>
        <widget class="QPushButton" name="loadMesh">
         <property name="text">
-         <string>loadMesh</string>
+         <string>LoadMesh</string>
         </property>
        </widget>
       </item>
@@ -149,7 +149,6 @@
   </layout>
   <zorder>groupBox</zorder>
   <zorder>groupBox_2</zorder>
-  <zorder>buttonRun</zorder>
   <zorder>verticalSpacer</zorder>
   <zorder>verticalSpacer_2</zorder>
  </widget>

@@ -112,15 +112,24 @@ const QList<int> Mesh::cellFaces(int cellId) const
     return cellFace_[cellId];
 }
 
-const List<List<int> > &Mesh::numberSequence(ElementShape shape) const
+void Mesh::numberSequence(ElementShape shape, QList<QList<int> >& vertexList) const
 {
     int size = nCells();
-    List< List<int> > vertexList(size);
+    vertexList.reserve(size);
+//    for (int i = 0; i < size; i++) {
+//        vertexList[i] = List<int>(8);
+//    }
+
     switch(shape) {
     case Cubic : {
 
+        for (int i = 0; i < size; i++) {
+            QList<int> q;
+            vertexList.append(q);
+        }
+
         for (int iCell = 0; iCell < size; iCell++) {
-            List<int> vertex(8);
+
             int num = cellNodes(iCell).size();
             int nodeIds[num];
             for(int i = 0; i < num; i++) {
@@ -130,15 +139,18 @@ const List<List<int> > &Mesh::numberSequence(ElementShape shape) const
             uniqueList.sort();
             uniqueList.unique();
 
-            double xc, yc, zc; // cubic center
+            double xc, yc, zc; // cube center
+            xc = yc = zc = 0.0;
             int c = 0;
             std::list<int>::const_iterator it;
             for (it = uniqueList.begin(); it != uniqueList.end(); ++it) {
+
                 xc += points()[(*it)].x();
                 yc += points()[(*it)].y();
                 zc += points()[(*it)].z();
                 c++;
             }
+
             xc = xc/c;
             yc = yc/c;
             zc = zc/c;
@@ -146,41 +158,50 @@ const List<List<int> > &Mesh::numberSequence(ElementShape shape) const
             mathExtension::Point vc(xc,yc,zc);
 
             c = 0;
+            QList<int> vertex;
+            vertex.reserve(8);
+            for (int i = 0; i < 8; i++) {
+                int ii;
+                vertex.append(ii);
+            }
+
             for (it = uniqueList.begin(); it != uniqueList.end(); ++it) {
-                const int vertexId = *it;
+                const int & vertexId = *it;
+
                 double x = points()[vertexId].x();
                 double y = points()[vertexId].y();
                 double z = points()[vertexId].z();
 
                 mathExtension::Point v(x,y,z);
                 mathExtension::Point vd(v-vc);
-                switch(coordSystem::whichQuadrant(vd)) {
-                case coordSystem::PPP: vertex[7-1] = vertexId;
-                case coordSystem::NPP: vertex[6-1] = vertexId;
-                case coordSystem::NNP: vertex[2-1] = vertexId;
-                case coordSystem::PNP: vertex[3-1] = vertexId;
 
-                case coordSystem::PPN: vertex[8-1] = vertexId;
-                case coordSystem::NPN: vertex[5-1] = vertexId;
-                case coordSystem::NNN: vertex[1-1] = vertexId;
-                case coordSystem::PNN: vertex[4-1] = vertexId;
+                switch(coordSystem::whichQuadrant(vd)) {
+                case coordSystem::PPP: {vertex[7-1] = vertexId; break;}
+                case coordSystem::NPP: {vertex[6-1] = vertexId; break;}
+                case coordSystem::NNP: {vertex[2-1] = vertexId; break;}
+                case coordSystem::PNP: {vertex[3-1] = vertexId; break;}
+
+                case coordSystem::PPN: {vertex[8-1] = vertexId; break;}
+                case coordSystem::NPN: {vertex[5-1] = vertexId; break;}
+                case coordSystem::NNN: {vertex[1-1] = vertexId; break;}
+                case coordSystem::PNN: {vertex[4-1] = vertexId; break;}
                 }
             }
 
             vertexList[iCell] = vertex;
 
-        }
-        return vertexList;
     }
     case Tetrahedron: {
-
+            break;
     }
     default:{
-
+            break;
     }
 
     }
 }
+}
+
 
 bool Mesh::readPoints(QString &dir)
 {

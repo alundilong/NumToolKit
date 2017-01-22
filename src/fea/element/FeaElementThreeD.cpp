@@ -50,7 +50,7 @@ FEAElementThreeD::FEAElementThreeD\
 
 }
 
-std::auto_ptr<FEAElementThreeD> FEAElementThreeD::New
+std::unique_ptr<FEAElementThreeD> & FEAElementThreeD::New
 (
         const std::string &dimension,
         const std::string &name,
@@ -61,10 +61,24 @@ std::auto_ptr<FEAElementThreeD> FEAElementThreeD::New
     typename ElementNameConstructorTable::iterator cstrIter =
     ElementNameConstructorTablePtr_->find(name);
 
-    return std::auto_ptr<FEAElementThreeD>
-    (
-        ((cstrIter->second))(dimension, name, m, g)
-    );
+    if(cstrIter == ElementNameConstructorTablePtr_->end()) {
+        std::cout << "Error : Failure to find " \
+                  << name \
+                  << " Element " << std::endl;
+        std::cout << "Valid Elements are :" << std::endl;
+
+        for (cstrIter = ElementNameConstructorTablePtr_->begin(); \
+             cstrIter != ElementNameConstructorTablePtr_->end();\
+             ++cstrIter) {
+            std::cout << cstrIter->first << " Elements " << std::endl;
+        }
+    }
+
+    std::unique_ptr<FEAElementThreeD> ptr =
+        (
+            ((cstrIter->second))(dimension, name, m, g)
+        );
+    return ptr;
 }
 
 
@@ -72,7 +86,7 @@ std::auto_ptr<FEAElementThreeD> FEAElementThreeD::New
 //addFEAElementThreeDSpaceDimensionConstructorToFEAElementBaseTable_;
 
 makeElement(SpaceDimension, FEAElementThreeD, FEAElementBase, ThreeD)
-defineRunTimeSelectionTable(FEAElementThreeD, ElementName);
+defineRunTimeSelectionTable(FEAElementThreeD, ElementName)
 
 }
 

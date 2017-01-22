@@ -83,7 +83,7 @@ public:
 
 
     // Number Sequence
-    const List<List<int> > &numberSequence(ElementShape) const;
+    void numberSequence(ElementShape, QList<QList < int > > & vertexList) const;
 private:
 
     QList<QString> boundaryName_; // name of BC
