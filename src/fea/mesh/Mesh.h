@@ -31,6 +31,7 @@
 #include <QVector3D>
 #include <QMap>
 #include "Bound.h"
+#include "../../container/List.h"
 
 namespace NumToolKit {
 
@@ -39,6 +40,8 @@ namespace Fea {
 class Mesh
 {
 public:
+
+    enum ElementShape {Cubic, Tetrahedron};
 
     static const QString boundaryFileName;
     static const QString faceFileName;
@@ -78,6 +81,9 @@ public:
 
     inline const bound box() const { return box_; }
 
+
+    // Number Sequence
+    const List<List<int> > &numberSequence(ElementShape) const;
 private:
 
     QList<QString> boundaryName_; // name of BC

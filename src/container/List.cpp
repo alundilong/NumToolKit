@@ -52,6 +52,7 @@ List<T>::~List()
 }
 
 template class List<int>;
+template class List< List<int> >;
 
 //template<typename T, size_t size>
 //List::List()

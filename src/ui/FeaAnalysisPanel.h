@@ -71,7 +71,7 @@ private:
     Mesh *mesh_;
 
     inline const Mesh* mesh() { return mesh_; }
-    void solve1DBar();
+    void solveFEA();
 };
 
 #endif // FEAANALYSISPANEL_H

@@ -27,6 +27,7 @@
 #define COORDSYSTEM_H
 
 #include <QVector3D>
+#include "../fea/math/MathExtension.h"
 namespace NumToolKit {
 
 namespace Fea{
@@ -34,6 +35,11 @@ namespace Fea{
 class coordSystem
 {
 public:
+
+    // find quadrant
+    enum QuadrantCoord{PPN, NPN, NNN, PNN, PPP, NPP, NNP, PNP};
+    static QuadrantCoord whichQuadrant(const mathExtension::Point &p);
+
     coordSystem();
     coordSystem(QVector3D, QVector3D, QVector3D, QVector3D);
 

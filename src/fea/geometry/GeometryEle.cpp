@@ -29,38 +29,45 @@ namespace NumToolKit {
 
 namespace Fea {
 
-GeometryEle::GeometryEle()
-{
-
-}
-
-//GeometryEle::GeometryEle(const Mesh &mesh, const List<int> & vertex)
+//GeometryEle::GeometryEle(const Mesh & mesh)
+//    :
+//      mesh_(mesh)
 //{
-//    const int & size = vertex.size();
-//    for (int i = 0; i < size; i++) {
-//        mesh.points()[vertex[i]];
-//    }
+
 //}
 
-GeometryEle::GeometryEle(double e[])
+GeometryEle::GeometryEle(const Mesh &mesh, const List<int> & vertex)
+    :
+      mesh_(mesh),
+      vertexIds_(vertex)
 {
-    for (int i = 0; i < 3; i++) {
-        e_[i] = e[i];
+    const int & size = vertex.size();
+    for (int i = 0; i < size; i++) {
+        mesh.points()[vertex[i]];
     }
-
-    double ex = e[component::X];
-    double ey = e[component::Y];
-    double ez = e[component::Z];
-
-    A_ = ey*ez;
-    volume_ = ex*ey*ez;
 }
 
-GeometryEle::GeometryEle(GeometryEle &g)
+//GeometryEle::GeometryEle(const Mesh & mesh, double e[])
+//    :
+//      mesh_(mesh)
+//{
+//    for (int i = 0; i < 3; i++) {
+//        e_[i] = e[i];
+//    }
+
+//    double ex = e[component::X];
+//    double ey = e[component::Y];
+//    double ez = e[component::Z];
+
+//    A_ = ey*ez;
+//    volume_ = ex*ey*ez;
+//}
+
+GeometryEle::GeometryEle(const GeometryEle &g)
+    :
+      mesh_(g.mesh()),
+      vertexIds_(g.vertexIds())
 {
-    e_[0] = g.e(component::X);
-    e_[1] = g.e(component::Y);
-    e_[2] = g.e(component::Z);
 }
 
 GeometryEle::~GeometryEle()

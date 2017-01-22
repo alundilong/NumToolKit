@@ -29,6 +29,20 @@ namespace NumToolKit {
 
 namespace Fea {
 
+coordSystem::QuadrantCoord coordSystem::whichQuadrant(const mathExtension::Point &p)
+{
+    // what about on the axis??
+    if(p.x() > 0 && p.y() > 0 && p.z() < 0 ) return PPN;
+    if(p.x() < 0 && p.y() > 0 && p.z() < 0 ) return NPN;
+    if(p.x() < 0 && p.y() < 0 && p.z() < 0 ) return NNN;
+    if(p.x() > 0 && p.y() < 0 && p.z() < 0 ) return PNN;
+
+    if(p.x() > 0 && p.y() > 0 && p.z() > 0 ) return PPP;
+    if(p.x() < 0 && p.y() > 0 && p.z() > 0 ) return NPP;
+    if(p.x() < 0 && p.y() < 0 && p.z() > 0 ) return NNP;
+    if(p.x() > 0 && p.y() < 0 && p.z() > 0 ) return PNP;
+}
+
 coordSystem::coordSystem()
     :
       origin0_(QVector3D(0, 0, 0)),

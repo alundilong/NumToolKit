@@ -40,12 +40,12 @@ class GeometryEle
 public:
     enum component {X, Y, Z};
 public:
-    GeometryEle();
+//    GeometryEle(const Mesh & mesh);
     // our mesh is always 3D
     // 2D or 1D problem, variables will be reduced in sepcial way
-    //GeometryEle(const Mesh &mesh, const List<int> & vertex);
-    GeometryEle(double e[]);
-    GeometryEle(GeometryEle &g);
+    GeometryEle(const Mesh & mesh, const List<int> & vertex);
+//    GeometryEle(const Mesh & mesh, double e[]);
+    GeometryEle(const GeometryEle &g);
     ~GeometryEle();
 
     const double & e(component comp) const { return e_[comp]; }
@@ -61,13 +61,15 @@ public:
     }
 
     const List<int> & vertexIds() const { return vertexIds_; }
+    const Mesh & mesh() const { return mesh_; }
 
 private:
+    const Mesh & mesh_;
     double e_[3]; // length in x, y, z direction
     double A_;
     double volume_;
 
-    List<int> vertexIds_;
+    const List<int>& vertexIds_;
 
     coordSystem *localCoordinateSystem_;
 };

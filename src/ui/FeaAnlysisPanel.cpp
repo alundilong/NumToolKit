@@ -29,6 +29,7 @@
 #include "../fea/math/LinearAlgebraSolver.h"
 
 #include "../fea/element/ElementStyle.h"
+//#include "../fea/mesh/FeaMesh.h"
 
 #include <QDebug>
 #include "Form.h"
@@ -129,136 +130,53 @@ void feaAnalysisPanel::on_buttonRun_clicked()
 
     if(ui->comboBox1DElement->currentText() == "Bar") {
         log_ += "Solving 1-D Bar Problem...\n";
-        solve1DBar();
+        solveFEA();
     }
 }
 
-void feaAnalysisPanel::solve1DBar()
+void feaAnalysisPanel::solveFEA()
 {
-//    |-----|-----|-----|
-//    |-----|-----|-----|
+// construct mesh with polyMesh
+    const Mesh & polyMesh = (*mesh());
+// pre-unkown the shape of each cell (cube)
+// find element's numbering sequence
+    const List< List<int> > vertexList \
+            = polyMesh.numberSequence(Mesh::Cubic);
 
-    // Need a mesh class to store geometry data (3D)
-    // Mesh reads points, stored by label
+    const int nElement = polyMesh.nCells();
+    const int nNodes = polyMesh.nNodes();
 
-    // 1D problem
-    const int nElement = 300;
-    const int nNodes = nElement + 1;
-
-    // geometry info
-    const double length = 1.0; // m
-
-    // material info
-    const double rho = 7.9e3; // kg/m^3
-    const double E = 1e9; // Pa // Young's Modulus
-    const double G = 1e10; // Pa
-
+    std::string nameMat = "Aluminum";
     // meshing manually
-    QList<BarElement> elements;
+    QList<FEAElementLinearCubicalElement> elements;
     for (int i = 0; i < nElement; i++) {
-        double e[3] = {length/nElement, 0.1, 0.1};
-        MaterialEle *m = new MaterialEle(rho,E,G);
-        GeometryEle *g = new GeometryEle(e);
-        BarElement *barEle = new BarElement("OneD","Bar",*m,*g);
-        elements.push_back(*barEle);
+        MaterialEle *m = new MaterialEle(nameMat);
+        const List<int> & vertex = vertexList[i];
+        GeometryEle *g = new GeometryEle(polyMesh, vertex);
+        auto_ptr<FEAElementBase> parentEle = \
+                FEAElementBase::New(\
+                    "ThreeD",\
+                    "LinearCubicalElementBarThreeD",\
+                    *m,\
+                    *g);
+        FEAElementLinearCubicalElement *lce =\
+                dynamic_cast<FEAElementLinearCubicalElement*>(parentEle.get());
+        elements.push_back(*lce);
     }
 
-    // assembly the matrix
-    // it will be done in a much better way
-    // 1. direct method, using full Matrix.setsubmatrix()
-    // 2. iterative method, using sparseMatrix
-    const int N = nNodes; // total unknown before BC applied
-    double **M = new double*[N]; // full mass matrix
-    double **K = new double*[N]; // full stiff matrix
-    double *Q = new double[N];
-    double *X = new double[N]; // unknown
+    mathExtension::Matrix A(nNodes, nNodes);
 
-    for (int i = 0; i < N; i++) {
-        M[i] = new double[N];
-        K[i] = new double[N];
+    QList<FEAElementLinearCubicalElement>::const_iterator it;
+    for(it = elements.begin(); it != elements.end(); ++it) {
+        const FEAElementLinearCubicalElement & ele = *it;
+        const List<int> & Rows = ele.geometry()->vertexIds();
+        A.setSubMatrix(Rows, Rows, ele.baseStiff());
     }
 
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            M[i][j] = 0.0;
-            K[i][j] = 0.0;
-        }
-    }
+    mathExtension::Vector b(nNodes);
+    mathExtension::Vector x(nNodes);
 
-    const int nNodeEle = BarElement::nNode;
-
-    for (int k = 0; k < nElement; k++) {
-        const BarElement & barEle = elements[k];
-        int eleId = k; // to be general, a list storing element Id should be defined (MeshData)
-        for (int i = 0; i < nNodeEle; i++) {
-            int nodeI_Id = i + k; // to be general, a list of nodeId for each element should be defined (MeshData)
-            for (int j = 0; j < nNodeEle; j++) {
-                int nodeJ_Id = j + k;
-                M[nodeI_Id][nodeJ_Id] += barEle.baseMass()[i][j];
-                K[nodeI_Id][nodeJ_Id] += barEle.baseStiff()[i][j];
-
-            }
-        }
-    }
-
-    // apply boundary condition
-    // left : u = 0;
-
-    int nGBC = 1;
-    int eleIDGBC = 0; // element ID with Geometry Boundary Condition
-    int A2RemoveIndex = 0; // mesh.eleNodes()[BarElement::LEFT];// remove this element in A
-
-    // right : F = 100 N;
-    for (int i = 0; i < N; i++) {
-        Q[i] = 0;
-        X[i] = 0;
-    }
-
-    const int nDOFEle = BarElement::nDOF;
-    int eleIDEOM = nElement-1; // element ID with Equation of Motion
-    Q[eleIDEOM*nDOFEle + BarElement::RIGHT] = 100;
-
-    // innecessary! reset coefficient to the original matrix will be better
-    // reconstruct M, K, and Q
-
-    int N_p = N - nGBC;
-    double **M_p = new double*[N_p];
-    double **K_p = new double*[N_p];
-    double *Q_p = new double[N_p];
-    double *X_p = new double[N_p];
-
-    for (int i = 0; i < N_p; i++) {
-        M_p[i] = new double[N_p];
-        K_p[i] = new double[N_p];
-    }
-
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            if (i < A2RemoveIndex && j < A2RemoveIndex) {
-                M_p[i][j] = M[i][j];
-                K_p[i][j] = K[i][j];
-            } else if (i < A2RemoveIndex && j > A2RemoveIndex) {
-                M_p[i-1][j] = M[i][j];
-                K_p[i-1][j] = K[i][j];
-            } else if (i > A2RemoveIndex && j > A2RemoveIndex) {
-                M_p[i-1][j-1] = M[i][j];
-                K_p[i-1][j-1] = K[i][j];
-            } else if (i > A2RemoveIndex && j < A2RemoveIndex) {
-                M_p[i][j-1] = M[i][j];
-                K_p[i][j-1] = K[i][j];
-            }
-        }
-
-    }
-
-    for (int i = 0; i < N; i++) {
-
-        if (i < A2RemoveIndex) {Q_p[i] = Q[i]; X_p[i] = 0.0;}
-        else if (i > A2RemoveIndex) {Q_p[i-1] = Q[i]; X_p[i-1] = 0.0;}
-
-    }
-
-    linearAlgebraSolver las(N_p, K_p, Q_p, X_p);
+    linearAlgebraSolver las(A, b, x);
     las.GaussElimination(); // coefficient will be changed
 
 //    Form *tmp = new Form(N_p, K_p, Q_p, mw);
@@ -266,37 +184,11 @@ void feaAnalysisPanel::solve1DBar()
 
     log_ += las.mylog();
     log_ += "\n Results of this Bar Problem is :\n";
-    for (int i = 0; i < N_p; i++) {
-        log_ += QString("Element %1 : Disp = %2 m\n").arg(i).arg(QString::number(X_p[i]));
+    for (int i = 0; i < x.nrow(); i++) {
+        log_ += QString("Element %1 : Disp = %2 m\n").arg(i).arg(QString::number(x[i]));
     }
     mw_->retrieveLogFromFEAWindow();
 
-    // BarElement elements[nElement];
-    // solve the pre-defined problem
-    // check dimension of the problem
-    // check element type
-    // check boundary condition
-    // construct stiffness matrix A and b
-    // define linear algebra solver obj
-    // solve problem and return results and display
-
-    for (int i = 0; i < N; i++) {
-        delete M[i];
-        delete K[i];
-    }
-    delete [] M;
-    delete [] K;
-    delete [] Q;
-    delete [] X;
-
-    for (int i = 0; i < N_p; i++) {
-        delete M_p[i];
-        delete K_p[i];
-    }
-    delete [] M_p;
-    delete [] K_p;
-    delete [] Q_p;
-    delete [] X_p;
 }
 
 void feaAnalysisPanel::on_loadMesh_clicked()

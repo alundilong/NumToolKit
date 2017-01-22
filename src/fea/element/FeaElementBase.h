@@ -102,7 +102,7 @@ public:
             const GeometryEle & g
     );
 
-    ~FEAElementBase();
+    virtual ~FEAElementBase();
 
     QString getLog() {return log_;}
 
@@ -114,10 +114,10 @@ public:
     const mathExtension::Matrix & baseMass() const { return baseMass_;}
     const mathExtension::Matrix & baseStiff() const { return baseStiff_;}
 
-    const MaterialEle & material() const { return *material_; }
-    const GeometryEle & geometry() const { return *geoInfo_; }
-    const MaterialEle * material() { return material_; }
-    const GeometryEle * geometry() { return geoInfo_; }
+//    const MaterialEle & material() const { return *material_; }
+//    const GeometryEle & geometry() const { return *geoInfo_; }
+    const MaterialEle * material() const { return material_; }
+    const GeometryEle * geometry() const { return geoInfo_; }
 
 //    // material of this element
 //    class MaterialEle {

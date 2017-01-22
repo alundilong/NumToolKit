@@ -55,6 +55,19 @@ MaterialEle::MaterialEle(MaterialEle &m)
     rho_ = m.rho();
     E_ = m.E();
     G_ = m.G();
+    nu_ = m.nu();
+}
+
+MaterialEle::MaterialEle(std::string &name)
+{
+    std::unordered_map<std::string, MaterialOne>::const_iterator it;
+    it = materialType.find("A");
+    if(it != materialType.end()) {
+        rho_ = (it->second).rho;
+        E_ = (it->second).E;
+        G_ = (it->second).G;
+        nu_ = (it->second).nu;
+    }
 }
 
 MaterialEle::~MaterialEle()

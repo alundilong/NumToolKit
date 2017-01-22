@@ -27,7 +27,9 @@
 #define LINEARALGEBRASOLVER_H
 
 #include <QString>
+#include "MathExtension.h"
 
+using namespace mathExtension;
 
 namespace NumToolKit {
 
@@ -37,8 +39,8 @@ namespace Fea {
 class linearAlgebraSolver
 {
 public:
-    linearAlgebraSolver();
-    linearAlgebraSolver(int size, double **A, double *b, double *x);
+//    linearAlgebraSolver();
+    linearAlgebraSolver(Matrix &A, Vector &b, Vector &x);
     ~linearAlgebraSolver();
 // direct Methods
     void LUSolve();
@@ -57,9 +59,9 @@ public:
 
 private:
     int size_;
-    double **A_;
-    double *b_;
-    double *x_;
+    Matrix &A_;
+    Vector &b_;
+    Vector &x_;
     int nIterMax_ = 1000;
     double tolerance_ = 1e-3;
     QString log_ = "";

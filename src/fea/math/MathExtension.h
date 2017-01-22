@@ -124,6 +124,14 @@ public:
     // get value
     double &operator[](const int i) const;
 
+    friend std::ostream &operator<<(std::ostream& os, const Vector&v){
+        int nr = v.nrow();
+        for(int i = 0; i < nr; i++ ) {
+            os << v[i] << ' ';
+        }
+        return os;
+    }
+
     // find cos of two vector
     double cos(const Vector &v);
     double dotProduct(const Vector &v);
@@ -188,7 +196,8 @@ public:
     bool operator!=(const Matrix &m) const;
 
     // get value
-    double *operator[](const int i) const;
+    const double *operator[](const int i) const;
+    double *operator[](const int i);
 
     friend std::ostream &operator<<(std::ostream& os, const Matrix&m){
         int nr = m.nrow();
@@ -226,6 +235,7 @@ public:
     const double z() const { return z_;}
 
     void operator=(const Vector &v);
+    Point operator-(const Point &p) const;
 
 private:
     double x_;
@@ -238,6 +248,7 @@ private:
 
 long double gaussP(int nSize, int p);
 long double gaussW(int nSize, int p);
+
 
 }
 

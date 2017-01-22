@@ -31,17 +31,17 @@ namespace NumToolKit {
 
 namespace Fea {
 
-linearAlgebraSolver::linearAlgebraSolver()
+//linearAlgebraSolver::linearAlgebraSolver()
+//{
+//}
+
+linearAlgebraSolver::linearAlgebraSolver(Matrix &A, Vector &b, Vector &x)
+    :
+      A_(A),
+      b_(b),
+      x_(x)
 {
-}
-
-linearAlgebraSolver::linearAlgebraSolver(int nl, double **A, double *b, double *x) {
-
-    size_ = nl;
-    A_ = A;
-    b_ = b;
-    x_ = x;
-
+    size_ = A.nrow();
 }
 
 linearAlgebraSolver::~linearAlgebraSolver(){
@@ -226,7 +226,7 @@ void linearAlgebraSolver::GaussSeidelMethod()
 
 void linearAlgebraSolver::checkSolution()
 {
-      if (A_ == nullptr) {
+      if ( A_.nrow() == 0 || A_.ncol() == 0) {
           qDebug() << "A is null!!!";
       }
 //    int N = size_;

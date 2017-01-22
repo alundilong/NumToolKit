@@ -29,6 +29,8 @@
 #include <QTextEdit>
 #include <QMessageBox>
 #include <QDebug>
+#include "../math/MathExtension.h"
+#include "../../coordinateSystem/CoordSystem.h"
 
 namespace NumToolKit {
 
@@ -108,6 +110,76 @@ const QList<int> Mesh::cellNodes(int cellId) const
 const QList<int> Mesh::cellFaces(int cellId) const
 {
     return cellFace_[cellId];
+}
+
+const List<List<int> > &Mesh::numberSequence(ElementShape shape) const
+{
+    int size = nCells();
+    List< List<int> > vertexList(size);
+    switch(shape) {
+    case Cubic : {
+
+        for (int iCell = 0; iCell < size; iCell++) {
+            List<int> vertex(8);
+            int num = cellNodes(iCell).size();
+            int nodeIds[num];
+            for(int i = 0; i < num; i++) {
+                nodeIds[i] = cellNodes(iCell)[i];
+            }
+            std::list<int> uniqueList(nodeIds, nodeIds+num);
+            uniqueList.sort();
+            uniqueList.unique();
+
+            double xc, yc, zc; // cubic center
+            int c = 0;
+            std::list<int>::const_iterator it;
+            for (it = uniqueList.begin(); it != uniqueList.end(); ++it) {
+                xc += points()[(*it)].x();
+                yc += points()[(*it)].y();
+                zc += points()[(*it)].z();
+                c++;
+            }
+            xc = xc/c;
+            yc = yc/c;
+            zc = zc/c;
+
+            mathExtension::Point vc(xc,yc,zc);
+
+            c = 0;
+            for (it = uniqueList.begin(); it != uniqueList.end(); ++it) {
+                const int vertexId = *it;
+                double x = points()[vertexId].x();
+                double y = points()[vertexId].y();
+                double z = points()[vertexId].z();
+
+                mathExtension::Point v(x,y,z);
+                mathExtension::Point vd(v-vc);
+                switch(coordSystem::whichQuadrant(vd)) {
+                case coordSystem::PPP: vertex[7-1] = vertexId;
+                case coordSystem::NPP: vertex[6-1] = vertexId;
+                case coordSystem::NNP: vertex[2-1] = vertexId;
+                case coordSystem::PNP: vertex[3-1] = vertexId;
+
+                case coordSystem::PPN: vertex[8-1] = vertexId;
+                case coordSystem::NPN: vertex[5-1] = vertexId;
+                case coordSystem::NNN: vertex[1-1] = vertexId;
+                case coordSystem::PNN: vertex[4-1] = vertexId;
+                }
+            }
+
+            vertexList[iCell] = vertex;
+
+        }
+        return vertexList;
+    }
+    case Tetrahedron: {
+
+    }
+    default:{
+
+    }
+
+    }
 }
 
 bool Mesh::readPoints(QString &dir)
@@ -380,12 +452,6 @@ void Mesh::createCellNodes()
             }
         }
     }
-
-//    cellId = 0;
-//    QList<QList<int> >::const_iterator it2;
-//    for(it2 = cellNode().begin(); it2 != cellNode().end(); ++it2){
-//        qDebug() << ++cellId <<" "<< (*it2);
-//    }
 
 }
 

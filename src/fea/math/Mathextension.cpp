@@ -406,9 +406,14 @@ bool mathExtension::Matrix::operator!=(const mathExtension::Matrix &m) const
     return (!(*this == m));
 }
 
-double *mathExtension::Matrix::operator[](const int i) const
+const double* mathExtension::Matrix::operator[](const int i) const
 {
-    return (*this).data_[i];
+    return data_[i];
+}
+
+double *mathExtension::Matrix::operator[](const int i)
+{
+    return data_[i];
 }
 
 
@@ -566,6 +571,11 @@ mathExtension::Point::Point(double x, double y, double z)
     z_ = z;
 }
 
+mathExtension::Point::~Point()
+{
+
+}
+
 void mathExtension::Point::operator=(const mathExtension::Vector &v)
 {
     if(v.nrow() == 3) {
@@ -573,4 +583,10 @@ void mathExtension::Point::operator=(const mathExtension::Vector &v)
         y_ = v[1];
         z_ = v[2];
     }
+}
+
+mathExtension::Point mathExtension::Point::operator-(\
+        const mathExtension::Point &p) const
+{
+    return Point(x()-p.x(), y()-p.y(), z() - p.z());
 }

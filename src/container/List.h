@@ -54,8 +54,11 @@ public:
     ~List();
 
     // access to the data
+    // allow to assign new value
     inline const T* data() const { return data_; }
-    const T & operator[](int & index) const { return data_[index]; }
+    T & operator[](const int & index) { return data_[index]; }
+    // allow to get value
+    const T operator[](const int & index) const { return data_[index]; }
     inline const int size() const { return size_; }
 
 private:

@@ -46,16 +46,19 @@ public:
     MaterialEle();
     MaterialEle(double rho, double E, double G);
     MaterialEle(MaterialEle &m);
+    MaterialEle(std::string &name);
     ~MaterialEle();
 
     const double & rho() const { return rho_; }
     const double & E() const { return E_; }
     const double & G() const { return G_; }
+    const double & nu() const { return nu_; }
 
 private:
     double rho_;
     double E_;
     double G_;
+    double nu_;
 
 };
 
