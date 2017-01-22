@@ -137,7 +137,32 @@ EulerBernoulliBeam::~EulerBernoulliBeam()
 //        delete [] baseStiff_[i];
 //    }
 //    delete [] baseMass_;
-//    delete [] baseStiff_;
+    //    delete [] baseStiff_;
+}
+
+void EulerBernoulliBeam::infoAboutThisElement()
+{
+
+}
+
+void EulerBernoulliBeam::constructGeometry()
+{
+
+}
+
+void EulerBernoulliBeam::constructBaseMatrix()
+{
+
+}
+
+void EulerBernoulliBeam::constructLocalCoordinateSystem()
+{
+
+}
+
+void EulerBernoulliBeam::transformToGlocal()
+{
+
 }
 
 makeElement(ElementName, EulerBernoulliBeam, FEAElementOneD, EulerBernoulliBeam)

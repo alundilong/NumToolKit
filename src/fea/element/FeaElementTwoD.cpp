@@ -64,7 +64,32 @@ std::unique_ptr<FEAElementTwoD> FEAElementTwoD::New
     return std::unique_ptr<FEAElementTwoD>
     (
         ((cstrIter->second))(dimension, name, m, g)
-    );
+                );
+}
+
+void FEAElementTwoD::infoAboutThisElement()
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
+void FEAElementTwoD::constructGeometry()
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
+void FEAElementTwoD::constructBaseMatrix()
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
+void FEAElementTwoD::constructLocalCoordinateSystem()
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
+void FEAElementTwoD::transformToGlocal()
+{
+    std::cout << "No Implementation" << std::endl;
 }
 
 

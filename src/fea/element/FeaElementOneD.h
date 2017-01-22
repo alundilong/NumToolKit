@@ -76,6 +76,14 @@ public:
             const MaterialEle & m,
             const GeometryEle & g
     );
+
+protected:
+
+    virtual void infoAboutThisElement();
+    virtual void constructGeometry();
+    virtual void constructBaseMatrix();
+    virtual void constructLocalCoordinateSystem();
+    virtual void transformToGlocal();
 };
 
 }

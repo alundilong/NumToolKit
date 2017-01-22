@@ -81,6 +81,31 @@ std::unique_ptr<FEAElementThreeD> FEAElementThreeD::New
     return ptr;
 }
 
+void FEAElementThreeD::infoAboutThisElement()
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
+void FEAElementThreeD::constructGeometry()
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
+void FEAElementThreeD::constructBaseMatrix()
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
+void FEAElementThreeD::constructLocalCoordinateSystem()
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
+void FEAElementThreeD::transformToGlocal()
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
 
 //FEAElementBase::addSpaceDimensionConstructorToTable<FEAElementThreeD>
 //addFEAElementThreeDSpaceDimensionConstructorToFEAElementBaseTable_;

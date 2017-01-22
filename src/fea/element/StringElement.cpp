@@ -60,7 +60,32 @@ StringElement::~StringElement()
 //        delete [] baseStiff_[i];
 //    }
 //    delete [] baseMass_;
-//    delete [] baseStiff_;
+    //    delete [] baseStiff_;
+}
+
+void StringElement::infoAboutThisElement()
+{
+
+}
+
+void StringElement::constructGeometry()
+{
+
+}
+
+void StringElement::constructBaseMatrix()
+{
+
+}
+
+void StringElement::constructLocalCoordinateSystem()
+{
+
+}
+
+void StringElement::transformToGlocal()
+{
+
 }
 
 makeElement(ElementName, StringElement, FEAElementOneD, String)

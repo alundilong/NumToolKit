@@ -179,6 +179,12 @@ protected:
     // Knowing this is a very important
     int firstNode_;
 
+    virtual void infoAboutThisElement() = 0;
+    virtual void constructGeometry() = 0;
+    virtual void constructBaseMatrix() = 0;
+    virtual void constructLocalCoordinateSystem() = 0;
+    virtual void transformToGlocal() = 0;
+
 };
 
 

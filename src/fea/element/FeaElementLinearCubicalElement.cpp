@@ -45,6 +45,12 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
 )
     : FEAElementThreeD(dimension, name, m, g)
 {
+    infoAboutThisElement();
+    constructGeometry();
+    constructBaseMatrix();
+    constructLocalCoordinateSystem();
+    transformToGlocal();
+
     log_ = "3D LinearCubicalElement is selected \n";
     dim_ = 3;
     nDOFEle_ = 3;
@@ -58,8 +64,6 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
 
     baseMass_ = mathExtension::Matrix(Nunknown,Nunknown);
     baseStiff_ = mathExtension::Matrix(Nunknown,Nunknown);
-
-    // set vertex
 
     // for this element we know how to compute e
 
@@ -262,6 +266,31 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
 
 FEAElementLinearCubicalElement::~FEAElementLinearCubicalElement()
 {
+}
+
+void FEAElementLinearCubicalElement::infoAboutThisElement()
+{
+
+}
+
+void FEAElementLinearCubicalElement::constructGeometry()
+{
+
+}
+
+void FEAElementLinearCubicalElement::constructBaseMatrix()
+{
+
+}
+
+void FEAElementLinearCubicalElement::constructLocalCoordinateSystem()
+{
+
+}
+
+void FEAElementLinearCubicalElement::transformToGlocal()
+{
+
 }
 
 makeElement(ElementName, \

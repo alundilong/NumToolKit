@@ -125,6 +125,31 @@ BarElement::BarElement
 BarElement::~BarElement()
 {}
 
+void BarElement::infoAboutThisElement()
+{
+
+}
+
+void BarElement::constructGeometry()
+{
+
+}
+
+void BarElement::constructBaseMatrix()
+{
+
+}
+
+void BarElement::constructLocalCoordinateSystem()
+{
+
+}
+
+void BarElement::transformToGlocal()
+{
+
+}
+
 makeElement(ElementName, BarElement, FEAElementOneD, Bar)
 makeElementNode(ElementName, BarElement, FEAElementBase)
 makeElementNodeDOF(ElementName, BarElement, FEAElementBase)
