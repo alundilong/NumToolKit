@@ -68,7 +68,7 @@ public:
     );
 
     // Selector
-    static std::unique_ptr<FEAElementThreeD> &New
+    static std::unique_ptr<FEAElementThreeD> New
     (
             const std::string &  dim,
             const std::string & name,

@@ -94,7 +94,7 @@ public:
             const GeometryEle & g
     );
 
-    static std::unique_ptr<FEAElementBase>  & New
+    static std::unique_ptr<FEAElementBase>  New
     (
             const std::string & dim,
             const std::string & name,

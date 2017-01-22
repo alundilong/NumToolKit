@@ -119,8 +119,9 @@
     public:\
     \
         static unique_ptr<baseType> New##baseType argList\
-        {\
-            return unique_ptr<baseType>((baseType##Type::New parList).get());\
+        {/* do not use get(), the pointer will be freed */\
+            return unique_ptr<baseType>((baseType##Type::New parList));\
+            /*return unique_ptr<baseType>((baseType##Type::New parList).get());*/\
         }\
         \
         \

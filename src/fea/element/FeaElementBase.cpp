@@ -55,7 +55,7 @@ FEAElementBase::~FEAElementBase()
 
 }
 
-std::unique_ptr<FEAElementBase> &  \
+std::unique_ptr<FEAElementBase>   \
 FEAElementBase::New\
 (
         const std::string & dimension, \

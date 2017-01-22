@@ -249,8 +249,8 @@ void mathExtension::Matrix::setSubMatrix(\
 // for direct method usage
 void mathExtension::Matrix::setSubMatrix\
 (\
-        const List<int> &Rows, \
-        const List<int> &Cols, \
+        const QList<int> &Rows, \
+        const QList<int> &Cols, \
         const mathExtension::Matrix &subM\
 )
 {
@@ -263,7 +263,7 @@ void mathExtension::Matrix::setSubMatrix\
             const int & ri = Rows[i];
             for (int j = 0; j < sizeMR; j++) {
                 const int & cj = Cols[j];
-                data_[ri-1][cj-1] = subM[i][j];
+                data_[ri][cj] = subM[i][j];
             }
         }
     }

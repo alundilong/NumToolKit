@@ -50,7 +50,7 @@ FEAElementThreeD::FEAElementThreeD\
 
 }
 
-std::unique_ptr<FEAElementThreeD> & FEAElementThreeD::New
+std::unique_ptr<FEAElementThreeD> FEAElementThreeD::New
 (
         const std::string &dimension,
         const std::string &name,

@@ -65,6 +65,7 @@ public:
     T & operator[](const int & index) { return data_[index]; }
     // allow to get value
     const T operator[](const int & index) const { return data_[index]; }
+
     //
     void operator=(List<T> & list);
 

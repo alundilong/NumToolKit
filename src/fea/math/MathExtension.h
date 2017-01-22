@@ -29,6 +29,7 @@
 #include <iostream>
 #include "math.h"
 #include "../../container/List.h"
+#include <QList>
 
 using namespace NumToolKit;
 
@@ -155,7 +156,7 @@ public:
     void set(const int i, const Vector &v);
     void setColValues(const int iCol, const pos & Cols, const Vector & v);
     void setSubMatrix(const pos & Rows, const pos & Cols, const Matrix & subM);
-    void setSubMatrix(const List<int> & Rows, const List<int> & Cols, const Matrix & subM);
+    void setSubMatrix(const QList<int> & Rows, const QList<int> & Cols, const Matrix & subM);
     inline const int nrow() const { return nrow_;}
     inline const int ncol() const { return ncol_;}
 

@@ -53,6 +53,7 @@ List<T>::~List()
     }
 }
 
+
 template<typename T>
 void List<T>::operator=(List<T> &list)
 {

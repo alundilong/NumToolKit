@@ -150,32 +150,43 @@ void feaAnalysisPanel::solveFEA()
     QList<FEAElementLinearCubicalElement*> elements;
     for (int i = 0; i < nElement; i++) {
 
-        qDebug() << "Material";
         MaterialEle *m = new MaterialEle(nameMat);
-        qDebug() << "Vertex";
         const QList<int> & vertex = vertexList[i];
-        qDebug() << "GeometryInfo";
         GeometryEle *g = new GeometryEle(polyMesh, vertex);
-        qDebug() << "Contruct Parent";
-        std::unique_ptr<FEAElementThreeD>& parentEle = \
-                FEAElementThreeD::New(\
+//        std::unique_ptr<FEAElementThreeD> parentEle = \
+//                FEAElementThreeD::New(\
+//                    "ThreeD",\
+//                    "LinearCubicalElementBarThreeD",\
+//                    *m,\
+//                    *g);
+
+        std::unique_ptr<FEAElementBase> parentEle = \
+                FEAElementBase::New(\
                     "ThreeD",\
                     "LinearCubicalElementBarThreeD",\
                     *m,\
                     *g);
         FEAElementLinearCubicalElement *lce =\
                 static_cast<FEAElementLinearCubicalElement*>(parentEle.get());
+        parentEle.release();
+        std::cout<< lce->baseMass() << std::endl;
         elements.push_back(lce);
     }
 
-//    mathExtension::Matrix A(nNodes, nNodes);
+    mathExtension::Matrix A(nNodes, nNodes);
 
-//    QList<FEAElementLinearCubicalElement>::const_iterator it;
-//    for(it = elements.begin(); it != elements.end(); ++it) {
-//        const FEAElementLinearCubicalElement & ele = *it;
-//        const List<int> & Rows = ele.geometry()->vertexIds();
-//        A.setSubMatrix(Rows, Rows, ele.baseStiff());
-//    }
+    QList<FEAElementLinearCubicalElement*>::const_iterator it;
+    qDebug() << "====== Form Linear Algebra Equations =====";
+    for(it = elements.begin(); it != elements.end(); ++it) {
+//        std::cout << (*it)->baseMass() << std::endl;
+        const FEAElementLinearCubicalElement &ele = **it;
+        const QList<int> &Rows= ele.geometry()->vertexIds();
+//        qDebug() << "Set Rows: ";
+        std::cout << ele.baseMass() << std::endl;
+//        std::cout << ele.baseMass() << std::endl;
+//        // be aware of vertex id (our id starts from 0)
+//        A.setSubMatrix(Rows, Rows, ele->baseStiff());
+    }
 
 //    mathExtension::Vector b(nNodes);
 //    mathExtension::Vector x(nNodes);

@@ -50,9 +50,6 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     nDOFEle_ = 3;
     nNodeEle_ = 8;
     name_ = "LinearCubicalElement3D";
-    qDebug() << log_;
-    qDebug() << name_;
-    qDebug() << "-----------------------";
     log_ += QString(\
                 "%1D LinearCubicalElement : nNode = %2 : DOF = %3 \n"\
                 ).arg(dim()).arg(nNodeEle()).arg(nDOFEle());
@@ -61,6 +58,8 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
 
     baseMass_ = mathExtension::Matrix(Nunknown,Nunknown);
     baseStiff_ = mathExtension::Matrix(Nunknown,Nunknown);
+
+    // set vertex
 
     // for this element we know how to compute e
 
