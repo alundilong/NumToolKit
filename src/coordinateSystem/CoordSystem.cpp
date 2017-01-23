@@ -69,6 +69,14 @@ coordSystem::coordSystem\
 
 }
 
+void coordSystem::setOXYZ(const QVector3D &o, const QVector3D &e0, const QVector3D &e1, const QVector3D &e2)
+{
+    origin0_ = o;
+    e0_ = e0;
+    e1_ = e1;
+    e2_ = e2;
+}
+
 }
 
 }

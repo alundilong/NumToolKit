@@ -54,44 +54,33 @@ GeometryEle::GeometryEle(const Mesh &mesh, const QList<int> & vertex)
     cx = cx/c;
     cy = cy/c;
     cz = cz/c;
-    QVector3D origin(cx, cy, cz);
-    QVector3D ex(1,0,0);
-    QVector3D ey(0,1,0);
-    QVector3D ez(0,0,1);
-    localCoordinateSystem_ = new coordSystem(origin, ex, ey, ez);
+    center_ = QVector3D(cx, cy, cz);
 }
-
-//GeometryEle::GeometryEle(const Mesh & mesh, double e[])
-//    :
-//      mesh_(mesh)
-//{
-//    for (int i = 0; i < 3; i++) {
-//        e_[i] = e[i];
-//    }
-
-//    double ex = e[component::X];
-//    double ey = e[component::Y];
-//    double ez = e[component::Z];
-
-//    A_ = ey*ez;
-//    volume_ = ex*ey*ez;
-//}
 
 GeometryEle::GeometryEle(const GeometryEle &g)
     :
       mesh_(g.mesh()),
       vertexIds_(g.vertexIds())
 {
+    double cx, cy, cz;
+    cx = cy = cz;
+    int c = 0;
+    QList<int>::const_iterator it;
+    for (it = vertexIds().begin(); it != vertexIds().end(); ++it) {
+        cx += mesh_.points()[(*it)].x();
+        cy += mesh_.points()[(*it)].y();
+        cz += mesh_.points()[(*it)].z();
+        c++;
+    }
+    cx = cx/c;
+    cy = cy/c;
+    cz = cz/c;
+    center_ = QVector3D(cx, cy, cz);
 }
 
 GeometryEle::~GeometryEle()
 {
 
-}
-
-void GeometryEle::setLocalCoordinateSystem(coordSystem *cs)
-{
-    localCoordinateSystem_ = cs;
 }
 
 }

@@ -34,6 +34,7 @@ namespace Fea{
 
 class coordSystem
 {
+
 public:
 
     // find quadrant
@@ -48,16 +49,18 @@ public:
     inline const QVector3D  & e1() const { return e1_;}
     inline const QVector3D  & e2() const { return e2_;}
 
+    void setOXYZ(const QVector3D &o, const QVector3D &e0, const QVector3D &e1, const QVector3D &e2);
+
 private:
 
     // must known members
     // 3 base vectors
-    const QVector3D e0_;
-    const QVector3D e1_;
-    const QVector3D e2_;
+    QVector3D e0_;
+    QVector3D e1_;
+    QVector3D e2_;
 
     // origin0 of coordinate system
-    const QVector3D origin0_;
+    QVector3D origin0_;
 };
 
 }

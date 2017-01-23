@@ -35,6 +35,7 @@ FEAElementThreeD::FEAElementThreeD()
     :
       FEAElementBase()
 {
+    dim_ = 3;
 }
 
 FEAElementThreeD::FEAElementThreeD\
@@ -47,7 +48,7 @@ FEAElementThreeD::FEAElementThreeD\
     :
     FEAElementBase(dimension, name, m, g)
 {
-
+    dim_ = 3;
 }
 
 std::unique_ptr<FEAElementThreeD> FEAElementThreeD::New
@@ -96,12 +97,8 @@ void FEAElementThreeD::constructBaseMatrix()
     std::cout << "No Implementation" << std::endl;
 }
 
-void FEAElementThreeD::constructLocalCoordinateSystem()
-{
-    std::cout << "No Implementation" << std::endl;
-}
 
-void FEAElementThreeD::transformToGlocal()
+void FEAElementThreeD::transformToGlobal()
 {
     std::cout << "No Implementation" << std::endl;
 }

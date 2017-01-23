@@ -28,6 +28,7 @@
 
 #include <QWidget>
 #include "MainWindow.h"
+#include "../fea/math/MathExtension.h"
 
 namespace Ui {
 class Form;
@@ -41,6 +42,7 @@ public:
     explicit Form(QWidget *parent = 0);
     explicit Form(MainWindow *mw, QWidget *parent = 0);
     explicit Form(int size, double ** A, double *b, MainWindow *mw, QWidget *parent = 0);
+    explicit Form(const mathExtension::Matrix &A, const mathExtension::Vector& b, MainWindow *mw, QWidget *parent = 0);
     ~Form();
 
     const QString & getLog() {

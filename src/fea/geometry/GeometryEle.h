@@ -55,15 +55,9 @@ public:
     const double & A() const { return A_; }
     const double & volume() const { return volume_; }
 
-    void setLocalCoordinateSystem(coordSystem *);
-
-//  each element should be able to refer it
-    const coordSystem * localCoordinateSystem() const { \
-        return localCoordinateSystem_;\
-    }
-
     const QList<int> & vertexIds() const { return vertexIds_; }
     const Mesh & mesh() const { return mesh_; }
+    const QVector3D &center() const { return center_; }
 
 private:
     const Mesh & mesh_;
@@ -72,8 +66,9 @@ private:
     double volume_;
 
     const QList<int>& vertexIds_;
+    QVector3D center_;
 
-    coordSystem *localCoordinateSystem_;
+
 };
 
 }

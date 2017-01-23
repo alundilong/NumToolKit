@@ -136,6 +136,7 @@ void feaAnalysisPanel::on_buttonRun_clicked()
 
 void feaAnalysisPanel::solveFEA()
 {
+    qDebug() << "=========>>>>>>>>>>>=========";
 // construct mesh with polyMesh
     const Mesh & polyMesh = (*mesh());
 // pre-unkown the shape of each cell (cube)
@@ -143,13 +144,12 @@ void feaAnalysisPanel::solveFEA()
     QList<QList<int> > vertexList;
     polyMesh.numberSequence(Mesh::Cubic, vertexList);
 
-    const int nElement = 1;//polyMesh.nCells();
-    const int nNodes = polyMesh.nNodes();
+    const int nElement = polyMesh.nCells();
+    const int nUnknown = polyMesh.nNodes()*3;
 
-    std::string nameMat = "Aluminum";
+    std::string nameMat = "Aluminum-2014T";
     QList<FEAElementLinearCubicalElement*> elements;
     for (int i = 0; i < nElement; i++) {
-
         MaterialEle *m = new MaterialEle(nameMat);
         const QList<int> & vertex = vertexList[i];
         GeometryEle *g = new GeometryEle(polyMesh, vertex);
@@ -169,33 +169,39 @@ void feaAnalysisPanel::solveFEA()
         FEAElementLinearCubicalElement *lce =\
                 static_cast<FEAElementLinearCubicalElement*>(parentEle.get());
         parentEle.release();
-        std::cout<< lce->baseMass() << std::endl;
+//        std::cout<< lce->baseMass() << std::endl;
         elements.push_back(lce);
     }
 
-    mathExtension::Matrix A(nNodes, nNodes);
+    mathExtension::Matrix A(nUnknown , nUnknown);
 
     QList<FEAElementLinearCubicalElement*>::const_iterator it;
+
     qDebug() << "====== Form Linear Algebra Equations =====";
+
     for(it = elements.begin(); it != elements.end(); ++it) {
-//        std::cout << (*it)->baseMass() << std::endl;
         const FEAElementLinearCubicalElement &ele = **it;
         const QList<int> &Rows= ele.geometry()->vertexIds();
-//        qDebug() << "Set Rows: ";
-        std::cout << ele.baseMass() << std::endl;
+        qDebug() << Rows;
 //        std::cout << ele.baseMass() << std::endl;
 //        // be aware of vertex id (our id starts from 0)
-//        A.setSubMatrix(Rows, Rows, ele->baseStiff());
+        A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
     }
 
-//    mathExtension::Vector b(nNodes);
-//    mathExtension::Vector x(nNodes);
+    mathExtension::Vector b(nUnknown);
+    mathExtension::Vector x(nUnknown);
 
 //    linearAlgebraSolver las(A, b, x);
 //    las.GaussElimination(); // coefficient will be changed
+//    display stiffness matrix
+//    const mathExtension::Matrix &A = elements[0]->baseStiff();
+    Form *tmp = new Form(A, b, mw_);
+    tmp->show();
 
-//    Form *tmp = new Form(N_p, K_p, Q_p, mw);
-//    tmp->show();
+//    display mass matrix
+//    const mathExtension::Matrix &Att = elements[0]->baseMass();
+//    Form *tmp2 = new Form(Att, b, mw_);
+//    tmp2->show();
 
 //    log_ += las.mylog();
 //    log_ += "\n Results of this Bar Problem is :\n";

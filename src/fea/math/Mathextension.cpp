@@ -209,22 +209,31 @@ void mathExtension::Matrix::set(const int i, const Vector &v)
 void mathExtension::Matrix::setColValues(\
         const int iCol, \
         const mathExtension::pos &Cols, \
-        const mathExtension::Vector &v)
+        const mathExtension::Vector &v,\
+        const bool & shift)
 {
     const int start = Cols.start;
     const int step = Cols.step;
     const int end = Cols.end;
     int cc = 0;
-    for (int c = start; c < end; c = c+step ) {
-        data_[iCol-1][c-1] = v[cc];
-        cc++;
+    if(!shift){
+        for (int c = start; c <= end; c = c+step ) {
+            data_[iCol][c] = v[cc];
+            cc++;
+        }
+    } else {
+        for (int c = start; c <= end; c = c+step ) {
+            data_[iCol-1][c-1] = v[cc];
+            cc++;
+        }
     }
 }
 
 void mathExtension::Matrix::setSubMatrix(\
         const mathExtension::pos &Rows, \
         const mathExtension::pos &Cols, \
-        const mathExtension::Matrix &subM)
+        const mathExtension::Matrix &subM,
+        const bool & shift)
 {
     const int rStart = Rows.start;
     const int rStep =  Rows.step;
@@ -236,37 +245,75 @@ void mathExtension::Matrix::setSubMatrix(\
 
     int rc = 0;
     int cc = 0;
-    for (int i = rStart; i < rEnd; i = i + rStep) {
-        for (int j = cStart; j < cEnd; j = j + cStep) {
-            data_[i-1][j-1] = subM[rc][cc];
-            cc++;
+    if(!shift) {
+        for (int i = rStart; i < rEnd; i = i + rStep) {
+            for (int j = cStart; j < cEnd; j = j + cStep) {
+                data_[i][j] = subM[rc][cc];
+                cc++;
+            }
+            rc++;
+            cc = 0;
         }
-        rc++;
-        cc = 0;
+    } else {
+        for (int i = rStart; i < rEnd; i = i + rStep) {
+            for (int j = cStart; j < cEnd; j = j + cStep) {
+                data_[i-1][j-1] = subM[rc][cc];
+                cc++;
+            }
+            rc++;
+            cc = 0;
+        }
     }
 }
 
 // for direct method usage
-void mathExtension::Matrix::setSubMatrix\
+void mathExtension::Matrix::assemblyMatrix\
 (\
         const QList<int> &Rows, \
         const QList<int> &Cols, \
-        const mathExtension::Matrix &subM\
+        const mathExtension::Matrix &subM,\
+        const bool & shift,\
+        const int & DOF
 )
 {
     const int & sizeR = Rows.size();
     const int & sizeC = Cols.size();
     const int & sizeMR = subM.nrow();
     const int & sizeMC = subM.ncol();
-    if (sizeR == sizeC && sizeMR == sizeMC && sizeR == sizeMR) {
-        for (int i = 0; i < sizeMR; i++) {
-            const int & ri = Rows[i];
-            for (int j = 0; j < sizeMR; j++) {
-                const int & cj = Cols[j];
-                data_[ri][cj] = subM[i][j];
+    if(!shift) {
+        if (sizeR == sizeC && sizeMR == sizeMC && ((sizeR*DOF) == sizeMR)) {
+            for (int i = 0; i < sizeR; i++) {
+                const int ri = Rows[i]*DOF;
+                for (int j = 0; j < sizeC; j++) {
+                    const int cj = Cols[j]*DOF;
+
+                    for(int II = 0; II < DOF; II++){
+                        for (int JJ = 0; JJ < DOF; JJ++) {
+                            data_[ri+II][cj+JJ] = subM[i+II][j+JJ];
+                        }
+                    }
+
+                }
+            }
+        }
+    } else {
+        if (sizeR == sizeC && sizeMR == sizeMC && sizeR == sizeMR) {
+            for (int i = 0; i < sizeMR; i++) {
+                const int ri = (Rows[i]-1)*DOF;
+                for (int j = 0; j < sizeMR; j++) {
+                    const int cj = (Cols[j]-1)*DOF;
+
+                    for(int II = 0; II < DOF; II++){
+                        for (int JJ = 0; JJ < DOF; JJ++) {
+                            data_[ri+II][cj+JJ] = subM[i+II][j+JJ];
+                        }
+                    }
+
+                }
             }
         }
     }
+
 }
 
 void mathExtension::Matrix::zeroize()

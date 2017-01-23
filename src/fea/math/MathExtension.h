@@ -154,9 +154,9 @@ public:
     ~Matrix();
 
     void set(const int i, const Vector &v);
-    void setColValues(const int iCol, const pos & Cols, const Vector & v);
-    void setSubMatrix(const pos & Rows, const pos & Cols, const Matrix & subM);
-    void setSubMatrix(const QList<int> & Rows, const QList<int> & Cols, const Matrix & subM);
+    void setColValues(const int iCol, const pos & Cols, const Vector & v, const bool & shift);
+    void setSubMatrix(const pos & Rows, const pos & Cols, const Matrix & subM, const bool&shift);
+    void assemblyMatrix(const QList<int> & Rows, const QList<int> & Cols, const Matrix & subM, const bool & shift, const int &);
     inline const int nrow() const { return nrow_;}
     inline const int ncol() const { return ncol_;}
 

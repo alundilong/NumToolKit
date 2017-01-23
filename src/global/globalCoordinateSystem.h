@@ -23,41 +23,19 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef STRINGELEMENT_H
-#define STRINGELEMENT_H
+#ifndef GLOBALCOORDINATESYSTEM_H
+#define GLOBALCOORDINATESYSTEM_H
 
-#include "FeaElementOneD.h"
-
+#include <QVector3D>
 
 namespace NumToolKit {
 
-namespace Fea {
-
-class StringElement : public FEAElementOneD
-{
-public:
-    static const std::string typeName;
-    static const int  nNode;
-    static const int nDOF;
-
-    StringElement();
-    StringElement
-    (
-            const std::string & dimension,
-            const std::string & name,
-            const MaterialEle &m,
-            const GeometryEle &g
-    );;
-    ~StringElement();
-
-protected:
-    virtual void infoAboutThisElement();
-    virtual void constructGeometry();
-    virtual void constructBaseMatrix();
-    virtual void transformToGlobal();
-};
+// global coordinate system
+QVector3D eg0(1.0, 0.0, 0.0);
+QVector3D eg1(0.0, 1.0, 0.0);
+QVector3D eg2(0.0, 0.0, 1.0);
 
 }
 
-}
-#endif // STRINGELEMENT_H
+
+#endif // GLOBALCOORDINATESYSTEM_H

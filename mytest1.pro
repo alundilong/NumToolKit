@@ -74,7 +74,8 @@ HEADERS  += \
     src/ui/SPH3DPrintPanel.h \
     src/ui/ViewerWindow.h \
     src/macro/RunTimeElementNodeTables.h \
-    src/macro/RunTimeElementNodeDOFTables.h
+    src/macro/RunTimeElementNodeDOFTables.h \
+    src/global/globalCoordinateSystem.h
 
 FORMS    += \
     src/ui/feaanalysispanel.ui \

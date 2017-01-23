@@ -52,11 +52,29 @@ public:
     ~FEAElementLinearCubicalElement();
 
 protected:
+
     virtual void infoAboutThisElement();
     virtual void constructGeometry();
     virtual void constructBaseMatrix();
-    virtual void constructLocalCoordinateSystem();
-    virtual void transformToGlocal();
+    virtual void transformToGlobal();
+
+private:
+
+    struct lengthElement
+    {
+        double ex;
+        double ey;
+        double ez;
+    } exyz_;
+
+    // local coordinate system
+    coordSystem lcs_;
+    lengthElement & exyz() { return exyz_; }
+    coordSystem & lcs() { return lcs_; }
+
+    // (ux, uy, uz)*8
+    double dof_[24];
+
 };
 
 }

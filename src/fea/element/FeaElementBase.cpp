@@ -67,8 +67,8 @@ FEAElementBase::New\
     typename SpaceDimensionConstructorTable::iterator cstrIter =
     SpaceDimensionConstructorTablePtr_->find(dimension);
 
-    std::cout << dimension << std::endl;
-    std::cout << name << std::endl;
+//    std::cout << dimension << std::endl;
+//    std::cout << name << std::endl;
 
     if(cstrIter == SpaceDimensionConstructorTablePtr_->end()) {
         std::cout << "Error : Failure to find " \
@@ -82,6 +82,7 @@ FEAElementBase::New\
             std::cout << cstrIter->first << " Elements" << std::endl;
         }
     }
+
     std::unique_ptr<FEAElementBase> ptr = \
         (
             ((cstrIter->second))(dimension, name, m, g)

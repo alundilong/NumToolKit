@@ -50,12 +50,12 @@ public:
     );
     ~EulerBernoulliBeam();
 
+
 protected:
     virtual void infoAboutThisElement();
     virtual void constructGeometry();
     virtual void constructBaseMatrix();
-    virtual void constructLocalCoordinateSystem();
-    virtual void transformToGlocal();
+    virtual void transformToGlobal();
 };
 
 }

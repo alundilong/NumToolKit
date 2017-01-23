@@ -155,12 +155,7 @@ void EulerBernoulliBeam::constructBaseMatrix()
 
 }
 
-void EulerBernoulliBeam::constructLocalCoordinateSystem()
-{
-
-}
-
-void EulerBernoulliBeam::transformToGlocal()
+void EulerBernoulliBeam::transformToGlobal()
 {
 
 }

@@ -24,6 +24,7 @@
 ------------------------------------------------------------------------- */
 
 #include "FeaElementLinearCubicalElement.h"
+#include "../../global/globalCoordinateSystem.h"
 
 namespace NumToolKit {
 
@@ -48,38 +49,75 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     infoAboutThisElement();
     constructGeometry();
     constructBaseMatrix();
-    constructLocalCoordinateSystem();
-    transformToGlocal();
+    transformToGlobal();
+}
 
+FEAElementLinearCubicalElement::~FEAElementLinearCubicalElement()
+{
+}
+
+void FEAElementLinearCubicalElement::infoAboutThisElement()
+{
     log_ = "3D LinearCubicalElement is selected \n";
-    dim_ = 3;
-    nDOFEle_ = 3;
-    nNodeEle_ = 8;
+    nDOFEle_ = FEAElementLinearCubicalElement::nDOF;
+    nNodeEle_ = FEAElementLinearCubicalElement::nNode;
     name_ = "LinearCubicalElement3D";
     log_ += QString(\
                 "%1D LinearCubicalElement : nNode = %2 : DOF = %3 \n"\
                 ).arg(dim()).arg(nNodeEle()).arg(nDOFEle());
+    qDebug() << log_;
+}
 
+void FEAElementLinearCubicalElement::constructGeometry()
+{
+    // for this element we know how to compute e
+
+    const QList<int> &vertexIds = geometry()->vertexIds();
+    const QList<QVector3D> &points = geometry()->mesh().points();
+
+    QVector3D p1 = points[vertexIds[1-1]];
+    QVector3D p4 = points[vertexIds[4-1]];
+    QVector3D p5 = points[vertexIds[5-1]];
+    QVector3D p2 = points[vertexIds[2-1]];
+
+    // set length in each direction
+    double ex = p1.distanceToPoint(p2);
+    double ey = p1.distanceToPoint(p4);
+    double ez = p1.distanceToPoint(p5);
+    exyz() = {ex, ey, ez};
+
+    // set local coordinate system
+    QVector3D p3 = points[vertexIds[3-1]];
+    QVector3D p6 = points[vertexIds[6-1]];
+    QVector3D p7 = points[vertexIds[7-1]];
+    QVector3D p8 = points[vertexIds[8-1]];
+
+    const QVector3D& origin = geometry()->center();
+
+    QVector3D face2376 = (p2+p3+p7+p6)/4.0;
+    QVector3D axisX((face2376-origin).normalized());
+
+    QVector3D face4873 = (p4+p8+p7+p3)/4.0;
+    QVector3D axisY((face4873-origin).normalized());
+
+    QVector3D face5678 = (p5+p6+p7+p8)/4.0;
+    QVector3D axisZ((face5678-origin).normalized());
+
+    lcs().setOXYZ(origin, axisX, axisY, axisZ);
+
+}
+
+void FEAElementLinearCubicalElement::constructBaseMatrix()
+{
     const int Nunknown = nNode*nDOF;
-
     baseMass_ = mathExtension::Matrix(Nunknown,Nunknown);
     baseStiff_ = mathExtension::Matrix(Nunknown,Nunknown);
 
-    // for this element we know how to compute e
+    double a = exyz().ex;
+    double b = exyz().ey;
+    double c = exyz().ez;
 
-    QVector3D p1 = geometry()->mesh().points()[geometry()->vertexIds()[1-1]];
-    QVector3D p4 = geometry()->mesh().points()[geometry()->vertexIds()[4-1]];
-    QVector3D p5 = geometry()->mesh().points()[geometry()->vertexIds()[5-1]];
-    QVector3D p2 = geometry()->mesh().points()[geometry()->vertexIds()[2-1]];
-
-    double ex = p1.distanceToPoint(p4);
-    double ey = p1.distanceToPoint(p5);
-    double ez = p1.distanceToPoint(p2);
-    double a = ex;
-    double b = ey;
-    double c = ez;
-
-    double v = material()->nu(); // from material type
+    double v = material()->nu();
     double E = material()->E();
     double rho = material()->rho();
 
@@ -167,42 +205,41 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
                 Nz[6] = (1+y+x+xy)/4.0/c;
                 Nz[7] = (1+y-x-xy)/4.0/c;
 
-
                 mathExtension::Matrix N1(6,24);
                 mathExtension::Matrix N2(3,24);
 
                 mathExtension::pos colPos;
                 colPos = {1, 3, 24};
-                N1.setColValues(1, colPos, Nx);
+                N1.setColValues(1, colPos, Nx, true);
                 colPos = {2, 3, 24};
-                N1.setColValues(2, colPos, Ny);
+                N1.setColValues(2, colPos, Ny, true);
                 colPos = {3, 3, 24};
-                N1.setColValues(2, colPos, Nz);
+                N1.setColValues(2, colPos, Nz, true);
 
                 colPos = {2, 3, 24};
-                N1.setColValues(4, colPos, Nz);
+                N1.setColValues(4, colPos, Nz, true);
                 colPos = {3, 3, 24};
-                N1.setColValues(4, colPos, Ny);
-
-                colPos = {1, 3, 24};
-                N1.setColValues(5, colPos, Nz);
-                colPos = {3, 3, 24};
-                N1.setColValues(5, colPos, Nx);
+                N1.setColValues(4, colPos, Ny, true);
 
                 colPos = {1, 3, 24};
-                N1.setColValues(6, colPos, Ny);
+                N1.setColValues(5, colPos, Nz, true);
+                colPos = {3, 3, 24};
+                N1.setColValues(5, colPos, Nx, true);
+
+                colPos = {1, 3, 24};
+                N1.setColValues(6, colPos, Ny, true);
                 colPos = {2, 3, 24};
-                N1.setColValues(6, colPos, Nx);
+                N1.setColValues(6, colPos, Nx, true);
 
                 baseStiff_ = baseStiff_ + N1.transpose()*Q*N1*weight;
 
                 // prepare for mass matrix
                 colPos = {1, 3, 24};
-                N2.setColValues(1, colPos, N);
+                N2.setColValues(1, colPos, N, true);
                 colPos = {2, 3, 24};
-                N2.setColValues(2, colPos, N);
+                N2.setColValues(2, colPos, N, true);
                 colPos = {3, 3, 24};
-                N2.setColValues(3, colPos, N);
+                N2.setColValues(3, colPos, N, true);
 
                 // find mass matrix
                 baseMass_ = baseMass_ + N2.transpose()*(N2*weight*rho);
@@ -210,87 +247,51 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
         }
     }
 
+}
+
+
+void FEAElementLinearCubicalElement::transformToGlobal()
+{
     // coordinate system transformation
     // from local to global
-
-    const coordSystem * cs = geometry()->localCoordinateSystem();
-    mathExtension::Vector e0(3);
-    mathExtension::Vector e1(3);
-    mathExtension::Vector e2(3);
-    double x = cs->e0().x();
-    double y = cs->e0().y();
-    double z = cs->e0().z();
-    e0.set(0,x); e0.set(1,y); e0.set(2,z);
-    x = cs->e1().x();
-    y = cs->e1().y();
-    z = cs->e1().z();
-    e1.set(0,x); e1.set(1,y); e1.set(2,z);
-    x = cs->e2().x();
-    y = cs->e2().y();
-    z = cs->e2().z();
-    e2.set(0,x); e2.set(1,y); e2.set(2,z);
-
-    mathExtension::Vector eg0(3);
-    mathExtension::Vector eg1(3);
-    mathExtension::Vector eg2(3);
-    eg0.set(0,1.0);
-    eg1.set(1,1.0);
-    eg2.set(2,1.0);
 
     // could be further optimized since the transformation
     // matrix is exactly same to each node of the element
 
+    const QVector3D & e0 = lcs().e0();
+    const QVector3D & e1 = lcs().e1();
+    const QVector3D & e2 = lcs().e2();
+
+    const QVector3D &eg0 = NumToolKit::eg0;
+    const QVector3D &eg1 = NumToolKit::eg1;
+    const QVector3D &eg2 = NumToolKit::eg2;
+
     mathExtension::Matrix G(24,24);
     int step = 3;
     for (int i = 0; i < 24; i = i+step) {
-        mathExtension::pos rowRange = {i+1,1,i+1+step};
-        mathExtension::pos colRange = {i+1,1,i+1+step};
+        mathExtension::pos rowRange = {i,1,i+step};
+        mathExtension::pos colRange = {i,1,i+step};
         mathExtension::Matrix T(3,3);
         //Transformation matrix
-        T[0][0] = eg0.cos(e0);//QVector3D::dotProduct(eg0, e0);
-        T[0][1] = eg0.cos(e1);//QVector3D::dotProduct(eg0, e1);
-        T[0][2] = eg0.cos(e2);//QVector3D::dotProduct(eg0, e2);
-        T[1][0] = eg1.cos(e0);//QVector3D::dotProduct(eg1, e0);
-        T[1][1] = eg1.cos(e1);//QVector3D::dotProduct(eg1, e1);
-        T[1][2] = eg1.cos(e2);//QVector3D::dotProduct(eg1, e2);
-        T[2][0] = eg2.cos(e0);//QVector3D::dotProduct(eg2, e0);
-        T[2][1] = eg2.cos(e1);//QVector3D::dotProduct(eg2, e1);
-        T[2][2] = eg2.cos(e2);//QVector3D::dotProduct(eg2, e2);
+        T[0][0] = QVector3D::dotProduct(eg0, e0);
+        T[0][1] = QVector3D::dotProduct(eg0, e1);
+        T[0][2] = QVector3D::dotProduct(eg0, e2);
+        T[1][0] = QVector3D::dotProduct(eg1, e0);
+        T[1][1] = QVector3D::dotProduct(eg1, e1);
+        T[1][2] = QVector3D::dotProduct(eg1, e2);
+        T[2][0] = QVector3D::dotProduct(eg2, e0);
+        T[2][1] = QVector3D::dotProduct(eg2, e1);
+        T[2][2] = QVector3D::dotProduct(eg2, e2);
 
-        G.setSubMatrix(rowRange, colRange, T);
+//        std::cout << T << std::endl;
+
+        G.setSubMatrix(rowRange, colRange, T, false);
     }
 
-    baseStiff_ = G.transpose()*baseStiff_*G;
-    baseMass_ = G.transpose()*baseMass_*G;
-}
+//    std::cout << G << std::endl;
 
-FEAElementLinearCubicalElement::~FEAElementLinearCubicalElement()
-{
-}
-
-void FEAElementLinearCubicalElement::infoAboutThisElement()
-{
-
-}
-
-void FEAElementLinearCubicalElement::constructGeometry()
-{
-
-}
-
-void FEAElementLinearCubicalElement::constructBaseMatrix()
-{
-
-}
-
-void FEAElementLinearCubicalElement::constructLocalCoordinateSystem()
-{
-
-}
-
-void FEAElementLinearCubicalElement::transformToGlocal()
-{
-
+//    baseStiff_ = G.transpose()*baseStiff_*G;
+//    baseMass_ = G.transpose()*baseMass_*G;
 }
 
 makeElement(ElementName, \

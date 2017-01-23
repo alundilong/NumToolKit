@@ -35,6 +35,7 @@ FEAElementOneD::FEAElementOneD()
     :
       FEAElementBase()
 {
+    dim_ = 1;
 }
 
 FEAElementOneD::FEAElementOneD\
@@ -47,7 +48,7 @@ FEAElementOneD::FEAElementOneD\
     :
     FEAElementBase(dimension, name, m, g)
 {
-
+    dim_ = 1;
 }
 
 std::unique_ptr<FEAElementOneD> FEAElementOneD::New
@@ -82,12 +83,8 @@ void FEAElementOneD::constructBaseMatrix()
     std::cout << "No Implementation" << std::endl;
 }
 
-void FEAElementOneD::constructLocalCoordinateSystem()
-{
-    std::cout << "No Implementation" << std::endl;
-}
 
-void FEAElementOneD::transformToGlocal()
+void FEAElementOneD::transformToGlobal()
 {
     std::cout << "No Implementation" << std::endl;
 }

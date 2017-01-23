@@ -35,6 +35,7 @@ FEAElementTwoD::FEAElementTwoD()
     :
       FEAElementBase()
 {
+    dim_ = 2;
 }
 
 FEAElementTwoD::FEAElementTwoD\
@@ -47,7 +48,7 @@ FEAElementTwoD::FEAElementTwoD\
     :
       FEAElementBase(dimension, name, m, g)
 {
-
+    dim_ = 2;
 }
 
 std::unique_ptr<FEAElementTwoD> FEAElementTwoD::New
@@ -82,12 +83,7 @@ void FEAElementTwoD::constructBaseMatrix()
     std::cout << "No Implementation" << std::endl;
 }
 
-void FEAElementTwoD::constructLocalCoordinateSystem()
-{
-    std::cout << "No Implementation" << std::endl;
-}
-
-void FEAElementTwoD::transformToGlocal()
+void FEAElementTwoD::transformToGlobal()
 {
     std::cout << "No Implementation" << std::endl;
 }

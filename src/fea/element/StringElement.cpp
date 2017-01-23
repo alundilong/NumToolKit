@@ -78,12 +78,8 @@ void StringElement::constructBaseMatrix()
 
 }
 
-void StringElement::constructLocalCoordinateSystem()
-{
 
-}
-
-void StringElement::transformToGlocal()
+void StringElement::transformToGlobal()
 {
 
 }

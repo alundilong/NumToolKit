@@ -46,6 +46,8 @@ Form::Form(QWidget *parent) :
     ui->radioDirectMethod->setChecked(true);
     ui->radioGauss->setChecked(true);
     ui->radioJacobi->setChecked(true);
+
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
 Form::Form(MainWindow *mw, QWidget *parent) :
@@ -65,6 +67,7 @@ Form::Form(MainWindow *mw, QWidget *parent) :
     ui->radioDirectMethod->setChecked(true);
     ui->radioGauss->setChecked(true);
     ui->radioJacobi->setChecked(true);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
 Form::Form(int size, double **A, double *b, MainWindow *mw, QWidget *parent) :
@@ -72,6 +75,37 @@ Form::Form(int size, double **A, double *b, MainWindow *mw, QWidget *parent) :
     ui(new Ui::Form),
     mw(mw)
 {
+    ui->setupUi(this);
+    ui->spinBox->setValue(size);
+    ui->tableWidget->setColumnCount(size+2);
+    ui->tableWidget->setRowCount(size);
+
+    QStringList tbHeader;
+    for (int i = 0; i < size; i++) {
+        tbHeader << QString("A") + QString::number(i+1);
+    }
+    tbHeader << "b" << "x";
+    ui->tableWidget->setHorizontalHeaderLabels(tbHeader);
+
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            ui->tableWidget->setItem(i, j, new QTableWidgetItem(QString::number(A[i][j])));
+        }
+        ui->tableWidget->setItem(i, size, new QTableWidgetItem(QString::number(b[i])));
+    }
+
+    // default: direct method, gauss elimination
+    ui->radioDirectMethod->setChecked(true);
+    ui->radioGauss->setChecked(true);
+    ui->radioJacobi->setChecked(true);
+}
+
+Form::Form(const Matrix &A, const Vector &b, MainWindow *mw, QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::Form),
+    mw(mw)
+{
+    int size = A.nrow();
     ui->setupUi(this);
     ui->spinBox->setValue(size);
     ui->tableWidget->setColumnCount(size+2);

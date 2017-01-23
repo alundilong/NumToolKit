@@ -140,12 +140,7 @@ void BarElement::constructBaseMatrix()
 
 }
 
-void BarElement::constructLocalCoordinateSystem()
-{
-
-}
-
-void BarElement::transformToGlocal()
+void BarElement::transformToGlobal()
 {
 
 }

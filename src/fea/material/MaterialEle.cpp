@@ -35,7 +35,8 @@ MaterialEle::materialType \
 {   /* Name     , {rho,   E,   G,   v}*/ \
     {"Aluminum", {2.7e3, 70e9, 26e9, 0.35} },\
     {"IronFe", {7.874e3, 211e9, 82e9, 0.29} },\
-    {"StainlessSteelGrade304",{7.85e3,203e9,81e9,0.275} }
+    {"StainlessSteelGrade304",{7.85e3,203e9,81e9,0.275}},\
+    {"Aluminum-2014T", {2.8e3, 72.4e9, 30e9, 0.33}} /* G is not sure!*/
 };
 
 MaterialEle::MaterialEle()
