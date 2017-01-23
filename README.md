@@ -2,7 +2,7 @@ NumToolKit - Numerical Simulation ToolKit
 
 NumTooKit is an undergoing numerical simulation toolbox covering FEA/SPH/CFD analysis.
 
-*FEA package targets at performing nonlinear structure analysis of higly flexible material
+*FEA package targets at performing nonlinear structure analysis of higly flexible material.
 High Performance Parallel Computing tech with timer-triggered domain decompostion will be
 implemented to conduct challenging simulation that involves mass destruction in the system,
 and others such as additive manufacturing simulaiton.
