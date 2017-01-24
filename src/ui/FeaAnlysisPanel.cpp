@@ -183,7 +183,7 @@ void feaAnalysisPanel::solveFEA()
     // set displacement on Left as fixed value
     QList<int> vertex;
     polyMesh.fetchBCUniqueVertex("Left", vertex);
-    qDebug() << "Left: " << vertex;
+//    qDebug() << "Left: " << vertex;
     QList<int>::const_iterator vIt;
     for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
         int vertexId = *vIt;
@@ -199,7 +199,7 @@ void feaAnalysisPanel::solveFEA()
     vertex.clear();
     // set force
     polyMesh.fetchBCUniqueVertex("Right", vertex);
-    qDebug() << "Right: " << vertex;
+//    qDebug() << "Right: " << vertex;
     for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
         int vertexId = *vIt;
         int rs = vertexId*3;
@@ -220,9 +220,11 @@ void feaAnalysisPanel::solveFEA()
 //        std::cout << b[i] << ",";
 //    }
 
-//    linearAlgebraSolver las(A, b, x);
-//    las.GaussElimination(); // coefficient will be changed
-//    std::cout << x << std::endl;
+    A = A*1e-9;
+    linearAlgebraSolver las(A, b, x);
+//    las.GaussElimination();
+    //las.LUSolve(); // coefficient will be changed
+    std::cout << x << std::endl;
 
 //    display stiffness matrix
 //    const mathExtension::Matrix &A = elements[0]->baseStiff();
