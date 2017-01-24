@@ -84,6 +84,8 @@ public:
 
     // Number Sequence
     void numberSequence(ElementShape, QList<QList < int > > & vertexList) const;
+    // Fetch unique vertex on boundary
+    void fetchBCUniqueVertex(const QString & name, QList<int>& vertex ) const;
 private:
 
     QList<QString> boundaryName_; // name of BC

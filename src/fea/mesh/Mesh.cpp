@@ -199,7 +199,39 @@ void Mesh::numberSequence(ElementShape shape, QList<QList<int> >& vertexList) co
     }
 
     }
+    }
 }
+
+void Mesh::fetchBCUniqueVertex(const QString &name, QList<int> &vertex) const
+{
+    QMap<QString, QList<int> >::const_iterator it;
+    it = boundaryNameFaces().find(name);
+
+    if(it != boundaryNameFaces().end()) {
+        const QList<int> & faceList = boundaryNameFaces()[name];
+        QList<int>::const_iterator it2;
+        for(it2 = faceList.begin(); it2 != faceList.end(); ++it2) {
+            int faceI = *it2;
+
+            int num = faceNodes(faceI).size();
+            int nodeIds[num];
+            for(int i = 0; i < num; i++) {
+                nodeIds[i] = faceNodes(faceI)[i];
+            }
+            std::list<int> uniqueList(nodeIds, nodeIds+num);
+            uniqueList.sort();
+            uniqueList.unique();
+
+            std::list<int>::const_iterator it3;
+            for (it3 = uniqueList.begin(); it3 != uniqueList.end(); ++it3) {
+                vertex.push_back(*it3);
+            }
+        }
+    } else {
+        for (it = boundaryNameFaces().begin(); it != boundaryNameFaces().end(); ++it) {
+            qDebug() << (*it).first();
+        }
+    }
 }
 
 
