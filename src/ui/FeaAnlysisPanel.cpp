@@ -136,7 +136,6 @@ void feaAnalysisPanel::on_buttonRun_clicked()
 
 void feaAnalysisPanel::solveFEA()
 {
-    qDebug() << "=========>>>>>>>>>>>=========";
 // construct mesh with polyMesh
     const Mesh & polyMesh = (*mesh());
 // pre-unkown the shape of each cell (cube)
@@ -153,13 +152,6 @@ void feaAnalysisPanel::solveFEA()
         MaterialEle *m = new MaterialEle(nameMat);
         const QList<int> & vertex = vertexList[i];
         GeometryEle *g = new GeometryEle(polyMesh, vertex);
-//        std::unique_ptr<FEAElementThreeD> parentEle = \
-//                FEAElementThreeD::New(\
-//                    "ThreeD",\
-//                    "LinearCubicalElementBarThreeD",\
-//                    *m,\
-//                    *g);
-
         std::unique_ptr<FEAElementBase> parentEle = \
                 FEAElementBase::New(\
                     "ThreeD",\
@@ -169,7 +161,6 @@ void feaAnalysisPanel::solveFEA()
         FEAElementLinearCubicalElement *lce =\
                 static_cast<FEAElementLinearCubicalElement*>(parentEle.get());
         parentEle.release();
-//        std::cout<< lce->baseMass() << std::endl;
         elements.push_back(lce);
     }
 
@@ -182,17 +173,57 @@ void feaAnalysisPanel::solveFEA()
     for(it = elements.begin(); it != elements.end(); ++it) {
         const FEAElementLinearCubicalElement &ele = **it;
         const QList<int> &Rows= ele.geometry()->vertexIds();
-        qDebug() << Rows;
-//        std::cout << ele.baseMass() << std::endl;
-//        // be aware of vertex id (our id starts from 0)
+        // be aware of vertex id (our id starts from 0)
         A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
     }
 
     mathExtension::Vector b(nUnknown);
     mathExtension::Vector x(nUnknown);
 
+    // set displacement on Left as fixed value
+    QList<int> vertex;
+    polyMesh.fetchBCUniqueVertex("Left", vertex);
+    qDebug() << "Left: " << vertex;
+    QList<int>::const_iterator vIt;
+    for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
+        int vertexId = *vIt;
+        int rs = vertexId*3;
+        int cs = vertexId*3;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3 ; j++) {
+                if (i!=j)
+                    A[rs+i][cs+j] = 0.0;
+            }
+        }
+    }
+    vertex.clear();
+    // set force
+    polyMesh.fetchBCUniqueVertex("Right", vertex);
+    qDebug() << "Right: " << vertex;
+    for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
+        int vertexId = *vIt;
+        int rs = vertexId*3;
+        b[rs+1] = -100;
+    }
+    vertex.clear();
+
+//    std::cout << "A matrix:" << std::endl;
+//    for (int i = 0; i < A.nrow(); i++) {
+//        for (int j = 0; j < A.ncol(); j++) {
+//            std::cout << A[i][j] <<",";
+//        }
+//        std::cout << ";" << std::endl;
+//    }
+
+//    std::cout << "b: " << std::endl;
+//    for (int i = 0; i < b.nrow(); i++) {
+//        std::cout << b[i] << ",";
+//    }
+
 //    linearAlgebraSolver las(A, b, x);
 //    las.GaussElimination(); // coefficient will be changed
+//    std::cout << x << std::endl;
+
 //    display stiffness matrix
 //    const mathExtension::Matrix &A = elements[0]->baseStiff();
     Form *tmp = new Form(A, b, mw_);
