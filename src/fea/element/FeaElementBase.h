@@ -120,6 +120,7 @@ public:
     const GeometryEle * geometry() const { return geoInfo_; }
 
 
+
 //    // material of this element
 //    class MaterialEle {
 
@@ -183,6 +184,7 @@ protected:
     virtual void constructGeometry() = 0;
     virtual void constructBaseMatrix() = 0;
     virtual void transformToGlobal() = 0;
+    virtual void numberSequence(QList<int> &) = 0;
 
 };
 

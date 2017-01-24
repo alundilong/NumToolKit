@@ -51,12 +51,16 @@ public:
     );
     ~FEAElementLinearCubicalElement();
 
+    // access
+    const QList<int>& nodeIds() const {return pointIds_;}
+
 protected:
 
     virtual void infoAboutThisElement();
     virtual void constructGeometry();
     virtual void constructBaseMatrix();
     virtual void transformToGlobal();
+    virtual void numberSequence(const QList<int>&);
 
 private:
 
@@ -71,6 +75,12 @@ private:
     coordSystem lcs_;
     lengthElement & exyz() { return exyz_; }
     coordSystem & lcs() { return lcs_; }
+
+    // 8 nodes
+    QList<int> pointIds_;
+    QVector3D center_;
+    inline QList<int> & pointIds() { return pointIds_; }
+    inline QVector3D& center() { return center_; }
 
     // (ux, uy, uz)*8
     double dof_[24];

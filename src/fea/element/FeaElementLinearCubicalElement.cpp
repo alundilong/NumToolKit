@@ -68,17 +68,83 @@ void FEAElementLinearCubicalElement::infoAboutThisElement()
     qDebug() << log_;
 }
 
+void FEAElementLinearCubicalElement::numberSequence(const QList<int> & vertexIds)
+{
+    int num = vertexIds.size();
+    int nodeIds[num];
+    for(int i = 0; i < num; i++) {
+        nodeIds[i] = vertexIds[i];
+    }
+    std::list<int> uniqueList(nodeIds, nodeIds+num);
+    uniqueList.sort();
+    uniqueList.unique();
+
+    const QList<QVector3D> & points = geometry()->mesh().points();
+
+    double xc, yc, zc; // cube center
+    xc = yc = zc = 0.0;
+    int c = 0;
+    std::list<int>::const_iterator it;
+    for (it = uniqueList.begin(); it != uniqueList.end(); ++it) {
+
+        xc += points[(*it)].x();
+        yc += points[(*it)].y();
+        zc += points[(*it)].z();
+        c++;
+    }
+
+    xc = xc/c;
+    yc = yc/c;
+    zc = zc/c;
+
+    center() = QVector3D(xc, yc, zc);
+
+    mathExtension::Point vc(xc,yc,zc);
+
+    c = 0;
+    QList<int> vertex;
+    vertex.reserve(8);
+    for (int i = 0; i < 8; i++) {
+        int ii;
+        vertex.append(ii);
+    }
+
+    for (it = uniqueList.begin(); it != uniqueList.end(); ++it) {
+        const int & vertexId = *it;
+
+        double x = points[vertexId].x();
+        double y = points[vertexId].y();
+        double z = points[vertexId].z();
+
+        mathExtension::Point v(x,y,z);
+        mathExtension::Point vd(v-vc);
+
+        switch(coordSystem::whichQuadrant(vd)) {
+        case coordSystem::PNP: {vertex[6-1] = vertexId; break;}
+        case coordSystem::PPP: {vertex[7-1] = vertexId; break;}
+        case coordSystem::NPP: {vertex[8-1] = vertexId; break;}
+        case coordSystem::NNP: {vertex[5-1] = vertexId; break;}
+
+        case coordSystem::NNN: {vertex[1-1] = vertexId; break;}
+        case coordSystem::PNN: {vertex[2-1] = vertexId; break;}
+        case coordSystem::PPN: {vertex[3-1] = vertexId; break;}
+        case coordSystem::NPN: {vertex[4-1] = vertexId; break;}
+        }
+    }
+
+    pointIds() = vertex;
+}
+
 void FEAElementLinearCubicalElement::constructGeometry()
 {
     // for this element we know how to compute e
-
     const QList<int> &vertexIds = geometry()->vertexIds();
+    numberSequence(vertexIds);
     const QList<QVector3D> &points = geometry()->mesh().points();
-
-    QVector3D p1 = points[vertexIds[1-1]];
-    QVector3D p4 = points[vertexIds[4-1]];
-    QVector3D p5 = points[vertexIds[5-1]];
-    QVector3D p2 = points[vertexIds[2-1]];
+    QVector3D p1 = points[pointIds()[1-1]];
+    QVector3D p4 = points[pointIds()[4-1]];
+    QVector3D p5 = points[pointIds()[5-1]];
+    QVector3D p2 = points[pointIds()[2-1]];
 
     // set length in each direction
     double ex = p1.distanceToPoint(p2);
@@ -87,10 +153,10 @@ void FEAElementLinearCubicalElement::constructGeometry()
     exyz() = {ex, ey, ez};
 
     // set local coordinate system
-    QVector3D p3 = points[vertexIds[3-1]];
-    QVector3D p6 = points[vertexIds[6-1]];
-    QVector3D p7 = points[vertexIds[7-1]];
-    QVector3D p8 = points[vertexIds[8-1]];
+    QVector3D p3 = points[pointIds()[3-1]];
+    QVector3D p6 = points[pointIds()[6-1]];
+    QVector3D p7 = points[pointIds()[7-1]];
+    QVector3D p8 = points[pointIds()[8-1]];
 
     const QVector3D& origin = geometry()->center();
 
@@ -291,8 +357,9 @@ void FEAElementLinearCubicalElement::transformToGlobal()
 //    std::cout << G << std::endl;
 
 //    baseStiff_ = G.transpose()*baseStiff_*G;
-//    baseMass_ = G.transpose()*baseMass_*G;
+    //    baseMass_ = G.transpose()*baseMass_*G;
 }
+
 
 makeElement(ElementName, \
             FEAElementLinearCubicalElement, \

@@ -103,7 +103,32 @@ FEAElementBarThreeD::~FEAElementBarThreeD()
 //        delete [] baseStiff_[i];
 //    }
 //    delete [] baseMass_;
-//    delete [] baseStiff_;
+    //    delete [] baseStiff_;
+}
+
+void FEAElementBarThreeD::infoAboutThisElement()
+{
+
+}
+
+void FEAElementBarThreeD::constructGeometry()
+{
+
+}
+
+void FEAElementBarThreeD::constructBaseMatrix()
+{
+
+}
+
+void FEAElementBarThreeD::transformToGlobal()
+{
+
+}
+
+void FEAElementBarThreeD::numberSequence(QList<int> &)
+{
+
 }
 
 makeElement(ElementName, FEAElementBarThreeD, FEAElementThreeD, BarThreeD)

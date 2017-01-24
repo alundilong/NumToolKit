@@ -160,6 +160,11 @@ void EulerBernoulliBeam::transformToGlobal()
 
 }
 
+void EulerBernoulliBeam::numberSequence(QList<int> &)
+{
+
+}
+
 makeElement(ElementName, EulerBernoulliBeam, FEAElementOneD, EulerBernoulliBeam)
 makeElementNode(ElementName, EulerBernoulliBeam, FEAElementBase)
 makeElementNodeDOF(ElementName, EulerBernoulliBeam, FEAElementBase)

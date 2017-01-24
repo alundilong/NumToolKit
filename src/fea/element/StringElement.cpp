@@ -84,6 +84,11 @@ void StringElement::transformToGlobal()
 
 }
 
+void StringElement::numberSequence(QList<int> &)
+{
+
+}
+
 makeElement(ElementName, StringElement, FEAElementOneD, String)
 makeElementNode(ElementName, StringElement, FEAElementBase)
 makeElementNodeDOF(ElementName, StringElement, FEAElementBase)

@@ -103,6 +103,11 @@ void FEAElementThreeD::transformToGlobal()
     std::cout << "No Implementation" << std::endl;
 }
 
+void FEAElementThreeD::numberSequence(QList<int> &)
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
 
 //FEAElementBase::addSpaceDimensionConstructorToTable<FEAElementThreeD>
 //addFEAElementThreeDSpaceDimensionConstructorToFEAElementBaseTable_;

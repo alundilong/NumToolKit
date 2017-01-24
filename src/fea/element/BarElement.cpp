@@ -145,6 +145,11 @@ void BarElement::transformToGlobal()
 
 }
 
+void BarElement::numberSequence(QList<int> &)
+{
+
+}
+
 makeElement(ElementName, BarElement, FEAElementOneD, Bar)
 makeElementNode(ElementName, BarElement, FEAElementBase)
 makeElementNodeDOF(ElementName, BarElement, FEAElementBase)

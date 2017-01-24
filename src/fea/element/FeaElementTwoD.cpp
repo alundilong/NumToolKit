@@ -88,6 +88,11 @@ void FEAElementTwoD::transformToGlobal()
     std::cout << "No Implementation" << std::endl;
 }
 
+void FEAElementTwoD::numberSequence(QList<int> &)
+{
+    std::cout << "No Implementation" << std::endl;
+}
+
 
 //FEAElementBase::addSpaceDimensionConstructorToTable<FEAElementTwoD>
 //addFEAElementTwoDSpaceDimensionConstructorToFEAElementBaseTable_;
