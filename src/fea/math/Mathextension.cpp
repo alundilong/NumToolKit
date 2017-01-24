@@ -316,6 +316,19 @@ void mathExtension::Matrix::assemblyMatrix\
 
 }
 
+void mathExtension::Matrix::setZeroExceptRowCol(const int &Row, const int &Col)
+{
+    int N = nrow();
+    for (int i = 0; i < N; i++) {
+        if(i == Col) { data_[Row][i] = 1.0; continue;}
+        data_[Row][i] = 0.0;
+    }
+    for (int j = 0; j < N; j++) {
+        if(j == Row)  { data_[j][Col] = 1.0; continue;}
+        data_[j][Col] = 0.0;
+    }
+}
+
 void mathExtension::Matrix::zeroize()
 {
     for (int i = 0; i < nrow(); i++) {
