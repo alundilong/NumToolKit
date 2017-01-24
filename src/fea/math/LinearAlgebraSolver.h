@@ -43,12 +43,20 @@ public:
     linearAlgebraSolver(Matrix &A, Vector &b, Vector &x);
     ~linearAlgebraSolver();
 // direct Methods
+    // 1. LU decomposition
     void LUSolve();
+    void luDecompose(int *, double *);
+    void luBacksbustitude(const int *, Vector &x);
+
+    // 2. Gauss Elimination
     void GaussElimination();
 
 // indirect Methods
     void JacobiMethod();
     void GaussSeidelMethod();
+
+    // check health of matrix
+    double determinant(const Matrix &A);
 
 // check results
     void checkSolution();
@@ -62,6 +70,13 @@ private:
     Matrix &A_;
     Vector &b_;
     Vector &x_;
+
+    inline const int & size() const { return size_; }
+    inline const Matrix& A() const { return A_; }
+    inline Matrix& A() { return A_; }
+    inline const Vector& b() const { return b_; }
+    inline Vector & x() const { return x_; }
+
     int nIterMax_ = 1000;
     double tolerance_ = 1e-3;
     QString log_ = "";
