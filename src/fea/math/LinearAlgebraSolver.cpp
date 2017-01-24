@@ -142,41 +142,85 @@ void linearAlgebraSolver::luBacksbustitude(const int *indx, Vector &b)
     x() = b;
 }
 
+void linearAlgebraSolver::LUSolve_GSL()
+{
+    double *a_data = new double[size()*size()];
+    double *b_data = new double[size()];
+    int N = size();
+    int c = 0;
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            a_data[c] = A()[i][j];
+            c++;
+        }
+    }
+    for (int i = 0; i < N; i++) {
+        b_data[i] = b()[i];
+    }
+
+    gsl_matrix_view m
+      = gsl_matrix_view_array (a_data, N, N);
+    gsl_vector_view b
+      = gsl_vector_view_array (b_data, N);
+    gsl_vector *xval = gsl_vector_alloc (N);
+    int s;
+    gsl_permutation * p = gsl_permutation_alloc (N);
+    gsl_linalg_LU_decomp (&m.matrix, p, &s);
+    gsl_linalg_LU_solve (&m.matrix, p, &b.vector, xval);
+    for (int i = 0; i < N; i++) {
+        x()[i] = gsl_vector_get(xval, i);
+    }
+
+    gsl_permutation_free (p);
+    gsl_vector_free (xval);
+
+    delete[] a_data;
+    delete[] b_data;
+}
+
 void linearAlgebraSolver::GaussElimination()
 {
+    // row pivoting
+    int   i,j,k,m,rowx;
+    double xfac,temp,temp1,amax;
 
-    int N = size_;
-
-    // if 1x1 matrix
-    if (N == 1) {
-        x_[0] = b_[0]/A_[0][0];
-        return;
-    }
-
-    // Gauss Forward Elimination Algorithm
-    for (int k = 1; k <= N-1; k++) {
-        for (int i = k + 1; i <= N; i++) {
-            double ratio = A_[i-1][k-1]/A_[k-1][k-1];
-            for (int j = k + 1; j <= N; j++){
-                A_[i-1][j-1] = A_[i-1][j-1] - ratio * A_[k-1][j-1];
-//                qDebug()<< k << i << j << A_[i-1][j-1] << A_[k-1][j-1];
+    int n = size();
+    rowx = 0;
+    for (k=1; k<=n-1; ++k) {
+        amax = (double) fabs(A()[k-1][k-1]) ;
+        m = k;
+        for (i=k+1; i<=n; i++){
+            xfac = (double) fabs(A()[i-1][k-1]);
+            if(xfac > amax) {amax = xfac; m=i;}
+        }
+        if(m != k) {
+            rowx = rowx+1;
+            temp1 = b()[k];
+            b()[k-1]  = b()[m-1];
+            b()[m-1]  = temp1;
+            for(j=k; j<=n; j++) {
+                temp = A()[k-1][j-1];
+                A()[k-1][j-1] = A()[m-1][j-1];
+                A()[m-1][j-1] = temp;
             }
-
-            b_[i-1] = b_[i-1] - ratio*b_[k-1];
         }
-//        std::cout << A() << std::endl;
+        for (i=k+1; i<=n; ++i) {
+            xfac = A()[i-1][k-1]/A()[k-1][k-1];
+
+            for (j=k+1; j<=n; ++j) {
+                A()[i-1][j-1] = A()[i-1][j-1]-xfac*A()[k-1][j-1];
+            }
+            b()[i-1] = b()[i-1]-xfac*b()[k-1];
+        }
     }
 
-    // Back Substitution Algorithm
-
-    x_[N-1] = b_[N-1]/A_[N-1][N-1]; // find the last value
-
-    for (int i = N-1; i >=1; i--) {
-        double term = 0;
-        for (int j = i + 1; j <= N; j++) {
-            term = term + A_[i-1][j-1]*x_[j-1];
+    for (j=1; j<=n; ++j) {
+        k=n-j+1;
+        x()[k-1] = b()[k-1];
+        for(i=k+1; i<=n; ++i) {
+            x()[k-1] = x()[k-1]-A()[k-1][i-1]*x()[i-1];
         }
-        x_[i-1] = (b_[i-1] - term)/A_[i-1][i-1];
+        x()[k-1] = x()[k-1]/A()[k-1][k-1];
     }
 }
 
@@ -270,7 +314,42 @@ void linearAlgebraSolver::GaussSeidelMethod()
 
 double linearAlgebraSolver::determinant(const Matrix &A)
 {
+    // very expensive
+    // good for n < 10
+    double d = 0.0;
+    int c, subi, i, j, subj;
+    int n = A.nrow();
+    mathExtension::Matrix subA(n-1,n-1);
 
+    if (n == 2)
+    {
+        return( (A[0][0] * A[1][1]) - (A[1][0] * A[0][1]));
+    }
+    else
+    {
+        for(c = 0; c < n; c++)
+        {
+            subi = 0;
+            for(i = 1; i < n; i++)
+            {
+                subj = 0;
+                for(j = 0; j < n; j++)
+                {
+                    if (j == c)
+                    {
+                        continue;
+                    }
+                    subA[subi][subj] = A[i][j];
+                    subj++;
+                }
+                subi++;
+            }
+            double coeff = 1.0;
+            if(c%2!=0) coeff = -1.0;
+            d = d + (coeff * A[0][c] * determinant(subA));
+        }
+    }
+    return d;
 }
 
 void linearAlgebraSolver::checkSolution()

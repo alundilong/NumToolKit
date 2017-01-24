@@ -28,6 +28,8 @@
 
 #include <QString>
 #include "MathExtension.h"
+#include "gsl/gsl_linalg.h"
+
 
 using namespace mathExtension;
 
@@ -47,9 +49,11 @@ public:
     void LUSolve();
     void luDecompose(int *, double *);
     void luBacksbustitude(const int *, Vector &x);
+    void LUSolve_GSL();
 
     // 2. Gauss Elimination
     void GaussElimination();
+
 
 // indirect Methods
     void JacobiMethod();
