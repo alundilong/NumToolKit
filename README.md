@@ -14,3 +14,23 @@ Our package functions in solid/fluid/FSI simulation, which LAMMPS's SPH does not
 *CFD package will be coming ... (the package partially share with FEA)
 
 Contributor : YJ Mao, ymao.mu@gmail.com
+
+
+======================== example code =============================
+
+<!--construct 3D element from FEAElementThreeD-->
+
+    std::unique_ptr<FEAElementThreeD> parentEle = \
+    FEAElementThreeD::New(\
+    "ThreeD",\
+    "LinearCubicalElementBarThreeD",\
+    *m,\
+    *g);
+
+<!--construct 3D element from FEAElementBase-->
+    std::unique_ptr<FEAElementBase> parentEle = \
+    FEAElementBase::New(\
+    "ThreeD",\
+    "LinearCubicalElementBarThreeD",\
+    *m,\
+    *g);
