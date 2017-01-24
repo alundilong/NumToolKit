@@ -139,10 +139,7 @@ void feaAnalysisPanel::solveFEA()
 {
 // construct mesh with polyMesh
     const Mesh & polyMesh = (*mesh());
-// pre-unkown the shape of each cell (cube)
-// find element's numbering sequence
-    QList<QList<int> > vertexList;
-    polyMesh.numberSequence(Mesh::Cubic, vertexList);
+    const QList<QList<int> > &cellNode = polyMesh.cellNode();
 
     const int nElement = polyMesh.nCells();
     const int nUnknown = polyMesh.nNodes()*3;
@@ -151,7 +148,7 @@ void feaAnalysisPanel::solveFEA()
     QList<FEAElementLinearCubicalElement*> elements;
     for (int i = 0; i < nElement; i++) {
         MaterialEle *m = new MaterialEle(nameMat);
-        const QList<int> & vertex = vertexList[i];
+        const QList<int> & vertex = cellNode[i];
         GeometryEle *g = new GeometryEle(polyMesh, vertex);
         std::unique_ptr<FEAElementBase> parentEle = \
                 FEAElementBase::New(\
@@ -166,14 +163,11 @@ void feaAnalysisPanel::solveFEA()
     }
 
     mathExtension::Matrix A(nUnknown , nUnknown);
-
     QList<FEAElementLinearCubicalElement*>::const_iterator it;
-
     qDebug() << "====== Form Linear Algebra Equations =====";
-
     for(it = elements.begin(); it != elements.end(); ++it) {
         const FEAElementLinearCubicalElement &ele = **it;
-        const QList<int> &Rows= ele.geometry()->vertexIds();
+        const QList<int> &Rows= ele.nodeIds();
         // be aware of vertex id (our id starts from 0)
         A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
     }
@@ -202,35 +196,31 @@ void feaAnalysisPanel::solveFEA()
     for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
         int vertexId = *vIt;
         int rs = vertexId*3;
-        b[rs+1] = 1000;
+        b[rs+1] = -10000;
     }
     vertex.clear();
 
-//    std::cout << "A matrix:" << std::endl;
-//    for (int i = 0; i < A.nrow(); i++) {
-//        for (int j = 0; j < A.ncol(); j++) {
-//            std::cout << A[i][j] <<",";
-//        }
-//        std::cout << ";" << std::endl;
-//    }
-
-//    std::cout << "b: " << std::endl;
-//    for (int i = 0; i < b.nrow(); i++) {
-//        std::cout << b[i] << ",";
-//    }
-
-//    A = A*1e-9;
     linearAlgebraSolver las(A, b, x);
 //    las.GaussElimination();
 //    las.LUSolve(); // coefficient will be changed
 //    las.GaussSeidelMethod();
     las.LUSolve_GSL();
-//    std::cout << x << std::endl;
+    std::cout << x << std::endl;
 
     // post-processing
-    // output new position
+    // output new positions
     // output ux, uy, uz
 
+    writeData(polyMesh, x);
+//    display stiffness matrix
+//    Form *tmp = new Form(A, b, mw_);
+//    tmp->show();
+
+}
+
+
+void feaAnalysisPanel::writeData(const Mesh & polyMesh, const Vector &x)
+{
     QString fileName = QFileDialog::getSaveFileName(this, \
                                                     tr("Save FEA data File"), \
                                                     "..", \
@@ -295,22 +285,6 @@ void feaAnalysisPanel::solveFEA()
 
         file.close();
     }
-
-//    display stiffness matrix
-//    Form *tmp = new Form(A, b, mw_);
-//    tmp->show();
-
-//    display mass matrix
-//    const mathExtension::Matrix &Att = elements[0]->baseMass();
-//    Form *tmp2 = new Form(Att, b, mw_);
-//    tmp2->show();
-
-//    log_ += las.mylog();
-//    log_ += "\n Results of this Bar Problem is :\n";
-//    for (int i = 0; i < x.nrow(); i++) {
-//        log_ += QString("Element %1 : Disp = %2 m\n").arg(i).arg(QString::number(x[i]));
-//    }
-//    mw_->retrieveLogFromFEAWindow();
 
 }
 

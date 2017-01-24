@@ -29,6 +29,7 @@
 #include <QWidget>
 #include "../fea/mesh/Mesh.h"
 #include "ViewerWindow.h"
+#include "../fea/math/MathExtension.h"
 
 namespace Ui {
 class feaAnalysisPanel;
@@ -72,6 +73,7 @@ private:
 
     inline const Mesh* mesh() { return mesh_; }
     void solveFEA();
+    void writeData(const Mesh&, const mathExtension::Vector&x);
 };
 
 #endif // FEAANALYSISPANEL_H
