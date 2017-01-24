@@ -34,6 +34,7 @@
 #include <QDebug>
 #include "Form.h"
 #include <QFileDialog>
+#include <QMessageBox>
 
 using namespace NumToolKit::Fea;
 
@@ -180,30 +181,28 @@ void feaAnalysisPanel::solveFEA()
     mathExtension::Vector b(nUnknown);
     mathExtension::Vector x(nUnknown);
 
-    // set displacement on Left as fixed value
+    // set displacement on Left as fixed boundary
     QList<int> vertex;
     polyMesh.fetchBCUniqueVertex("Left", vertex);
-//    qDebug() << "Left: " << vertex;
+    qDebug() << "Left: " << vertex;
     QList<int>::const_iterator vIt;
     for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
         int vertexId = *vIt;
         int rs = vertexId*3;
         int cs = vertexId*3;
         for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3 ; j++) {
-                if (i!=j)
-                    A[rs+i][cs+j] = 0.0;
-            }
+            A.setZeroExceptRowCol(rs+i, cs+i);
+            b[rs+i] = 0.0;
         }
     }
     vertex.clear();
     // set force
     polyMesh.fetchBCUniqueVertex("Right", vertex);
-//    qDebug() << "Right: " << vertex;
+    qDebug() << "Right: " << vertex;
     for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
         int vertexId = *vIt;
         int rs = vertexId*3;
-        b[rs+1] = -100;
+        b[rs+1] = 1000;
     }
     vertex.clear();
 
@@ -220,16 +219,86 @@ void feaAnalysisPanel::solveFEA()
 //        std::cout << b[i] << ",";
 //    }
 
-    A = A*1e-9;
+//    A = A*1e-9;
     linearAlgebraSolver las(A, b, x);
 //    las.GaussElimination();
-    //las.LUSolve(); // coefficient will be changed
-    std::cout << x << std::endl;
+//    las.LUSolve(); // coefficient will be changed
+//    las.GaussSeidelMethod();
+    las.LUSolve_GSL();
+//    std::cout << x << std::endl;
+
+    // post-processing
+    // output new position
+    // output ux, uy, uz
+
+    QString fileName = QFileDialog::getSaveFileName(this, \
+                                                    tr("Save FEA data File"), \
+                                                    "..", \
+                                                    tr("Text Files (*.data)"));
+    if (fileName != "") {
+        QFile file(QFileInfo(fileName).absoluteFilePath());
+
+        if (file.exists())
+        {
+            QMessageBox::StandardButton chosenButton
+                    = QMessageBox::warning(this, \
+                                           tr("File exists"), \
+                                           tr("The file already exists. Do you want to overwrite it?"),
+                                           QMessageBox::Ok | QMessageBox::Cancel,
+                                           QMessageBox::Cancel);
+            if (chosenButton != QMessageBox::Ok)
+            {
+                return; //Save was cancelled
+            }
+        }
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Failed to save file"));
+            return; //Aborted
+        }
+        // ok to write data into vtk format
+        QTextStream outstream(&file);
+        outstream << QString("POINT_DATA %1 \n").arg(x.nrow()/3);
+        outstream << QString("FIELD attributes %1").arg(3);
+        // ux
+        outstream << QString("\nux %1 %2 float \n").arg(1).arg(x.nrow()/3);
+        for (int i = 0; i < x.nrow(); i=i+3) {
+            outstream << QString("%1 ").arg(x[i]);
+            if(i%9 == 0) outstream << "\n";
+        }
+
+        // uy
+        outstream << QString("\nuy %1 %2 float \n").arg(1).arg(x.nrow()/3);
+        for (int i = 1; i < x.nrow(); i=i+3) {
+            outstream << QString("%1 ").arg(x[i]);
+            if((i-1)%9 == 0) outstream << "\n";
+        }
+
+        // uz
+        outstream << QString("\nuz %1 %2 float \n").arg(1).arg(x.nrow()/3);
+        for (int i = 2; i < x.nrow(); i=i+3) {
+            outstream << QString("%1 ").arg(x[i]);
+            if((i - 2)%9 == 0) outstream << "\n";
+        }
+
+        // new xyz
+        outstream << QString("\n new positions \n");
+        for (int i = 0; i < x.nrow(); i=i+3) {
+            const QVector3D & point = polyMesh.points()[(i/3)];
+//            qDebug() << (i/3) << point;
+            double newx = x[i]+point.x();
+            double newy = x[i+1]+point.y();
+            double newz = x[i+2]+point.z();
+            outstream << QString(" %1 %2 %3 ").arg(newx).arg(newy).arg(newz);
+            if(i%9 == 0) outstream << "\n";
+        }
+
+        file.close();
+    }
 
 //    display stiffness matrix
-//    const mathExtension::Matrix &A = elements[0]->baseStiff();
-    Form *tmp = new Form(A, b, mw_);
-    tmp->show();
+//    Form *tmp = new Form(A, b, mw_);
+//    tmp->show();
 
 //    display mass matrix
 //    const mathExtension::Matrix &Att = elements[0]->baseMass();
