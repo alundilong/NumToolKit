@@ -74,8 +74,8 @@ private:
     inline const int & size() const { return size_; }
     inline const Matrix& A() const { return A_; }
     inline Matrix& A() { return A_; }
-    inline const Vector& b() const { return b_; }
-    inline Vector & x() const { return x_; }
+    inline Vector& b() { return b_; }
+    inline Vector & x() { return x_; }
 
     int nIterMax_ = 1000;
     double tolerance_ = 1e-3;

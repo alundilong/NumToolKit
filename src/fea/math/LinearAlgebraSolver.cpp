@@ -56,7 +56,7 @@ void linearAlgebraSolver::LUSolve() {
     double d;
     indx = new int[size()];
     luDecompose(indx,&d);
-    luBacksbustitude(indx, x());
+    luBacksbustitude(indx, b());
     delete [] indx;
 }
 
@@ -68,77 +68,78 @@ void linearAlgebraSolver::luDecompose(int *indx, double *d)
     int n = size();
     vv = new double[n];
     *d = 1.0;
-    for(i = 0; i <=n; i++) {
+
+    for(i = 1; i <=n; i++) {
         big = 0.0;
-        for (j = 0; j <=n; j++) {
-            if ((temp = fabs(A()[i][j])) > big) big = temp;
+        for (j = 1; j <=n; j++) {
+            if ((temp = fabs(A()[i-1][j-1])) > big) big = temp;
         } // end of inner for
 
         if(big == 0.0) qFatal(" Singular matrix in routine luDecompose");
-        vv[i] = 1.0/big;
+        vv[i-1] = 1.0/big;
     } // end of outer for
 
-    for(j = 0; j <=n; j++) {
-        for (i = 0; i < j; i++) {
-            sum = A()[i][j];
-            for (k = 1; k < i; k++) sum -= A()[i][k]*A()[k][j];
+    for(j = 1; j <=n; j++) {
+        for (i = 1; i < j; i++) {
+            sum = A()[i-1][j-1];
+            for (k = 1; k < i; k++) sum -= A()[i-1][k-1]*A()[k-1][j-1];
+            A()[i-1][j-1] = sum;
         } // end of inner for
-        A()[i][j] = sum;
 
         big = 0.0;
         for (i = j; i <=n; i++) {
-            sum = A()[i][j];
-            for (k = 1; k < j; k++) {
-                sum -= A()[i][k]*A()[k][j];
-            } // end of inner for
-            A()[i][j] = sum;
-            if((dum = vv[i]*fabs(sum)) >= big) {
+            sum = A()[i-1][j-1];
+            for (k = 1; k < j; k++)
+                sum -= A()[i-1][k-1]*A()[k-1][j-1];
+            A()[i-1][j-1] = sum;
+            if((dum = vv[i-1]*fabs(sum)) >= big) {
                 big = dum;
                 imax = i;
             } // end of if
         } // end of outer for
         if(j != imax) {
             for (k=1; k<=n; k++) {
-                dum = A()[imax][k];
-                A()[imax][k] = A()[j][k];
-                A()[j][k] = dum;
+                dum = A()[imax-1][k-1];
+                A()[imax-1][k-1] = A()[j-1][k-1];
+                A()[j-1][k-1] = dum;
             } // end of for
             *d = -(*d);
-            vv[imax] = vv[j];
+            vv[imax-1] = vv[j-1];
         } // end of if
 
-        indx[j] = imax;
-        if(A()[j][j] == 0.0) A()[j][j] = TINY;
+        indx[j-1] = imax;
+        if(A()[j-1][j-1] == 0.0) A()[j-1][j-1] = TINY;
 
         if(j != n) {
-            dum = 1.0/A()[j][j];
-            for (i = j+1; i <=n; i++) A()[i][j] *= dum;
+            dum = 1.0/A()[j-1][j-1];
+            for (i = j+1; i <=n; i++) A()[i-1][j-1] *= dum;
         }
     } // end of outer for
 
     delete [] vv;
 }
 
-void linearAlgebraSolver::luBacksbustitude(const int *indx, Vector &x)
+void linearAlgebraSolver::luBacksbustitude(const int *indx, Vector &b)
 {
     int i, ii = 0, ip, j;
     double sum;
     int n = size();
 
     for (i = 1; i <=n; i++) {
-        ip = indx[i];
-        sum = x[ip];
-        x[ip] = x[i];
+        ip = indx[i-1];
+        sum = b[ip-1];
+        b[ip-1] = b[i-1];
         if(ii)
-            for (j = ii; j <= i-1; j++) sum -= A()[i][j]*x[j];
+            for (j = ii; j <= i-1; j++) sum -= A()[i-1][j-1]*b[j-1];
         else if (sum) ii = i;
-        x[i] = sum;
+        b[i-1] = sum;
     }
     for (i = n; i>=1; i--) {
-        sum = x[i];
-        for (j = i+1; j <= n; j++) sum -= A()[i][j]*x[j];
-        x[i] = sum/A()[i][i];
+        sum = b[i-1];
+        for (j = i+1; j <= n; j++) sum -= A()[i-1][j-1]*b[j-1];
+        b[i-1] = sum/(A()[i-1][i-1]);
     }
+    x() = b;
 }
 
 void linearAlgebraSolver::GaussElimination()
@@ -154,16 +155,16 @@ void linearAlgebraSolver::GaussElimination()
 
     // Gauss Forward Elimination Algorithm
     for (int k = 1; k <= N-1; k++) {
-
         for (int i = k + 1; i <= N; i++) {
             double ratio = A_[i-1][k-1]/A_[k-1][k-1];
-
-            for (int j = k + 1; j <= N; j++) {
+            for (int j = k + 1; j <= N; j++){
                 A_[i-1][j-1] = A_[i-1][j-1] - ratio * A_[k-1][j-1];
+//                qDebug()<< k << i << j << A_[i-1][j-1] << A_[k-1][j-1];
             }
 
             b_[i-1] = b_[i-1] - ratio*b_[k-1];
         }
+//        std::cout << A() << std::endl;
     }
 
     // Back Substitution Algorithm
@@ -177,7 +178,6 @@ void linearAlgebraSolver::GaussElimination()
         }
         x_[i-1] = (b_[i-1] - term)/A_[i-1][i-1];
     }
-
 }
 
 void linearAlgebraSolver::JacobiMethod()
@@ -218,7 +218,7 @@ void linearAlgebraSolver::JacobiMethod()
 
 void linearAlgebraSolver::GaussSeidelMethod()
 {
-    int N = size_;
+    const int & N = size();
     // initial guess
     for (int i = 1; i <= N; i++) {
         x_[i-1] = 0;
@@ -227,27 +227,45 @@ void linearAlgebraSolver::GaussSeidelMethod()
     int nIter = 0;
     double maxRes = 1e6;
 
-    while ((nIter < nIterMax()) && (maxRes > tolerance())) {
-        nIter++;
-        double maxResPrevElement = 0;
-        for (int i = 1; i <= N; i++) {
-            double tmp = b_[i-1];
-            for (int j = 1; j <= N; j++) {
-                if (i == j) continue;
-                if(j <= i-1) {
-                    tmp -= A_[i-1][j-1]*x_[j-1]; // using current value
-                } else if (j >= (i+1)) {
-                    tmp -= A_[i-1][j-1]*x_[j-1]; // using previous value
-                }
-            }
+//    while ((nIter < nIterMax()) && (maxRes > tolerance())) {
+//        nIter++;
+//        double maxResPrevElement = 0.0;
+//        for (int i = 1; i <= N; i++) {
+//            double tmp = b()[i-1];
+//            for (int j = 1; j <= N; j++) {
+//                if (i == j) continue;
+//                if(j <= i-1) {
+//                    tmp -= A()[i-1][j-1]*x()[j-1]; // using current value
+//                } else if (j >= (i+1)) {
+//                    tmp -= A()[i-1][j-1]*x()[j-1]; // using previous value
+//                }
+//            }
+//            double xPrev = x()[i-1];
+//            x()[i-1] = tmp/A()[i-1][i-1];
+//            double xNew = x()[i-1];
+//            maxRes = fmax(fabs((xNew-xPrev)/xNew)*100, maxResPrevElement);
+//            maxResPrevElement = maxRes;
+//        }
+//    }
 
-            double xPrev = x_[i-1];
-            x_[i-1] = tmp/A_[i-1][i-1];
-            double xNew = x_[i-1];
-            maxRes = fmax(fabs((xNew-xPrev)/xNew)*100, maxResPrevElement);
-            maxResPrevElement = maxRes;
+    mathExtension::Vector y(N);
+    double error = 1e6;
+    while(nIter<nIterMax() && error > tolerance()) {
+        for (int i = 0; i < N; i++)
+        {
+            y[i] = (b()[i] / A()[i][i]);
+            for (int j = 0; j < N; j++)
+            {
+                if (j == i)
+                    continue;
+                y[i] = y[i] - ((A()[i][j] / A()[i][i]) * x()[j]);
+                x()[i] = y[i];
+            }
+//            std::cout << "x" << i+1 << " = " << x()[i] << " " << y[i] << std::endl;
         }
+        nIter++;
     }
+    x() = y;
 }
 
 double linearAlgebraSolver::determinant(const Matrix &A)
