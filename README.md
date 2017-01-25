@@ -37,6 +37,7 @@ Contributor : YJ Mao, ymao.mu@gmail.com
 
 ====================================================================
 //  construct mesh with polyMesh
+
     const Mesh & polyMesh = (*mesh());
     const QList<QList<int> > &cellNode = polyMesh.cellNode();
 
