@@ -60,7 +60,7 @@ protected:
     virtual void constructGeometry();
     virtual void constructBaseMatrix();
     virtual void transformToGlobal();
-    virtual void numberSequence(const QList<int>&);
+    virtual void numberSequence();
 
 private:
 

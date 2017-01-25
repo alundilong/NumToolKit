@@ -103,7 +103,7 @@ void FEAElementThreeD::transformToGlobal()
     std::cout << "No Implementation" << std::endl;
 }
 
-void FEAElementThreeD::numberSequence(QList<int> &)
+void FEAElementThreeD::numberSequence()
 {
     std::cout << "No Implementation" << std::endl;
 }

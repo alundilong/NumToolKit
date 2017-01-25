@@ -54,7 +54,7 @@ protected:
     virtual void constructGeometry();
     virtual void constructBaseMatrix();
     virtual void transformToGlobal();
-    virtual void numberSequence(QList<int> &);
+    virtual void numberSequence();
 };
 
 }

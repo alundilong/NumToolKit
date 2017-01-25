@@ -126,7 +126,7 @@ void FEAElementBarThreeD::transformToGlobal()
 
 }
 
-void FEAElementBarThreeD::numberSequence(QList<int> &)
+void FEAElementBarThreeD::numberSequence()
 {
 
 }

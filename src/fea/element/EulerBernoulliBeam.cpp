@@ -160,7 +160,7 @@ void EulerBernoulliBeam::transformToGlobal()
 
 }
 
-void EulerBernoulliBeam::numberSequence(QList<int> &)
+void EulerBernoulliBeam::numberSequence()
 {
 
 }

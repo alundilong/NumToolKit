@@ -145,7 +145,7 @@ void BarElement::transformToGlobal()
 
 }
 
-void BarElement::numberSequence(QList<int> &)
+void BarElement::numberSequence()
 {
 
 }

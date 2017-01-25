@@ -184,7 +184,7 @@ protected:
     virtual void constructGeometry() = 0;
     virtual void constructBaseMatrix() = 0;
     virtual void transformToGlobal() = 0;
-    virtual void numberSequence(QList<int> &) = 0;
+    virtual void numberSequence() = 0;
 
 };
 

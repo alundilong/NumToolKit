@@ -89,7 +89,7 @@ void FEAElementOneD::transformToGlobal()
     std::cout << "No Implementation" << std::endl;
 }
 
-void FEAElementOneD::numberSequence(QList<int> &)
+void FEAElementOneD::numberSequence()
 {
     std::cout << "No Implementation" << std::endl;
 }

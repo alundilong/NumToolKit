@@ -84,7 +84,7 @@ void StringElement::transformToGlobal()
 
 }
 
-void StringElement::numberSequence(QList<int> &)
+void StringElement::numberSequence()
 {
 
 }
