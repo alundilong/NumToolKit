@@ -227,12 +227,22 @@ void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Ve
     }
     vertex.clear();
     // set force
+    double yhig = polyMesh.box().yhig;
+    double ylow = polyMesh.box().ylow;
+    double yl = yhig - ylow;
     polyMesh.fetchBCUniqueVertex("Right", vertex);
-//    qDebug() << "Right: " << vertex;
     for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
         int vertexId = *vIt;
-        int rs = vertexId*3;
-        b[rs+1] = -100;
+        if(polyMesh.points()[vertexId].y()>(yhig - 0.20*yl)) {
+            int rs = vertexId*3;
+            b[rs+2] = -10000;
+//            std::cout << "Top:" << vertexId << std::endl;
+        } else if (polyMesh.points()[vertexId].y() < (ylow + 0.25*yl)) {
+            int rs = vertexId*3;
+            b[rs+2] = 10000;
+//            std::cout << "Bot:" << vertexId << std::endl;
+        }
+//        b[rs+1] = -100;
     }
     vertex.clear();
 }
