@@ -288,9 +288,8 @@ void mathExtension::Matrix::assemblyMatrix\
                     const int cj = Cols[j]*DOF;
 
                     for(int II = 0; II < DOF; II++){
-                        for (int JJ = 0; JJ < DOF; JJ++) {
-                            data_[ri+II][cj+JJ] = subM[i+II][j+JJ];
-                        }
+                        for (int JJ = 0; JJ < DOF; JJ++)
+                            data_[ri+II][cj+JJ] = subM[i*DOF+II][j*DOF+JJ];
                     }
 
                 }
@@ -319,13 +318,13 @@ void mathExtension::Matrix::assemblyMatrix\
 void mathExtension::Matrix::setZeroExceptRowCol(const int &Row, const int &Col)
 {
     int N = nrow();
-    for (int i = 0; i < N; i++) {
-        if(i == Col) { data_[Row][i] = 1.0; continue;}
-        data_[Row][i] = 0.0;
-    }
     for (int j = 0; j < N; j++) {
-        if(j == Row)  { data_[j][Col] = 1.0; continue;}
-        data_[j][Col] = 0.0;
+        if(j == Col) { data_[Row][j] = 1.0; continue;}
+        data_[Row][j] = 0.0;
+    }
+    for (int i = 0; i < N; i++) {
+        if(i == Row)  { data_[i][Col] = 1.0; continue;}
+        data_[i][Col] = 0.0;
     }
 }
 
