@@ -73,6 +73,7 @@ private:
 
     inline const Mesh* mesh() { return mesh_; }
     void solveFEA();
+    void setBoundaryConditions(const Mesh& mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
     void writeData(const Mesh&, const mathExtension::Vector&x);
 };
 

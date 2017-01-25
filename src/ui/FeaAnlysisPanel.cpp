@@ -163,6 +163,9 @@ void feaAnalysisPanel::solveFEA()
     }
 
     mathExtension::Matrix A(nUnknown , nUnknown);
+    mathExtension::Vector b(nUnknown);
+    mathExtension::Vector x(nUnknown);
+
     QList<FEAElementLinearCubicalElement*>::const_iterator it;
     qDebug() << "====== Form Linear Algebra Equations =====";
     for(it = elements.begin(); it != elements.end(); ++it) {
@@ -172,9 +175,17 @@ void feaAnalysisPanel::solveFEA()
         A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
     }
 
-    mathExtension::Vector b(nUnknown);
-    mathExtension::Vector x(nUnknown);
+    setBoundaryConditions(polyMesh,A,b);
+    linearAlgebraSolver las(A, b, x);
+    las.LUSolve_GSL();
+    // post-processing
+    // output new positions
+    // output ux, uy, uz
+    writeData(polyMesh, x);
+}
 
+void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Vector &b)
+{
     // set displacement on Left as fixed boundary
     QList<int> vertex;
     polyMesh.fetchBCUniqueVertex("Left", vertex);
@@ -199,23 +210,6 @@ void feaAnalysisPanel::solveFEA()
         b[rs+1] = -10000;
     }
     vertex.clear();
-
-    linearAlgebraSolver las(A, b, x);
-//    las.GaussElimination();
-//    las.LUSolve(); // coefficient will be changed
-//    las.GaussSeidelMethod();
-    las.LUSolve_GSL();
-    std::cout << x << std::endl;
-
-    // post-processing
-    // output new positions
-    // output ux, uy, uz
-
-    writeData(polyMesh, x);
-//    display stiffness matrix
-//    Form *tmp = new Form(A, b, mw_);
-//    tmp->show();
-
 }
 
 
