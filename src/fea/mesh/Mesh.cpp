@@ -210,23 +210,34 @@ void Mesh::fetchBCUniqueVertex(const QString &name, QList<int> &vertex) const
     if(it != boundaryNameFaces().end()) {
         const QList<int> & faceList = boundaryNameFaces()[name];
         QList<int>::const_iterator it2;
+
+        QList<int> allNodes;
+
         for(it2 = faceList.begin(); it2 != faceList.end(); ++it2) {
             int faceI = *it2;
-
-            int num = faceNodes(faceI).size();
-            int nodeIds[num];
-            for(int i = 0; i < num; i++) {
-                nodeIds[i] = faceNodes(faceI)[i];
-            }
-            std::list<int> uniqueList(nodeIds, nodeIds+num);
-            uniqueList.sort();
-            uniqueList.unique();
-
-            std::list<int>::const_iterator it3;
-            for (it3 = uniqueList.begin(); it3 != uniqueList.end(); ++it3) {
-                vertex.push_back(*it3);
+            const QList<int> & faceNode = faceNodes(faceI);
+            int nNode = faceNode.size();
+            for(int i = 0; i < nNode; i++) {
+                allNodes.push_back(faceNode[i]);
             }
         }
+        int num = allNodes.size();
+        int nodeIds[num];
+        QList<int>::const_iterator itNode;
+        int c = 0;
+        for (itNode = allNodes.begin(); itNode != allNodes.end(); ++itNode) {
+            nodeIds[c++] = *itNode;
+        }
+
+        std::list<int> uniqueList(nodeIds, nodeIds+num);
+        uniqueList.sort();
+        uniqueList.unique();
+
+        std::list<int>::const_iterator it3;
+        for (it3 = uniqueList.begin(); it3 != uniqueList.end(); ++it3) {
+            vertex.push_back(*it3);
+        }
+
     } else {
         for (it = boundaryNameFaces().begin(); it != boundaryNameFaces().end(); ++it) {
             qDebug() << (*it).first();
