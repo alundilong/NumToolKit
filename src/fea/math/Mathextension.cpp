@@ -289,7 +289,7 @@ void mathExtension::Matrix::assemblyMatrix\
 
                     for(int II = 0; II < DOF; II++){
                         for (int JJ = 0; JJ < DOF; JJ++)
-                            data_[ri+II][cj+JJ] = subM[i*DOF+II][j*DOF+JJ];
+                            data_[ri+II][cj+JJ] += subM[i*DOF+II][j*DOF+JJ];
                     }
 
                 }
@@ -304,7 +304,7 @@ void mathExtension::Matrix::assemblyMatrix\
 
                     for(int II = 0; II < DOF; II++){
                         for (int JJ = 0; JJ < DOF; JJ++) {
-                            data_[ri+II][cj+JJ] = subM[i+II][j+JJ];
+                            data_[ri+II][cj+JJ] += subM[i+II][j+JJ];
                         }
                     }
 

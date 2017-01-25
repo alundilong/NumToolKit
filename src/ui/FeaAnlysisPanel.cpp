@@ -178,6 +178,11 @@ void feaAnalysisPanel::solveFEA()
     setBoundaryConditions(polyMesh,A,b);
     linearAlgebraSolver las(A, b, x);
     las.LUSolve_GSL();
+//    las.GaussSeidelMethod();
+//    std::cout << "ke" << std::endl;
+//    std::cout << elements[0]->baseStiff() << std::endl;
+//    std::cout << "me" << std::endl;
+//    std::cout << elements[0]->baseMass() << std::endl;
 
 //    Form *tmp = new Form(A,b,mw_);
 //    tmp->show();
@@ -227,7 +232,7 @@ void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Ve
     for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
         int vertexId = *vIt;
         int rs = vertexId*3;
-        b[rs+1] = -10000;
+        b[rs+1] = -100;
     }
     vertex.clear();
 }
@@ -263,26 +268,11 @@ void feaAnalysisPanel::writeData(const Mesh & polyMesh, const Vector &x)
         // ok to write data into vtk format
         QTextStream outstream(&file);
         outstream << QString("POINT_DATA %1 \n").arg(x.nrow()/3);
-        outstream << QString("FIELD attributes %1").arg(3);
+        outstream << QString("FIELD attributes %1").arg(1);
         // ux
-        outstream << QString("\nux %1 %2 float \n").arg(1).arg(x.nrow()/3);
+        outstream << QString("\nDISP %1 %2 float \n").arg(3).arg(x.nrow()/3);
         for (int i = 0; i < x.nrow(); i=i+3) {
-            outstream << QString("%1 ").arg(x[i]);
-            if(i%9 == 0) outstream << "\n";
-        }
-
-        // uy
-        outstream << QString("\nuy %1 %2 float \n").arg(1).arg(x.nrow()/3);
-        for (int i = 1; i < x.nrow(); i=i+3) {
-            outstream << QString("%1 ").arg(x[i]);
-            if((i-1)%9 == 0) outstream << "\n";
-        }
-
-        // uz
-        outstream << QString("\nuz %1 %2 float \n").arg(1).arg(x.nrow()/3);
-        for (int i = 2; i < x.nrow(); i=i+3) {
-            outstream << QString("%1 ").arg(x[i]);
-            if((i - 2)%9 == 0) outstream << "\n";
+            outstream << QString("%1 %2 %3\n").arg(x[i]).arg(x[i+1]).arg(x[i+2]);
         }
 
         // new xyz
@@ -292,8 +282,7 @@ void feaAnalysisPanel::writeData(const Mesh & polyMesh, const Vector &x)
             double newx = x[i] + point.x();
             double newy = x[i+1] + point.y();
             double newz = x[i+2] + point.z();
-            outstream << QString(" %1 %2 %3 ").arg(newx).arg(newy).arg(newz);
-            if(i%9 == 0) outstream << "\n";
+            outstream << QString(" %1 %2 %3\n").arg(newx).arg(newy).arg(newz);
         }
 
         file.close();

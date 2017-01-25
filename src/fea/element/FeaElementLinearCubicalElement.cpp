@@ -47,7 +47,6 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     : FEAElementThreeD(dimension, name, m, g)
 {
     infoAboutThisElement();
-
     numberSequence();
     constructGeometry();
     constructBaseMatrix();
