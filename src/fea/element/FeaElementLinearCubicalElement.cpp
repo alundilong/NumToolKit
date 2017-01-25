@@ -47,6 +47,8 @@ FEAElementLinearCubicalElement::FEAElementLinearCubicalElement\
     : FEAElementThreeD(dimension, name, m, g)
 {
     infoAboutThisElement();
+
+    numberSequence();
     constructGeometry();
     constructBaseMatrix();
     transformToGlobal();
@@ -68,8 +70,10 @@ void FEAElementLinearCubicalElement::infoAboutThisElement()
     qDebug() << log_;
 }
 
-void FEAElementLinearCubicalElement::numberSequence(const QList<int> & vertexIds)
+void FEAElementLinearCubicalElement::numberSequence()
 {
+    // for this element we know how to compute e
+    const QList<int> &vertexIds = geometry()->vertexIds();
     int num = vertexIds.size();
     int nodeIds[num];
     for(int i = 0; i < num; i++) {
@@ -137,9 +141,6 @@ void FEAElementLinearCubicalElement::numberSequence(const QList<int> & vertexIds
 
 void FEAElementLinearCubicalElement::constructGeometry()
 {
-    // for this element we know how to compute e
-    const QList<int> &vertexIds = geometry()->vertexIds();
-    numberSequence(vertexIds);
     const QList<QVector3D> &points = geometry()->mesh().points();
     QVector3D p1 = points[pointIds()[1-1]];
     QVector3D p4 = points[pointIds()[4-1]];
@@ -226,7 +227,7 @@ void FEAElementLinearCubicalElement::constructBaseMatrix()
         for (int j = 0; j < 2; j++) { //
             long double y = mathExtension::gaussP(2, j);
             for (int k = 0; k < 2; k++) {
-                long double z = mathExtension::gaussP(2, j);
+                long double z = mathExtension::gaussP(2, k);
 
                 long double wx = mathExtension::gaussW(2, i);
                 long double wy = mathExtension::gaussW(2, j);
@@ -280,7 +281,7 @@ void FEAElementLinearCubicalElement::constructBaseMatrix()
                 colPos = {2, 3, 24};
                 N1.setColValues(2, colPos, Ny, true);
                 colPos = {3, 3, 24};
-                N1.setColValues(2, colPos, Nz, true);
+                N1.setColValues(3, colPos, Nz, true);
 
                 colPos = {2, 3, 24};
                 N1.setColValues(4, colPos, Nz, true);
@@ -297,7 +298,7 @@ void FEAElementLinearCubicalElement::constructBaseMatrix()
                 colPos = {2, 3, 24};
                 N1.setColValues(6, colPos, Nx, true);
 
-                baseStiff_ = baseStiff_ + N1.transpose()*Q*N1*weight;
+                baseStiff_ = baseStiff_ + N1.transpose()*Q*(N1*weight);
 
                 // prepare for mass matrix
                 colPos = {1, 3, 24};
