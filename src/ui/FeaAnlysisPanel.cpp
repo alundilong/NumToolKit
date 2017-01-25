@@ -178,10 +178,30 @@ void feaAnalysisPanel::solveFEA()
     setBoundaryConditions(polyMesh,A,b);
     linearAlgebraSolver las(A, b, x);
     las.LUSolve_GSL();
+
+//    Form *tmp = new Form(A,b,mw_);
+//    tmp->show();
+
     // post-processing
     // output new positions
     // output ux, uy, uz
     writeData(polyMesh, x);
+
+//    QList<int> vertex;
+//    polyMesh.fetchBCUniqueVertex("Left", vertex);
+//    QList<int>::const_iterator it2;
+//    for (it2 = vertex.begin(); it2 != vertex.end(); ++it2) {
+//        int id = *it2;
+//        qDebug() << id << x[id*3] << x[id*3+1] << x[id*3+2];
+//        int ID = id*3;
+//        for (int i = 0; i < 3; i++) {
+//            for (int j = 0; j < 3; j++) {
+//                qDebug() << "A : " << A[ID+i][ID+j];
+//            }
+//        }
+//        qDebug() << "b : " << b[ID] << b[ID+1] << b[ID+2];
+//    }
+
 }
 
 void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Vector &b)
@@ -189,7 +209,7 @@ void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Ve
     // set displacement on Left as fixed boundary
     QList<int> vertex;
     polyMesh.fetchBCUniqueVertex("Left", vertex);
-    qDebug() << "Left: " << vertex;
+//    qDebug() << "Left: " << vertex;
     QList<int>::const_iterator vIt;
     for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
         int vertexId = *vIt;
@@ -203,7 +223,7 @@ void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Ve
     vertex.clear();
     // set force
     polyMesh.fetchBCUniqueVertex("Right", vertex);
-    qDebug() << "Right: " << vertex;
+//    qDebug() << "Right: " << vertex;
     for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
         int vertexId = *vIt;
         int rs = vertexId*3;
@@ -269,10 +289,9 @@ void feaAnalysisPanel::writeData(const Mesh & polyMesh, const Vector &x)
         outstream << QString("\n new positions \n");
         for (int i = 0; i < x.nrow(); i=i+3) {
             const QVector3D & point = polyMesh.points()[(i/3)];
-//            qDebug() << (i/3) << point;
-            double newx = x[i]+point.x();
-            double newy = x[i+1]+point.y();
-            double newz = x[i+2]+point.z();
+            double newx = x[i] + point.x();
+            double newy = x[i+1] + point.y();
+            double newz = x[i+2] + point.z();
             outstream << QString(" %1 %2 %3 ").arg(newx).arg(newy).arg(newz);
             if(i%9 == 0) outstream << "\n";
         }
