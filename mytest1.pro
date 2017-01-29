@@ -6,7 +6,7 @@
 
 QT       += core gui printsupport opengl
 
-#LIBS += opengl32.lib
+#LIBS += lgsl #opengl32.lib
 QMAKE_CXXFLAGS += -std=c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -30,7 +30,6 @@ SOURCES += \
     src/fea/material/MaterialEle.cpp \
     src/fea/math/LinearAlgebraSolver.cpp \
     src/fea/math/Mathextension.cpp \
-    src/fea/mesh/FeaMesh.cpp \
     src/fea/mesh/Mesh.cpp \
     src/fea/mesh/OpenFoamQTextstream.cpp \
     src/fea/mesh/STLMesh.cpp \
@@ -39,7 +38,10 @@ SOURCES += \
     src/ui/main.cpp \
     src/ui/MainWindow.cpp \
     src/ui/SPH3DPrintPanel.cpp \
-    src/ui/ViewerWindow.cpp
+    src/ui/ViewerWindow.cpp \
+    src/fea/mesh/FeaOneDMesh.cpp \
+    src/fea/mesh/FeaTwoDMesh.cpp \
+    src/fea/mesh/Edge.cpp
 
 HEADERS  += \
     src/container/List.h \
@@ -62,7 +64,6 @@ HEADERS  += \
     src/fea/math/MathExtensionIO.h \
     src/fea/math/MathExtensionTemplate.h \
     src/fea/mesh/Bound.h \
-    src/fea/mesh/FeaMesh.h \
     src/fea/mesh/Mesh.h \
     src/fea/mesh/OpenFoamQTextstream.h \
     src/fea/mesh/STLMesh.h \
@@ -75,7 +76,10 @@ HEADERS  += \
     src/ui/ViewerWindow.h \
     src/macro/RunTimeElementNodeTables.h \
     src/macro/RunTimeElementNodeDOFTables.h \
-    src/global/globalCoordinateSystem.h
+    src/global/globalCoordinateSystem.h \
+    src/fea/mesh/FeaOneDMesh.h \
+    src/fea/mesh/FeaTwoDMesh.h \
+    src/fea/mesh/Edge.h
 
 FORMS    += \
     src/ui/feaanalysispanel.ui \
@@ -88,4 +92,25 @@ RESOURCES += \
 
 OTHER_FILES += \
     UI.png \
-    lib.note
+    lib.note \
+    README.md \
+    ../../Desktop/cavity/cavity/3DLinearCubicalElement_ConcentratedForce.png \
+    ../../Desktop/cavity/cavity/3DLinearCubicalElement_ConcentratedForce_disp.png \
+    3DLinearCubicalElement_ConcentratedForce_disp.png \
+    3DLinearCubicalElement_ConcentratedForce_twisted.png \
+    3DLinearCubicalElement_ConcentratedForce_bended.png \
+    3DLinearCubicalElement_ConcentratedForce_bended2.png
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lgsl
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lgsl
+else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lgsl
+
+INCLUDEPATH += $$PWD/../../../../usr/include
+DEPENDPATH += $$PWD/../../../../usr/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/lib/release/ -lgslcblas
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../usr/lib/debug/ -lgslcblas
+else:unix: LIBS += -L$$PWD/../../../../usr/lib/ -lgslcblas
+
+INCLUDEPATH += $$PWD/../../../../usr/include
+DEPENDPATH += $$PWD/../../../../usr/include
