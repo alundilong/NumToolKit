@@ -127,6 +127,10 @@ void feaAnalysisPanel::on_radio3DElement_toggled(bool checked)
 
 void feaAnalysisPanel::on_buttonRun_clicked()
 {
+    if(mesh() == NULL) {
+        QMessageBox::warning(NULL,"..", "Please Load Mesh first!");
+        return;
+    }
     mw_->retrieveLogFromFEAWindow();
 
     if(ui->comboBox1DElement->currentText() == "Bar") {
