@@ -39,11 +39,13 @@ Edge::Edge(const Mesh &mesh, const int &s, const int &e)
 {
     const QList<QVector3D> & points = mesh.points();
     direction_ = (points[s] - points[e]).normalized();
+    center_ = 0.5*(points[s] + points[e]);
     s_ = mathExtension::imin(s,e);
     e_ = mathExtension::imax(s,e);
     QString smallIndex = QString::number(s_);
     QString largeIndex = QString::number(e_);
     edgeName_ = smallIndex+"-"+largeIndex;
+
 }
 
 }

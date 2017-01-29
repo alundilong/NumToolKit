@@ -43,11 +43,13 @@ public:
     inline const int & end() const { return e_; }
     inline const QString & edgeName() const { return edgeName_; }
     inline const QVector3D & direction() const { return direction_; }
+    inline const QVector3D & center() const { return center_; }
 private:
     int s_; // start edge
     int e_; // end edge
     QString edgeName_; // small index - large index
     QVector3D direction_;
+    QVector3D center_;
 };
 
 }
