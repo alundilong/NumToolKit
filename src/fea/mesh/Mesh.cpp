@@ -69,7 +69,7 @@ Mesh::Mesh(QString & dir)
 
         createCellFaces();
         createCellNodes();
-        createFaceNormals();
+        createFaceNormalAndAreas();
 
         QList<double> px;
         QList<double> py;
@@ -519,28 +519,52 @@ void Mesh::createCellNodes()
 
 }
 
-void Mesh::createFaceNormals()
+void Mesh::createFaceNormalAndAreas()
 {
     // duplicate node
     faceNormals_.reserve(nFaces());
+    faceAreas_.reserve(nFaces());
     for(int i = 0; i < nFaces(); i++) {
         QVector3D v;
+        double a;
         faceNormals_.append(v);
+        faceAreas_.append(a);
     }
 
     // loop over all faces
     int faceId = 0;
     for (faceId = 0; faceId < nFaces(); faceId++) {
-        // find faceIds of cellId
+        // find nodeIds of faceId
         const QList<int> & nodeIds = faceNodes(faceId);
         QList<int>::const_iterator it;
         it = nodeIds.begin();
         QVector3D p1 = points()[*it];
-        ++it;
-        QVector3D p2 = points()[*it];
-        ++it;
-        QVector3D p3 = points()[*it];
-        faceNormals_.push_back(QVector3D::normal(p1, p2, p3));
+        QVector3D p2, p3;
+        bool normalComputed = false;
+        double area = 0;
+        for (; it != nodeIds.end();)
+        {
+            // first time
+            if(!normalComputed) {
+                ++it;
+                p2 = points()[*it];
+                ++it;
+                p3 = points()[*it];
+                faceNormals_.push_back(QVector3D::normal(p1, p2, p3));
+                normalComputed = true;
+
+                QVector3D p12 = p2 - p1;
+                QVector3D p13 = p3 - p1;
+                area = QVector3D::crossProduct(p12,p13).length()*0.5;
+
+                ++it;
+            }
+            QVector3D pNext = points()[*it];
+            area += QVector3D::crossProduct(pNext-p1, p3-p1).length()*0.5;
+            p3 = pNext;
+            ++it;
+        }
+        faceAreas_.push_back(area);
     }
 }
 

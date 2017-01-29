@@ -69,6 +69,7 @@ public:
     inline const QList<int> neighbour() const { return neighbour_; }
     inline const QList<QVector3D> points() const { return points_; }
     inline const QList<QVector3D> faceNormals() const { return faceNormals_; }
+    inline const QList<double> faceAreas() const { return faceAreas_; }
     inline const QList<QString> boundaryName() \
     const { return boundaryName_; }
 
@@ -95,6 +96,7 @@ private:
     QList<int> neighbour_; // neighbor of face
     QList<QVector3D> points_; // list of point
     QList<QVector3D> faceNormals_; // normal of each face
+    QList<double> faceAreas_; // face area
 
     int nCells_; // total number of cells
     int nFaces_; // total number of faces
@@ -114,7 +116,7 @@ private:
 
     void createCellFaces();
     void createCellNodes();
-    void createFaceNormals();
+    void createFaceNormalAndAreas();
 
     bound box_;
 
