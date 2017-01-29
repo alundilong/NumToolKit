@@ -52,6 +52,8 @@ private:
     QMap<int, Edge> indexMapEdge_;
 
     QList<QList<int> > elementNodes_;
+    QList<QVector3D> edgeCenters_;
+
     int numEdge_;
 
     const QMap<QString, Edge>  & nameMapEdge() const { return nameMapEdge_;}
@@ -59,6 +61,10 @@ private:
     const QMap<int, Edge>  & indexMapEdge() const { return indexMapEdge_;}
     QList<QList<int> > & faceEdges() { return faceEdges_; }
     QList<QList<int> > & cellEdges() { return cellEdges_; }
+    QList<QVector3D> & edgeCenters() { return edgeCenters_; }
+
+    // create edge centers
+    void createEdgeCenters();
 };
 
 }

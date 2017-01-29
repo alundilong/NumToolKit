@@ -65,8 +65,41 @@ FEAOneDMesh::FEAOneDMesh(const QVector3D & dir, const Mesh & mesh)
         elementNodes_.push_back(twoNodes);
     }
 
+    // compute face centers
+    computeFaceCenters();
 }
 
+void FEAOneDMesh::createPoints()
+{
+    QList<QList<int> >::const_iterator it;
+    for(it = elementNodes().begin(); it != elementNodes().end(); ++it) {
+        const int & first = (*it)[0];
+        const int & second = (*it)[2];
+        const int & faceI1 = oneDNodeToThreeDFace()[first];
+        const int & faceI2 = oneDNodeToThreeDFace()[second];
+        points_.push_back(faceCenters()[faceI1]);
+        points_.push_back(faceCenters()[faceI2]);
+    }
 }
 
+void FEAOneDMesh::computeFaceCenters()
+{
+    const QList<QVector3D> & points = mesh().points();
+    // loop over all faces
+    int faceId = 0;
+    for (faceId = 0; faceId < mesh().nFaces(); faceId++) {
+        // find nodeIds of faceId
+        const QList<int> & nodeIds = mesh().faceNodes(faceId);
+        QList<int>::const_iterator it;
+        QVector3D center(0,0,0);
+        for (it = nodeIds.begin(); it != nodeIds.end(); ++it) {
+            center +=points[(*it)];
+        }
+        center /= nodeIds.size();
+        faceCenters_.push_back(center);
+    }
 }
+
+}// end of Fea
+
+}// end of NumToolKit

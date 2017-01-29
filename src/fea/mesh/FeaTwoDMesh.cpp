@@ -112,9 +112,27 @@ FEATwoDMesh::FEATwoDMesh(const QVector3D & dir, const Mesh &mesh)
             uniqueEdges.push_back(*it3);
         }
         cellEdges_.push_back(uniqueEdges);
+        elementNodes_.push_back(uniqueEdges);
     }
 
-} // end constructor
+    createEdgeCenters();
+
+}// end constructor
+
+void FEATwoDMesh::createEdgeCenters()
+{
+    edgeCenters_.reserve(numEdge_);
+    for (int i = 0; i < numEdge_; i++) {
+        QVector3D q;
+        edgeCenters_.append(q);
+    }
+
+    QMap<int, Edge>::const_iterator it;
+    for (it = indexMapEdge().begin(); it != indexMapEdge().end(); ++it) {
+        QVector3D center = (*it).center();
+        edgeCenters_[it.key()] = center;
+    }
+}
 
 } // end fea
 

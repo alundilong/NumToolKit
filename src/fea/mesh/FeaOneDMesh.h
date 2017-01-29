@@ -44,13 +44,20 @@ public:
     inline const QList<QList<int> > elementNodes() const { return elementNodes_; }
     // access to 3D mesh if necessary
     inline const Mesh & mesh() const { mesh_; }
+    inline const QList<QVector3D> points() const { return points_; }
 
 private:
     QList<int> oneDNodes_; // all 3D faces contriibute to 1D nodes
     QMap<int,int> oneDNodeToThreeDFace_;
     QMap<int,int> threeDFaceToOneDNode_;
     QList<QList<int> > elementNodes_;
+    QList<QVector3D> points_;
     const Mesh & mesh_;
+    QList<QVector3D> faceCenters_;
+
+    void createPoints();
+    void computeFaceCenters();
+    inline const QList<QVector3D> faceCenters() const { return faceCenters_;}
 };
 
 
