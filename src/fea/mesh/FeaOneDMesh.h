@@ -23,19 +23,34 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef FEAMESH_H
-#define FEAMESH_H
+#ifndef FEAONEDMESH_H
+#define FEAONEDMESH_H
 
 #include "Mesh.h"
+//#include "../../coordinateSystem/CoordSystem.h"
 
 namespace NumToolKit {
 
 namespace Fea {
 
-class FEAMesh : public Mesh
+class FEAOneDMesh
 {
 public:
-    FEAMesh();
+//    FEAOneDMesh();
+    FEAOneDMesh(const QVector3D & dir, const Mesh& mesh);
+    inline const QList<int> & oneDNodes() const { return oneDNodes_; }
+    // use to 3D mesh coordinates
+    inline const QMap<int, int> & oneDNodeToThreeDFace() const { return oneDNodeToThreeDFace_; }
+    inline const QList<QList<int> > elementNodes() const { return elementNodes_; }
+    // access to 3D mesh if necessary
+    inline const Mesh & mesh() const { mesh_; }
+
+private:
+    QList<int> oneDNodes_; // all 3D faces contriibute to 1D nodes
+    QMap<int,int> oneDNodeToThreeDFace_;
+    QMap<int,int> threeDFaceToOneDNode_;
+    QList<QList<int> > elementNodes_;
+    const Mesh & mesh_;
 };
 
 
@@ -43,4 +58,4 @@ public:
 }
 
 
-#endif // FEAMESH_H
+#endif // FEAONEDMESH_H

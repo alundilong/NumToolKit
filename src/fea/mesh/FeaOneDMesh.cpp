@@ -23,14 +23,48 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#include "FeaMesh.h"
+#include "FeaOneDMesh.h"
 
 namespace NumToolKit {
 
 namespace Fea {
 
-FEAMesh::FEAMesh()
+// dir is the direction of 1D element
+FEAOneDMesh::FEAOneDMesh(const QVector3D & dir, const Mesh & mesh)
+    :
+    mesh_(mesh)
 {
+    // find all faces whose normals are parallel to this direction
+    QList<int>::const_iterator it;
+    const QList<QVector3D> & faceNormals = mesh.faceNormals();
+    int size = mesh.owner().size();
+    int c = 0;
+    for (int faceI = 0; faceI < size; faceI++) {
+        const QVector3D & n = faceNormals[faceI];
+        if(QVector3D::crossProduct(n,dir).length() == 0) {
+            oneDNodes_.push_back(faceI);
+            oneDNodeToThreeDFace_[c] = faceI;
+            threeDFaceToOneDNode_[faceI] = c;
+            c++;
+        }
+    }
+
+    // find
+    size = mesh.nCells();
+    for (int cellI = 0; cellI < size; cellI++) {
+        const QList<int> &faces = mesh.cellFaces(cellI);
+        QList<int>::const_iterator it;
+        QList<int> twoNodes;
+        for (it = faces.begin(); it != faces.end(); ++it) {
+            const int & faceI = *it;
+            const QVector3D & n = faceNormals[faceI];
+            if(QVector3D::crossProduct(n,dir).length() == 0) {
+                twoNodes.push_back(threeDFaceToOneDNode_[faceI]);
+            }
+        }
+        elementNodes_.push_back(twoNodes);
+    }
+
 }
 
 }

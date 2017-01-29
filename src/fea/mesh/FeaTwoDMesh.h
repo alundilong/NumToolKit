@@ -23,13 +23,47 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
+
 #ifndef FEATWODMESH_H
 #define FEATWODMESH_H
+
+#include "Mesh.h"
+#include "Edge.h"
+
+namespace NumToolKit {
+
+namespace Fea {
 
 class FEATwoDMesh
 {
 public:
-    FEATwoDMesh();
+    FEATwoDMesh(const QVector3D & dir, const Mesh & mesh);
+
+    inline const QList<QList<int> > elementNodes() const { return elementNodes_; }
+    // access to 3D mesh if necessary
+    inline const Mesh & mesh() const { mesh_; }
+
+private:
+    const Mesh & mesh_;
+    QList<QList<int> > faceEdges_;
+    QList<QList<int> > cellEdges_;
+    QMap<QString, Edge> nameMapEdge_;
+    QMap<QString, int> nameMapEdgeId_;
+    QMap<int, Edge> indexMapEdge_;
+
+    QList<QList<int> > elementNodes_;
+    int numEdge_;
+
+    const QMap<QString, Edge>  & nameMapEdge() const { return nameMapEdge_;}
+    QMap<QString, int>  & nameMapEdgeId(){ return nameMapEdgeId_;}
+    const QMap<int, Edge>  & indexMapEdge() const { return indexMapEdge_;}
+    QList<QList<int> > & faceEdges() { return faceEdges_; }
+    QList<QList<int> > & cellEdges() { return cellEdges_; }
 };
+
+}
+
+}
+
 
 #endif // FEATWODMESH_H

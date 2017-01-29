@@ -26,10 +26,32 @@
 #ifndef EDGE_H
 #define EDGE_H
 
+#include <QString>
+#include <QVector3D>
+#include "Mesh.h"
+
+namespace NumToolKit {
+
+namespace Fea {
+
 class Edge
 {
 public:
     Edge();
+    Edge(const Mesh &mesh, const int & s, const int & e);
+    inline const int & start() const { return s_; }
+    inline const int & end() const { return e_; }
+    inline const QString & edgeName() const { return edgeName_; }
+    inline const QVector3D & direction() const { return direction_; }
+private:
+    int s_; // start edge
+    int e_; // end edge
+    QString edgeName_; // small index - large index
+    QVector3D direction_;
 };
+
+}
+
+}
 
 #endif // EDGE_H

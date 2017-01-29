@@ -24,7 +24,29 @@
 ------------------------------------------------------------------------- */
 
 #include "Edge.h"
+#include "../math/MathExtension.h"
+
+namespace NumToolKit {
+
+namespace Fea {
 
 Edge::Edge()
 {
+
 }
+
+Edge::Edge(const Mesh &mesh, const int &s, const int &e)
+{
+    const QList<QVector3D> & points = mesh.points();
+    direction_ = (points[s] - points[e]).normalized();
+    s_ = mathExtension::imin(s,e);
+    e_ = mathExtension::imax(s,e);
+    QString smallIndex = QString::number(s_);
+    QString largeIndex = QString::number(e_);
+    edgeName_ = smallIndex+"-"+largeIndex;
+}
+
+}
+
+}
+
