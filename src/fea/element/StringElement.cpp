@@ -47,20 +47,16 @@ StringElement::StringElement
 ):
     FEAElementOneD(dimension, name, m, g)
 {
-    const int N = nNode*nDOF;
-    baseMass_ = mathExtension::Matrix(N,N);
-    baseStiff_ = mathExtension::Matrix(N,N);
+    infoAboutThisElement();
+    numberSequence();
+    constructGeometry();
+    constructBaseMatrix();
+    transformToGlobal();
+
 }
 
 StringElement::~StringElement()
 {
-//    int N = nNode*nDOF;
-//    for (int i = 0; i < N; i ++){
-//        delete [] baseMass_[i];
-//        delete [] baseStiff_[i];
-//    }
-//    delete [] baseMass_;
-    //    delete [] baseStiff_;
 }
 
 void StringElement::infoAboutThisElement()
@@ -75,7 +71,9 @@ void StringElement::constructGeometry()
 
 void StringElement::constructBaseMatrix()
 {
-
+    const int N = nNode*nDOF;
+    baseMass_ = mathExtension::Matrix(N,N);
+    baseStiff_ = mathExtension::Matrix(N,N);
 }
 
 

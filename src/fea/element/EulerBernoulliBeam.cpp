@@ -35,37 +35,7 @@ const int EulerBernoulliBeam::nDOF = 2;
 
 EulerBernoulliBeam::EulerBernoulliBeam()
 {
-    log_ = "Euler-Bernoulli Beam Element is selected \n";
-    dim_ = 1;
-    nDOFEle_ = 2;
-    nNodeEle_ = 2;
-    name_ = "EulerBernoulliBeam";
-    log_ += QString("%1D Element : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
 
-    int N = nNodeEle()*nNodeEle();
-//    baseMass_ = new double *[N];
-//    baseStiff_ = new double *[N];
-//    for (int i = 0; i < N; i++) {
-//        baseMass_[i] = new double[N];
-//        baseStiff_[i] = new double[N];
-//    }
-    baseMass_ = mathExtension::Matrix(N,N);
-    baseStiff_ = mathExtension::Matrix(N,N);
-
-//    baseMass_[0][0] = 2; baseMass_[0][1] = 1;
-//    baseMass_[1][0] = 1; baseMass_[1][1] = 2;
-
-//    baseStiff_[0][0] = 1; baseStiff_[0][1] = -1;
-//    baseStiff_[1][0] = -1; baseStiff_[1][1] = 1;
-
-    // The material and geoinfo are null
-    if (material() == nullptr) {
-        qDebug() << "Material for each Element are unknown!";
-    }
-
-    if (geometry() == nullptr) {
-        qDebug() << "GeoInfo for each Element are unknown!";
-    }
 
 }
 
@@ -78,22 +48,47 @@ EulerBernoulliBeam::EulerBernoulliBeam
 ):
     FEAElementOneD(dimension, name, m, g)
 {
+    infoAboutThisElement();
+    numberSequence();
+    constructGeometry();
+    constructBaseMatrix();
+    transformToGlobal();
+}
+
+EulerBernoulliBeam::~EulerBernoulliBeam()
+{
+//    int N = nNode*nDOF;
+//    for (int i = 0; i < N; i ++){
+//        delete [] baseMass_[i];
+//        delete [] baseStiff_[i];
+//    }
+//    delete [] baseMass_;
+    //    delete [] baseStiff_;
+}
+
+void EulerBernoulliBeam::infoAboutThisElement()
+{
     log_ = "Euler-Bernoulli Beam Element is selected \n";
-    dim_ = 1;
+//    dim_ = 1;
     nDOFEle_ = 2;
     nNodeEle_ = 2;
     name_ = "EulerBernoulliBeam";
     log_ += QString("%1D Element : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
+}
 
+void EulerBernoulliBeam::constructGeometry()
+{
+
+}
+
+void EulerBernoulliBeam::constructBaseMatrix()
+{
     int N = nNodeEle()*nNodeEle();
-//    baseMass_ = new double *[N];
-//    baseStiff_ = new double *[N];
-//    for (int i = 0; i < N; i++) {
-//        baseMass_[i] = new double[N];
-//        baseStiff_[i] = new double[N];
-//    }
     baseMass_ = mathExtension::Matrix(N,N);
     baseStiff_ = mathExtension::Matrix(N,N);
+
+    const MaterialEle & m = *material();
+    const GeometryEle & g = *geometry();
 
     const double mass = m.rho()*g.volume();
     const double *eL = g.e();
@@ -126,33 +121,6 @@ EulerBernoulliBeam::EulerBernoulliBeam
 
 //    mathExtension::matrixMultiplyScalar(baseStiff_, 4, 4, coeffStiff);
     baseStiff_ = baseMass_*coeffStiff;
-
-}
-
-EulerBernoulliBeam::~EulerBernoulliBeam()
-{
-//    int N = nNode*nDOF;
-//    for (int i = 0; i < N; i ++){
-//        delete [] baseMass_[i];
-//        delete [] baseStiff_[i];
-//    }
-//    delete [] baseMass_;
-    //    delete [] baseStiff_;
-}
-
-void EulerBernoulliBeam::infoAboutThisElement()
-{
-
-}
-
-void EulerBernoulliBeam::constructGeometry()
-{
-
-}
-
-void EulerBernoulliBeam::constructBaseMatrix()
-{
-
 }
 
 void EulerBernoulliBeam::transformToGlobal()

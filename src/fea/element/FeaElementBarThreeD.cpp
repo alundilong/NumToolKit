@@ -45,13 +45,41 @@ FEAElementBarThreeD::FEAElementBarThreeD \
     :
       FEAElementThreeD(dimension,name,m,g)
 {
+    infoAboutThisElement();
+    numberSequence();
+    constructGeometry();
+    constructBaseMatrix();
+    transformToGlobal();
+}
+
+FEAElementBarThreeD::~FEAElementBarThreeD()
+{
+//    int N = nNode*nDOF;
+//    for (int i = 0; i < N; i ++){
+//        delete [] baseMass_[i];
+//        delete [] baseStiff_[i];
+//    }
+//    delete [] baseMass_;
+    //    delete [] baseStiff_;
+}
+
+void FEAElementBarThreeD::infoAboutThisElement()
+{
     log_ = "3D Bar Element is selected \n";
     dim_ = 3;
     nDOFEle_ = 6;
     nNodeEle_ = 8;
     name_ = "Bar3D";
     log_ += QString("%3D Element : nNode = %2 : DOF = %3 \n").arg(dim()).arg(nNodeEle()).arg(nDOFEle());
+}
 
+void FEAElementBarThreeD::constructGeometry()
+{
+
+}
+
+void FEAElementBarThreeD::constructBaseMatrix()
+{
     const int N = nNode*nDOF;
 //    baseMass_ = new double *[N];
 //    baseStiff_ = new double *[N];
@@ -93,32 +121,6 @@ FEAElementBarThreeD::FEAElementBarThreeD \
 
 //    baseStiff_ = G.transpose()*baseStiff_*G;
 //    baseMass_ = G.transpose()*baseMass_*G;
-}
-
-FEAElementBarThreeD::~FEAElementBarThreeD()
-{
-//    int N = nNode*nDOF;
-//    for (int i = 0; i < N; i ++){
-//        delete [] baseMass_[i];
-//        delete [] baseStiff_[i];
-//    }
-//    delete [] baseMass_;
-    //    delete [] baseStiff_;
-}
-
-void FEAElementBarThreeD::infoAboutThisElement()
-{
-
-}
-
-void FEAElementBarThreeD::constructGeometry()
-{
-
-}
-
-void FEAElementBarThreeD::constructBaseMatrix()
-{
-
 }
 
 void FEAElementBarThreeD::transformToGlobal()
