@@ -77,7 +77,8 @@ void matrixMultiplyVector(T (&array1)[r1][c1], T(&array2)[r2], T(&array)[r1]);
 
 #include "MathExtensionTemplate.h"
 
-
+int imax(const int &a, const int &b);
+int imin(const int &a, const int &b);
 
 // Class Vector defined to handle vector operation
 

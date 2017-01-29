@@ -652,3 +652,12 @@ mathExtension::Point mathExtension::Point::operator-(\
     return Point(x()-p.x(), y()-p.y(), z() - p.z());
 }
 
+int mathExtension::imax(const int &a, const int &b) {
+    if (a > b) return a;
+    else return b;
+}
+
+int mathExtension::imin(const int &a, const int &b) {
+    if (a > b) return b;
+    else return a;
+}
