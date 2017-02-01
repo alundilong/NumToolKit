@@ -34,6 +34,7 @@
 #include "../../macro/RunTimeSelectionTables.h"
 #include "../../macro/RunTimeElementNodeTables.h"
 #include "../../macro/RunTimeElementNodeDOFTables.h"
+#include "elementLength.h"
 
 /*
  * abstract class for finite element
@@ -168,6 +169,9 @@ protected:
     int nNodeEle_; // Num of Node for each element
     QString name_; // name of element
     QString log_; // report log
+
+    elementLength exyz_;
+    elementLength & exyz() { return exyz_; }
 
     double I[3];// moment of inertia
 

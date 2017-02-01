@@ -64,16 +64,11 @@ protected:
 
 private:
 
-    struct lengthElement
-    {
-        double ex;
-        double ey;
-        double ez;
-    } exyz_;
+//    elementLength exyz_;
 
     // local coordinate system
     coordSystem lcs_;
-    lengthElement & exyz() { return exyz_; }
+
     coordSystem & lcs() { return lcs_; }
 
     // 8 nodes

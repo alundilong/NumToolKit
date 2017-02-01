@@ -26,4 +26,11 @@
 #ifndef ELEMENTLENGTH_H
 #define ELEMENTLENGTH_H
 
+struct elementLength
+{
+    double ex;
+    double ey;
+    double ez;
+};
+
 #endif // ELEMENTLENGTH_H
