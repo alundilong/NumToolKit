@@ -95,7 +95,18 @@ void BarElement::infoAboutThisElement()
 
 void BarElement::constructGeometry()
 {
+    const QList<QVector3D> &points = geometry()->mesh().points();
+    QVector3D p1 = points[pointIds()[1-1]];
+    QVector3D p2 = points[pointIds()[2-1]];
 
+    // set length in each direction
+    double ex = p1.distanceToPoint(p2);
+    double ey = 0.0;
+    double ez = 0.0;
+    exyz() = {ex, ey, ez};
+    const QVector3D& origin = geometry()->center();
+    QVector3D axisX((p2-origin).normalized());
+    lcs().setOXYZ(origin, axisX, axisX, axisX);
 }
 
 void BarElement::constructBaseMatrix()
@@ -150,7 +161,64 @@ void BarElement::transformToGlobal()
 
 void BarElement::numberSequence()
 {
+    // for this element we know how to compute e
+    const QList<int> &vertexIds = geometry()->vertexIds();
+    int num = vertexIds.size();
+    int nodeIds[num];
+    for(int i = 0; i < num; i++) {
+        nodeIds[i] = vertexIds[i];
+    }
+    std::list<int> uniqueList(nodeIds, nodeIds+num);
+    uniqueList.sort();
+    uniqueList.unique();
 
+    const QList<QVector3D> & points = geometry()->mesh().points();
+
+    double xc, yc, zc; // bar center
+    xc = yc = zc = 0.0;
+    int c = 0;
+    std::list<int>::const_iterator it;
+    for (it = uniqueList.begin(); it != uniqueList.end(); ++it) {
+
+        xc += points[(*it)].x();
+        yc += points[(*it)].y();
+        zc += points[(*it)].z();
+        c++;
+    }
+
+    xc = xc/c;
+    yc = yc/c;
+    zc = zc/c;
+
+    center() = QVector3D(xc, yc, zc);
+
+    mathExtension::Point vc(xc,yc,zc);
+
+    c = 0;
+    QList<int> vertex;
+    vertex.reserve(2);
+    for (int i = 0; i < 2; i++) {
+        int ii;
+        vertex.append(ii);
+    }
+
+    for (it = uniqueList.begin(); it != uniqueList.end(); ++it) {
+        const int & vertexId = *it;
+
+        double x = points[vertexId].x();
+        double y = points[vertexId].y();
+        double z = points[vertexId].z();
+
+        mathExtension::Point v(x,y,z);
+        mathExtension::Point vd(v-vc);
+
+        switch(coordSystem::whichQuadrant1D(vd)) {
+        case coordSystem::N: {vertex[1-1] = vertexId; break;}
+        case coordSystem::P: {vertex[2-1] = vertexId; break;}
+        }
+    }
+
+    pointIds() = vertex;
 }
 
 makeElement(ElementName, BarElement, FEAElementOneD, Bar)

@@ -58,6 +58,20 @@ protected:
     virtual void transformToGlobal();
     virtual void numberSequence();
 
+    // local coordinate system
+    coordSystem lcs_;
+//    elementLength & exyz() { return exyz_; }
+    coordSystem & lcs() { return lcs_; }
+
+    // 8 nodes
+    QList<int> pointIds_;
+    QVector3D center_;
+    inline QList<int> & pointIds() { return pointIds_; }
+    inline QVector3D& center() { return center_; }
+
+    // (ux, uy, uz)*8
+    double dof_[24];
+
 };
 
 }
