@@ -145,18 +145,24 @@ void BarElement::constructBaseMatrix()
 
 void BarElement::transformToGlobal()
 {
-    // coordinate system transformation
-    // from local to global
+    const QVector3D & e0 = lcs().e0();
+    const QVector3D eg0(1.0,0.0,0.0);
 
-    // for 1D element, there is no local to global coordination transformation
     mathExtension::Matrix G(2,2);
-    G[0][0] = 1.0; G[0][1] = 0.0;
-    G[1][0] = 0.0; G[1][1] = 1.0;
+    int step = BarElement::nDOF;
+    for (int i = 0; i < 2; i = i+step) {
+        mathExtension::pos rowRange = {i,1,i+step};
+        mathExtension::pos colRange = {i,1,i+step};
+        mathExtension::Matrix T(1,1);
+        //Transformation matrix
+        T[0][0] = QVector3D::dotProduct(eg0, e0);
 
-//    baseStiff_ = G.transpose()*baseStiff_*G;
-//    std::cout<< baseMass();
-//    baseMass_ = G.transpose()*baseMass_*G;
-//    std::cout << baseMass();
+        G.setSubMatrix(rowRange, colRange, T, false);
+    }
+
+    baseStiff_ = G.transpose()*baseStiff_*G;
+    baseMass_ = G.transpose()*baseMass_*G;
+
 }
 
 void BarElement::numberSequence()

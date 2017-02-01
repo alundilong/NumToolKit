@@ -26,10 +26,38 @@
 #ifndef CLASSICPLATEELEMENT_H
 #define CLASSICPLATEELEMENT_H
 
+#include "FeaElementTwoD.h"
+
+namespace NumToolKit {
+
+namespace Fea {
+
 class ClassicPlateElement : public FEAElementTwoD
 {
 public:
+    static const std::string typeName;
+    static const int  nNode;
+    static const int nDOF;
+public:
     ClassicPlateElement();
+    ClassicPlateElement
+    (
+            const std::string & dim,
+            const std::string & name,
+            const MaterialEle & m,
+            const GeometryEle & g
+    );
+
+protected:
+    virtual void infoAboutThisElement();
+    virtual void constructGeometry();
+    virtual void constructBaseMatrix();
+    virtual void transformToGlobal();
+    virtual void numberSequence();
 };
+
+}
+
+}
 
 #endif // CLASSICPLATEELEMENT_H

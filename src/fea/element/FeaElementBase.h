@@ -173,16 +173,19 @@ protected:
     elementLength exyz_;
     elementLength & exyz() { return exyz_; }
 
+    // local coordinate system
+    coordSystem lcs_;
+    coordSystem & lcs() { return lcs_; }
+
+    QList<int> pointIds_;
+    QVector3D center_;
+    inline QList<int> & pointIds() { return pointIds_; }
+    inline QVector3D& center() { return center_; }
+
     double I[3];// moment of inertia
 
     mathExtension::Matrix baseMass_; // mass matrix
     mathExtension::Matrix baseStiff_; // stiffiness matrix
-
-    // firstNode label of this type element
-    // it serves as the origin of the local
-    // coordinate system for this element
-    // Knowing this is a very important
-    int firstNode_;
 
     virtual void infoAboutThisElement() = 0;
     virtual void constructGeometry() = 0;

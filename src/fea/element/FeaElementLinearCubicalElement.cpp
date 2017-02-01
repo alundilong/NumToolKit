@@ -24,7 +24,6 @@
 ------------------------------------------------------------------------- */
 
 #include "FeaElementLinearCubicalElement.h"
-#include "../../global/globalCoordinateSystem.h"
 
 namespace NumToolKit {
 
@@ -328,9 +327,9 @@ void FEAElementLinearCubicalElement::transformToGlobal()
     const QVector3D & e1 = lcs().e1();
     const QVector3D & e2 = lcs().e2();
 
-    const QVector3D &eg0 = NumToolKit::eg0;
-    const QVector3D &eg1 = NumToolKit::eg1;
-    const QVector3D &eg2 = NumToolKit::eg2;
+    const QVector3D eg0(1.0,0.0,0.0);
+    const QVector3D eg1(0.0,1.0,0.0);
+    const QVector3D eg2(0.0,0.0,1.0);
 
     mathExtension::Matrix G(24,24);
     int step = 3;
@@ -356,8 +355,8 @@ void FEAElementLinearCubicalElement::transformToGlobal()
 
 //    std::cout << G << std::endl;
 
-//    baseStiff_ = G.transpose()*baseStiff_*G;
-    //    baseMass_ = G.transpose()*baseMass_*G;
+    baseStiff_ = G.transpose()*baseStiff_*G;
+    baseMass_ = G.transpose()*baseMass_*G;
 }
 
 

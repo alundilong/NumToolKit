@@ -64,21 +64,14 @@ protected:
 
 private:
 
-//    elementLength exyz_;
-
-    // local coordinate system
-    coordSystem lcs_;
-
-    coordSystem & lcs() { return lcs_; }
-
-    // 8 nodes
-    QList<int> pointIds_;
-    QVector3D center_;
-    inline QList<int> & pointIds() { return pointIds_; }
-    inline QVector3D& center() { return center_; }
+//    // 8 nodes
+//    QList<int> pointIds_;
+//    QVector3D center_;
+//    inline QList<int> & pointIds() { return pointIds_; }
+//    inline QVector3D& center() { return center_; }
 
     // (ux, uy, uz)*8
-    double dof_[24];
+//    double extDof_[24];
 
 };
 

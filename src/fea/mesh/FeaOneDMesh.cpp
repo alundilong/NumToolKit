@@ -72,13 +72,17 @@ FEAOneDMesh::FEAOneDMesh(const QVector3D & dir, const Mesh & mesh)
 void FEAOneDMesh::createPoints()
 {
     QList<QList<int> >::const_iterator it;
+    const QList<double> & allFaceAreas = mesh().faceAreas();
     for(it = elementNodes().begin(); it != elementNodes().end(); ++it) {
         const int & first = (*it)[0];
-        const int & second = (*it)[2];
+        const int & second = (*it)[1];
         const int & faceI1 = oneDNodeToThreeDFace()[first];
         const int & faceI2 = oneDNodeToThreeDFace()[second];
         points_.push_back(faceCenters()[faceI1]);
         points_.push_back(faceCenters()[faceI2]);
+
+        faceAreas_.push_back(allFaceAreas[faceI1]);
+        faceAreas_.push_back(allFaceAreas[faceI2]);
     }
 }
 
