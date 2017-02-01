@@ -23,19 +23,8 @@
     See the README file in the top-level NumToolKit directory.
 ------------------------------------------------------------------------- */
 
-#ifndef GLOBALCOORDINATESYSTEM_H
-#define GLOBALCOORDINATESYSTEM_H
+#include "ClassicPlateElement.h"
 
-#include <QVector3D>
-
-namespace NumToolKit {
-
-// global coordinate system
-QVector3D eg0(1.0, 0.0, 0.0);
-QVector3D eg1(0.0, 1.0, 0.0);
-QVector3D eg2(0.0, 0.0, 1.0);
-
+ClassicPlateElement::ClassicPlateElement()
+{
 }
-
-
-#endif // GLOBALCOORDINATESYSTEM_H
