@@ -43,6 +43,22 @@ coordSystem::QuadrantCoord coordSystem::whichQuadrant(const mathExtension::Point
     if(p.x() > 0 && p.y() < 0 && p.z() > 0 ) return PNP;
 }
 
+coordSystem::QuadrantCoord2D coordSystem::whichQuadrant2D(const mathExtension::Point &p)
+{
+    // what about on the axis??
+    if(p.x() > 0 && p.y() > 0) return PP;
+    if(p.x() < 0 && p.y() > 0) return NP;
+    if(p.x() < 0 && p.y() < 0) return NN;
+    if(p.x() > 0 && p.y() < 0) return PN;
+}
+
+coordSystem::QuadrantCoord1D coordSystem::whichQuadrant1D(const mathExtension::Point &p)
+{
+    // what about on the axis??
+    if(p.x() > 0) return P;
+    if(p.x() < 0) return N;
+}
+
 coordSystem::coordSystem()
     :
       origin0_(QVector3D(0, 0, 0)),

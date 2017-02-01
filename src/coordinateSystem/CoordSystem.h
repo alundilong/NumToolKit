@@ -39,8 +39,12 @@ public:
 
     // find quadrant
     enum QuadrantCoord{PPN, NPN, NNN, PNN, PPP, NPP, NNP, PNP};
+    enum QuadrantCoord2D{PP, NP, NN, PN};
+    enum QuadrantCoord1D{P, N};
     enum Direction{X, Y, Z};
     static QuadrantCoord whichQuadrant(const mathExtension::Point &p);
+    static QuadrantCoord1D whichQuadrant1D(const mathExtension::Point &p);
+    static QuadrantCoord2D whichQuadrant2D(const mathExtension::Point &p);
 
     coordSystem();
     coordSystem(QVector3D, QVector3D, QVector3D, QVector3D);
