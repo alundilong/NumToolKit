@@ -29,7 +29,8 @@
 #include "../fea/math/LinearAlgebraSolver.h"
 
 #include "../fea/element/ElementStyle.h"
-//#include "../fea/mesh/FeaMesh.h"
+#include "../fea/mesh/FeaTwoDMesh.h"
+#include "../fea/mesh/FeaOneDMesh.h"
 
 #include <QDebug>
 #include "Form.h"
@@ -135,7 +136,8 @@ void feaAnalysisPanel::on_buttonRun_clicked()
 
     if(ui->comboBox1DElement->currentText() == "Bar") {
         log_ += "Solving 1-D Bar Problem...\n";
-        solveFEA();
+        //solveFEA();
+        solve2DFEA();
     }
 }
 
@@ -211,6 +213,16 @@ void feaAnalysisPanel::solveFEA()
 //        qDebug() << "b : " << b[ID] << b[ID+1] << b[ID+2];
 //    }
 
+}
+
+void feaAnalysisPanel::solve2DFEA()
+{
+    // construct 2D mesh from 3D mesh
+        const FEATwoDMesh polyMesh = FEATwoDMesh(QVector3D(0,0,1), *mesh());
+        const QList<QList<int> > &elementNodes = polyMesh.elementNodes();
+        const QMap<QString, QList<int> > & boundaries = polyMesh.boundaryNameNodes();
+        qDebug() << elementNodes;
+        qDebug() << boundaries;
 }
 
 void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Vector &b)
