@@ -25,6 +25,7 @@
 
 #include "FeaTwoDMesh.h"
 #include "../math/MathExtension.h"
+#include <QDebug>
 
 namespace NumToolKit {
 
@@ -34,7 +35,6 @@ FEATwoDMesh::FEATwoDMesh(const QVector3D & dir, const Mesh &mesh)
     :
     mesh_(mesh)
 {
-    int c = 0;
     // create edge list by looping over faces
     int size = mesh.owner().size();
     for (int faceI = 0; faceI < size; faceI++) {
@@ -47,20 +47,29 @@ FEATwoDMesh::FEATwoDMesh(const QVector3D & dir, const Mesh &mesh)
             if(it == nodes.end()) end = *(nodes.begin());
             else end = *it;
             Edge e(mesh, start, end);
-            if(QVector3D::dotProduct(e.direction(),dir) > 0) { // unique edge
-                nameMapEdge_[e.edgeName()] = e;// edgename = lowIndex-largeIndex
-                nameMapEdgeId_[e.edgeName()] = c; // labe of edge
-                indexMapEdge_[c] = e;
-                c++;
+            if(QVector3D::dotProduct(e.direction(),dir) > 0) {
+                nameMapEdge_[e.edgeName()] = e; // edgename = lowIndex-largeIndex
             }
         }
     }
 
+    QMap<QString, Edge>::const_iterator nme;
+    int c = 0;
+    for (nme = nameMapEdge().begin(); nme != nameMapEdge().end(); ++nme) {
+        const Edge &e = (*nme);
+//        qDebug() << e.edgeName() << c;
+        nameMapEdgeId_[e.edgeName()] = c; // labe of edge
+        indexMapEdge_[c] = e;
+        c++;
+    }
     // total number of edge
     numEdge_ = nameMapEdge().size();// == nameMapEdge().uniqueKeys().size()
 
     // face edge
     for (int faceI = 0; faceI < size; faceI++) {
+
+//        if (QVector3D::crossProduct(dir,mesh.faceNormals()[faceI]) == 0) continue;
+
         QList<int> nodes = mesh.faceNodes(faceI);
         QList<int>::const_iterator it = nodes.begin();
         int start, end;
@@ -73,20 +82,30 @@ FEATwoDMesh::FEATwoDMesh(const QVector3D & dir, const Mesh &mesh)
             QString smallIndex = QString::number(mathExtension::imin(start, end));
             QString largeIndex = QString::number(mathExtension::imax(start, end));
             const QString name = smallIndex+"-"+largeIndex;
-            int index = nameMapEdgeId().take(name);
-            fe.push_back(index);
+            if(nameMapEdge().contains(name)) {
+
+                int index = nameMapEdgeId().value(name);
+                fe.push_back(index);
+//                qDebug() << name << index;
+
+            }
         }
         faceEdges_.push_back(fe);
     }
 
     QList<QList<int> > cellEdges;
     size = mesh.nCells();
+
     for (int cellI = 0; cellI < size; cellI++) {
         const QList<int> &cellFace = mesh.cellFaces(cellI);
         QList<int>::const_iterator it;
+        QList<int> ce;
+        c = 0;
         for(it = cellFace.begin(); it != cellFace.end(); ++it) {
-            cellEdges.push_back(faceEdges()[*it]);
+            ce.append(faceEdges()[*it]);
+            c++;
         }
+        cellEdges.push_back(ce);
     }
 
     // remove redundant edge label of cells
@@ -116,6 +135,7 @@ FEATwoDMesh::FEATwoDMesh(const QVector3D & dir, const Mesh &mesh)
     }
 
     createEdgeCenters();
+    createBoundaryNameNodes();
 
 }// end constructor
 
@@ -131,6 +151,42 @@ void FEATwoDMesh::createEdgeCenters()
     for (it = indexMapEdge().begin(); it != indexMapEdge().end(); ++it) {
         QVector3D center = (*it).center();
         edgeCenters_[it.key()] = center;
+    }
+}
+
+void FEATwoDMesh::createBoundaryNameNodes()
+{
+    const QMap<QString, QList<int> > & mapBCFaceId = mesh_.boundaryNameFaces();
+    // mesh() instead of mesh_ causes problem...
+    QMap<QString, QList<int> >::const_iterator it;
+    for (it = mapBCFaceId.begin(); it != mapBCFaceId.end(); ++it) {
+        const QString & name = it.key();
+        const QList<int> & faceIds = *it;
+        QList<int> edgeIds;
+        QList<int>::const_iterator itf;
+        for (itf = faceIds.begin(); itf != faceIds.end(); ++itf) {
+            edgeIds.append(faceEdges()[*itf]);
+        }
+        // remove redundant meb
+        int num = edgeIds.size();
+        int tmpEdgeIds[num];
+        QList<int>::const_iterator it2;
+        int c = 0;
+        for(it2 = edgeIds.begin(); it2 != edgeIds.end(); ++it2) {
+            tmpEdgeIds[c++] = *it2;
+        }
+
+        std::list<int> uniqueList(tmpEdgeIds, tmpEdgeIds+num);
+        uniqueList.sort();
+        uniqueList.unique();
+
+        std::list<int>::const_iterator it3;
+        edgeIds.clear();
+        for (it3 = uniqueList.begin(); it3 != uniqueList.end(); ++it3) {
+            edgeIds.push_back(*it3);
+        }
+
+        boundaryNameNodes_[name] = edgeIds;
     }
 }
 

@@ -43,6 +43,9 @@ public:
     // access to 3D mesh if necessary
     inline const Mesh & mesh() const { mesh_; }
 
+    inline const QMap<QString, QList<int> > boundaryNameNodes() \
+    const { return boundaryNameNodes_; }
+
 private:
     const Mesh & mesh_;
     QList<QList<int> > faceEdges_;
@@ -53,6 +56,7 @@ private:
 
     QList<QList<int> > elementNodes_;
     QList<QVector3D> edgeCenters_;
+    QMap<QString, QList<int> > boundaryNameNodes_; //  a list of node
 
     int numEdge_;
 
@@ -65,6 +69,7 @@ private:
 
     // create edge centers
     void createEdgeCenters();
+    void createBoundaryNameNodes();
 };
 
 }
