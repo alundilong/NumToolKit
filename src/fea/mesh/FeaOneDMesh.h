@@ -46,6 +46,7 @@ public:
     inline const Mesh & mesh() const { mesh_; }
     inline const QList<QVector3D> points() const { return points_; }
     inline const QList<double> faceAreas() const { return faceAreas_; } // will be used for 1D bar/beam
+    inline const QVector3D & direction() const { return dir_; }
 private:
     QList<int> oneDNodes_; // all 3D faces contriibute to 1D nodes
     QMap<int,int> oneDNodeToThreeDFace_;
@@ -53,6 +54,7 @@ private:
     QList<QList<int> > elementNodes_;
     QList<QVector3D> points_;
     const Mesh & mesh_;
+    const QVector3D & dir_;
     QList<QVector3D> faceCenters_;
     QList<double> faceAreas_;
 

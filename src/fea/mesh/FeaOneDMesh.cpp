@@ -32,7 +32,7 @@ namespace Fea {
 // dir is the direction of 1D element
 FEAOneDMesh::FEAOneDMesh(const QVector3D & dir, const Mesh & mesh)
     :
-    mesh_(mesh)
+    mesh_(mesh), dir_(dir)
 {
     // find all faces whose normals are parallel to this direction
     QList<int>::const_iterator it;
