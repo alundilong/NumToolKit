@@ -24,7 +24,6 @@
 ------------------------------------------------------------------------- */
 
 #include "FeaTwoDMesh.h"
-#include "../math/MathExtension.h"
 #include <QDebug>
 
 namespace NumToolKit {
@@ -160,6 +159,7 @@ void FEATwoDMesh::createEdgeCenters()
 void FEATwoDMesh::createBoundaryNameNodes()
 {
     const QMap<QString, QList<int> > & mapBCFaceId = mesh_.boundaryNameFaces();
+
     // mesh() instead of mesh_ causes problem...
     QMap<QString, QList<int> >::const_iterator it;
     for (it = mapBCFaceId.begin(); it != mapBCFaceId.end(); ++it) {
@@ -190,6 +190,46 @@ void FEATwoDMesh::createBoundaryNameNodes()
         }
 
         boundaryNameNodes_[name] = edgeIds;
+    }
+//    qDebug() << boundaryNameNodes();
+}
+
+void FEATwoDMesh::fetchBCUniqueVertex(const QString &name, QList<int> &vertex) const
+{
+    QMap<QString, QList<int> >::const_iterator it;
+    it = boundaryNameNodes().find(name);
+
+    if(it != boundaryNameNodes().end()) {
+        const QList<int> & edgeList = boundaryNameNodes()[name];
+        QList<int>::const_iterator it2;
+        for(it2 = edgeList.begin(); it2 != edgeList.end(); ++it2) {
+            vertex.push_back(*it2);
+        }
+
+    } else {
+        for (it = boundaryNameNodes().begin(); it != boundaryNameNodes().end(); ++it) {
+            qDebug() << (*it).first();
+        }
+    }
+}
+
+void FEATwoDMesh::dispTo3DMesh(const mathExtension::Vector &disp2d, mathExtension::Vector &disp3d) const
+{
+    int c = 0;
+    int size = numEdge_;
+    for (c = 0; c < size; c++) {
+        const Edge & e = indexMapEdge()[c];
+        const int & startI = e.start();
+        const int & endI = e.end();
+//        qDebug() << startI << endI << size ;
+//        qDebug() << e.center();
+        disp3d[startI*3] = disp2d[3*c];
+        disp3d[startI*3+1] = disp2d[3*c+1];
+        disp3d[startI*3+2] = disp2d[3*c+2];
+//        qDebug() << disp2d[3*c] << disp2d[3*c+1] << disp2d[3*c+2];
+        disp3d[endI*3] = disp2d[3*c];
+        disp3d[endI*3+1] = disp2d[3*c+1];
+        disp3d[endI*3+2] = disp2d[3*c+2];
     }
 }
 

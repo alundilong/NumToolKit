@@ -29,6 +29,7 @@
 
 #include "Mesh.h"
 #include "Edge.h"
+#include "../math/MathExtension.h"
 
 namespace NumToolKit {
 
@@ -41,7 +42,8 @@ public:
 
     inline const QList<QList<int> > elementNodes() const { return elementNodes_; }
     // access to 3D mesh if necessary
-    inline const Mesh & mesh() const { mesh_; }
+    inline const Mesh & mesh() const { return mesh_; }
+//    inline const bound & box() const { return mesh_.box(); }
 
     inline const QMap<QString, QList<int> > boundaryNameNodes() \
     const { return boundaryNameNodes_; }
@@ -51,6 +53,9 @@ public:
     inline const QVector3D & direction() const { return dir_; }
     const QList<QVector3D> & points() const { return edgeCenters_;}
     const double & thickness() const { return thickness_; }
+
+    void fetchBCUniqueVertex(const QString &name, QList<int> &vertex) const;
+    void dispTo3DMesh(const mathExtension::Vector &disp2d, mathExtension::Vector &disp3d) const;
 
 private:
     const Mesh & mesh_;
@@ -79,6 +84,7 @@ private:
     // create edge centers
     void createEdgeCenters();
     void createBoundaryNameNodes();
+
 };
 
 }
