@@ -62,10 +62,24 @@ std::unique_ptr<FEAElementTwoD> FEAElementTwoD::New
     typename ElementNameConstructorTable::iterator cstrIter =
     ElementNameConstructorTablePtr_->find(name);
 
-    return std::unique_ptr<FEAElementTwoD>
-    (
-        ((cstrIter->second))(dimension, name, m, g)
-                );
+    if(cstrIter == ElementNameConstructorTablePtr_->end()) {
+        std::cout << "Error : Failure to find " \
+                  << name \
+                  << " Element " << std::endl;
+        std::cout << "Valid Elements are :" << std::endl;
+
+        for (cstrIter = ElementNameConstructorTablePtr_->begin(); \
+             cstrIter != ElementNameConstructorTablePtr_->end();\
+             ++cstrIter) {
+            std::cout << cstrIter->first << " Elements " << std::endl;
+        }
+    }
+
+    std::unique_ptr<FEAElementTwoD> ptr =
+        (
+            ((cstrIter->second))(dimension, name, m, g)
+        );
+    return ptr;
 }
 
 void FEAElementTwoD::infoAboutThisElement()
@@ -99,6 +113,7 @@ void FEAElementTwoD::numberSequence()
 
 makeElement(SpaceDimension, FEAElementTwoD, FEAElementBase, TwoD)
 defineRunTimeSelectionTable(FEAElementTwoD, ElementName)
+
 
 }
 

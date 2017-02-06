@@ -82,6 +82,9 @@ protected:
     virtual void constructBaseMatrix();
     virtual void transformToGlobal();
     virtual void numberSequence();
+
+    double area_;
+    inline double & area() { return area_; }
 };
 
 }
