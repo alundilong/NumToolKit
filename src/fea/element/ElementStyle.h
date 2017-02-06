@@ -32,6 +32,7 @@
 #include "StringElement.h"
 
 // 2D Element
+#include "ClassicPlateElement.h"
 
 // 3D Element
 #include "FeaElementLinearCubicalElement.h"
