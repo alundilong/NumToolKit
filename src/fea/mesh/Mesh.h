@@ -32,6 +32,7 @@
 #include <QMap>
 #include "Bound.h"
 #include "../../container/List.h"
+#include <QDebug>
 
 namespace NumToolKit {
 
@@ -59,28 +60,28 @@ public:
     const QList<int> cellFaces(int cellId) const; // return face
 
     // inline function
-    inline int nCells() const { return nCells_; }
-    inline int nFaces() const { return nFaces_; }
-    inline int nNodes() const { return nNodes_; }
-    inline bool meshState() const { return meshState_; }
+    inline const int &nCells() const { return nCells_; }
+    inline const int &nFaces() const { return nFaces_; }
+    inline const int &nNodes() const { return nNodes_; }
+    inline const bool &meshState() const { return meshState_; }
 
-    inline const QList<QList<int> > faces() const { return faces_; }
-    inline const QList<int> owner() const { return owner_; }
-    inline const QList<int> neighbour() const { return neighbour_; }
-    inline const QList<QVector3D> points() const { return points_; }
-    inline const QList<QVector3D> faceNormals() const { return faceNormals_; }
-    inline const QList<double> faceAreas() const { return faceAreas_; }
-    inline const QList<QString> boundaryName() \
+    inline const QList<QList<int> > &faces() const { return faces_; }
+    inline const QList<int> &owner() const { return owner_; }
+    inline const QList<int> &neighbour() const { return neighbour_; }
+    inline const QList<QVector3D> &points() const { return points_; }
+    inline const QList<QVector3D> &faceNormals() const { return faceNormals_; }
+    inline const QList<double> &faceAreas() const { return faceAreas_; }
+    inline const QList<QString> &boundaryName() \
     const { return boundaryName_; }
 
-    inline const QMap<QString, QList<int> > boundaryNameFaces() \
+    inline const QMap<QString, QList<int> > &boundaryNameFaces() \
     const { return boundaryNameFaces_; }
 
-    inline const QList< QList<int> > faceNode() const  { return faces_;}
-    inline const QList< QList<int> > cellNode() const { return cellNode_;}
-    inline const QList< QList<int> > cellFace() const { return cellFace_;}
+    inline const QList< QList<int> > &faceNode() const  { return faces_;}
+    inline const QList< QList<int> > &cellNode() const { return cellNode_;}
+    inline const QList< QList<int> > &cellFace() const { return cellFace_;}
 
-    inline const bound box() const { return box_; }
+    inline const bound &box() const { return box_; }
 
 
     // Number Sequence

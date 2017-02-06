@@ -87,6 +87,7 @@ Mesh::Mesh(QString & dir)
         box_.yhig = *std::max_element(py.begin(),py.end());
         box_.zlow = *std::min_element(pz.begin(),pz.end());
         box_.zhig = *std::max_element(pz.begin(),pz.end());
+
     }
 
     meshState_ = readState;
