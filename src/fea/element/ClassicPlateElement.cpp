@@ -80,8 +80,9 @@ void ClassicPlateElement::constructGeometry()
     area() = ex*ey;
     exyz() = {ex, ey, ez};
     const QVector3D& origin = geometry()->center();
-    QVector3D axisX((p2-origin).normalized());
-    QVector3D axisY((p4-origin).normalized());
+    QVector3D axisX(((p2+p3)/2-origin).normalized());
+    QVector3D axisY(((p4+p3)/2-origin).normalized());
+//    qDebug() << "-------------------" << geometry()->twoDMesh().direction();
     lcs().setOXYZ(origin, axisX, axisY, geometry()->twoDMesh().direction());
 }
 
@@ -93,7 +94,7 @@ void ClassicPlateElement::constructBaseMatrix()
     baseStiff_ = mathExtension::Matrix(N,N);
 
     const MaterialEle & mat = *material();
-    const GeometryEle & g = *geometry();
+//    const GeometryEle & g = *geometry();
 
     const double & E = mat.E();
     const double & nu = mat.nu();
@@ -215,7 +216,7 @@ void ClassicPlateElement::constructBaseMatrix()
     baseStiff_[8][2]  = (D*(a2 + 5*b2))/(15*a*b);
     baseStiff_[8][3]  = (D*b)/a2 - D/(5*b);
     baseStiff_[8][4]  = 0;
-    baseStiff_[8][5]  = -(2*D*(2*a2 - 5*b2))/(1*a*b);
+    baseStiff_[8][5]  = -(2*D*(2*a2 - 5*b2))/(15*a*b);
     baseStiff_[8][6]  = (D*(a2 + 10*b2))/(5*a2*b);
     baseStiff_[8][7]  = 0; 
     baseStiff_[8][8]  = (4*D*(a2 + 5*b2))/(15*a*b);
@@ -426,6 +427,7 @@ void ClassicPlateElement::transformToGlobal()
     const QVector3D & e0 = lcs().e0();
     const QVector3D & e1 = lcs().e1();
     const QVector3D & e2 = lcs().e2();
+//    qDebug() << e0 << e1 << e2;
 
     const QVector3D eg0(1.0,0.0,0.0);
     const QVector3D eg1(0.0,1.0,0.0);
@@ -451,6 +453,7 @@ void ClassicPlateElement::transformToGlobal()
         G.setSubMatrix(rowRange, colRange, T, false);
     }
 
+//    std::cout << G << std::endl;
     baseStiff_ = G.transpose()*baseStiff_*G;
     baseMass_ = G.transpose()*baseMass_*G;
 }
@@ -516,6 +519,8 @@ void ClassicPlateElement::numberSequence()
         }
     }
 
+//    qDebug() << "XXXX";
+//    qDebug() << vertex;
     pointIds() = vertex;
 }
 
