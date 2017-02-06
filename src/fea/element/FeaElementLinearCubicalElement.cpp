@@ -363,7 +363,7 @@ void FEAElementLinearCubicalElement::transformToGlobal()
 makeElement(ElementName, \
             FEAElementLinearCubicalElement, \
             FEAElementThreeD, \
-            LinearCubicalElementBarThreeD)
+            LinearCubicalElementBeamThreeD)
 
 makeElementNode(ElementName, FEAElementLinearCubicalElement, FEAElementBase)
 
