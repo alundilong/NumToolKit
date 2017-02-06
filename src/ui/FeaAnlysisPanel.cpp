@@ -159,7 +159,7 @@ void feaAnalysisPanel::solveFEA()
         std::unique_ptr<FEAElementBase> parentEle = \
                 FEAElementBase::New(\
                     "ThreeD",\
-                    "LinearCubicalElementBarThreeD",\
+                    "LinearCubicalElementBeamThreeD",\
                     *m,\
                     *g);
         FEAElementLinearCubicalElement *lce =\
@@ -217,12 +217,48 @@ void feaAnalysisPanel::solveFEA()
 
 void feaAnalysisPanel::solve2DFEA()
 {
+    // 2D classic plate
     // construct 2D mesh from 3D mesh
         const FEATwoDMesh polyMesh = FEATwoDMesh(QVector3D(0,0,1), *mesh());
         const QList<QList<int> > &elementNodes = polyMesh.elementNodes();
-        const QMap<QString, QList<int> > & boundaries = polyMesh.boundaryNameNodes();
-        qDebug() << elementNodes;
-        qDebug() << boundaries;
+
+        const int nElement = polyMesh.nCells();
+        std::string nameMat = "Aluminum-2014T";
+        QList<ClassicPlateElement*> elements;
+        for (int i = 0; i < nElement; i++) {
+            MaterialEle *m = new MaterialEle(nameMat);
+            const QList<int> & vertex = elementNodes[i];
+            qDebug() << vertex ;
+            GeometryEle *g = new GeometryEle(polyMesh, vertex);
+            std::unique_ptr<FEAElementBase> parentEle = \
+                    FEAElementBase::New(\
+                        "TwoD",\
+                        "ClassicPlate43",\
+                        *m,\
+                        *g);
+            ClassicPlateElement *cpe =\
+                    static_cast<ClassicPlateElement*>(parentEle.get());
+            parentEle.release();
+            elements.push_back(cpe);
+        }
+
+        const int nUnknown = polyMesh.nNodes()*ClassicPlateElement::nDOF;
+        mathExtension::Matrix A(nUnknown , nUnknown);
+        mathExtension::Vector b(nUnknown);
+        mathExtension::Vector x(nUnknown);
+
+        QList<ClassicPlateElement*>::const_iterator it;
+        qDebug() << "====== Form Linear Algebra Equations =====";
+        for(it = elements.begin(); it != elements.end(); ++it) {
+            const ClassicPlateElement &ele = **it;
+            const QList<int> &Rows= ele.nodeIds();
+            // be aware of vertex id (our id starts from 0)
+            A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
+        }
+        Form *tmp = new Form(A,b,mw_);
+        tmp->show();
+
+//        const QMap<QString, QList<int> > & boundaries = polyMesh.boundaryNameNodes();
 }
 
 void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Vector &b)
