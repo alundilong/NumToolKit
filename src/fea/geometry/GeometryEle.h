@@ -28,6 +28,8 @@
 
 #include "../../coordinateSystem/CoordSystem.h"
 #include "../mesh/Mesh.h"
+#include "../mesh/FeaOneDMesh.h"
+#include "../mesh/FeaTwoDMesh.h"
 #include "../../container/List.h"
 #include <QList>
 
@@ -44,6 +46,8 @@ public:
     // our mesh is always 3D
     // 2D or 1D problem, variables will be reduced in sepcial way
     GeometryEle(const Mesh & mesh, const QList<int> & vertex);
+    GeometryEle(const FEAOneDMesh & mesh, const QList<int> & vertex);
+    GeometryEle(const FEATwoDMesh & mesh, const QList<int> & vertex);
 //    GeometryEle(const Mesh & mesh, double e[]);
     GeometryEle(const GeometryEle &g);
     ~GeometryEle();
@@ -57,10 +61,14 @@ public:
 
     const QList<int> & vertexIds() const { return vertexIds_; }
     const Mesh & mesh() const { return mesh_; }
+    const FEAOneDMesh & oneDMesh() const { return oneDMesh_; }
+    const FEATwoDMesh & twoDMesh() const { return twoDMesh_; }
     const QVector3D &center() const { return center_; }
 
 private:
     const Mesh & mesh_;
+    const FEAOneDMesh & oneDMesh_;
+    const FEATwoDMesh & twoDMesh_;
     double e_[3]; // length in x, y, z direction
     double A_;
     double volume_;

@@ -39,7 +39,9 @@ namespace Fea {
 GeometryEle::GeometryEle(const Mesh &mesh, const QList<int> & vertex)
     :
       mesh_(mesh),
-      vertexIds_(vertex)
+      vertexIds_(vertex),
+      oneDMesh_(*static_cast<FEAOneDMesh*>(0)),
+      twoDMesh_(*static_cast<FEATwoDMesh*>(0))
 {
     double cx, cy, cz;
     cx = cy = cz;
@@ -57,10 +59,58 @@ GeometryEle::GeometryEle(const Mesh &mesh, const QList<int> & vertex)
     center_ = QVector3D(cx, cy, cz);
 }
 
+GeometryEle::GeometryEle(const FEAOneDMesh &mesh, const QList<int> &vertex)
+    :
+      mesh_(*static_cast<Mesh*>(0)),
+      vertexIds_(vertex),
+      oneDMesh_(mesh),
+      twoDMesh_(*static_cast<FEATwoDMesh*>(0))
+{
+    double cx, cy, cz;
+    cx = cy = cz;
+    int c = 0;
+    QList<int>::const_iterator it;
+    for (it = vertexIds().begin(); it != vertexIds().end(); ++it) {
+        cx += oneDMesh_.points()[(*it)].x();
+        cy += oneDMesh_.points()[(*it)].y();
+        cz += oneDMesh_.points()[(*it)].z();
+        c++;
+    }
+    cx = cx/c;
+    cy = cy/c;
+    cz = cz/c;
+    center_ = QVector3D(cx, cy, cz);
+}
+
+GeometryEle::GeometryEle(const FEATwoDMesh &mesh, const QList<int> &vertex)
+    :
+      mesh_(*static_cast<Mesh*>(0)),
+      vertexIds_(vertex),
+      oneDMesh_(*static_cast<FEAOneDMesh*>(0)),
+      twoDMesh_(mesh)
+{
+    double cx, cy, cz;
+    cx = cy = cz;
+    int c = 0;
+    QList<int>::const_iterator it;
+    for (it = vertexIds().begin(); it != vertexIds().end(); ++it) {
+        cx += twoDMesh_.points()[(*it)].x();
+        cy += twoDMesh_.points()[(*it)].y();
+        cz += twoDMesh_.points()[(*it)].z();
+        c++;
+    }
+    cx = cx/c;
+    cy = cy/c;
+    cz = cz/c;
+    center_ = QVector3D(cx, cy, cz);
+}
+
 GeometryEle::GeometryEle(const GeometryEle &g)
     :
       mesh_(g.mesh()),
-      vertexIds_(g.vertexIds())
+      vertexIds_(g.vertexIds()),
+      oneDMesh_(g.oneDMesh()),
+      twoDMesh_(g.twoDMesh())
 {
     double cx, cy, cz;
     cx = cy = cz;
