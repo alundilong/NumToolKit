@@ -28,6 +28,8 @@
 
 #include <QWidget>
 #include "../fea/mesh/Mesh.h"
+#include "../fea/mesh/FeaOneDMesh.h"
+#include "../fea/mesh/FeaTwoDMesh.h"
 #include "ViewerWindow.h"
 #include "../fea/math/MathExtension.h"
 
@@ -75,6 +77,7 @@ private:
     void solveFEA();
     void solve2DFEA();
     void setBoundaryConditions(const Mesh& mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
+    void set2DBoudaryConditions(const FEATwoDMesh & mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
     void writeData(const Mesh&, const mathExtension::Vector&x);
 };
 

@@ -219,46 +219,76 @@ void feaAnalysisPanel::solve2DFEA()
 {
     // 2D classic plate
     // construct 2D mesh from 3D mesh
-        const FEATwoDMesh polyMesh = FEATwoDMesh(QVector3D(0,0,1), *mesh());
-        const QList<QList<int> > &elementNodes = polyMesh.elementNodes();
+    QVector3D direction(0,0,1);
+    const FEATwoDMesh polyMesh = FEATwoDMesh(direction, *mesh());
+    const QList<QList<int> > &elementNodes = polyMesh.elementNodes();
 
-        const int nElement = polyMesh.nCells();
-        std::string nameMat = "Aluminum-2014T";
-        QList<ClassicPlateElement*> elements;
-        for (int i = 0; i < nElement; i++) {
-            MaterialEle *m = new MaterialEle(nameMat);
-            const QList<int> & vertex = elementNodes[i];
-            qDebug() << vertex ;
-            GeometryEle *g = new GeometryEle(polyMesh, vertex);
-            std::unique_ptr<FEAElementBase> parentEle = \
-                    FEAElementBase::New(\
-                        "TwoD",\
-                        "ClassicPlate43",\
-                        *m,\
-                        *g);
-            ClassicPlateElement *cpe =\
-                    static_cast<ClassicPlateElement*>(parentEle.get());
-            parentEle.release();
-            elements.push_back(cpe);
-        }
+    const int nElement = polyMesh.nCells();
+    std::string nameMat = "Aluminum-2014T";
+    QList<ClassicPlateElement*> elements;
+    for (int i = 0; i < nElement; i++) {
+        MaterialEle *m = new MaterialEle(nameMat);
+        const QList<int> & vertex = elementNodes[i];
+//        qDebug() << vertex ;
+        GeometryEle *g = new GeometryEle(polyMesh, vertex);
+        std::unique_ptr<FEAElementBase> parentEle = \
+                FEAElementBase::New(\
+                    "TwoD",\
+                    "ClassicPlate43",\
+                    *m,\
+                    *g);
+        ClassicPlateElement *cpe =\
+                static_cast<ClassicPlateElement*>(parentEle.get());
+        parentEle.release();
+        elements.push_back(cpe);
+    }
 
-        const int nUnknown = polyMesh.nNodes()*ClassicPlateElement::nDOF;
-        mathExtension::Matrix A(nUnknown , nUnknown);
-        mathExtension::Vector b(nUnknown);
-        mathExtension::Vector x(nUnknown);
+    const int nUnknown = polyMesh.nNodes()*ClassicPlateElement::nDOF;
+    mathExtension::Matrix A(nUnknown , nUnknown);
+    mathExtension::Vector b(nUnknown);
+    mathExtension::Vector x(nUnknown);
 
-        QList<ClassicPlateElement*>::const_iterator it;
-        qDebug() << "====== Form Linear Algebra Equations =====";
-        for(it = elements.begin(); it != elements.end(); ++it) {
-            const ClassicPlateElement &ele = **it;
-            const QList<int> &Rows= ele.nodeIds();
-            // be aware of vertex id (our id starts from 0)
-            A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
-        }
-        Form *tmp = new Form(A,b,mw_);
-        tmp->show();
+    QList<ClassicPlateElement*>::const_iterator it;
+    qDebug() << "====== Form Linear Algebra Equations =====";
+    for(it = elements.begin(); it != elements.end(); ++it) {
+        const ClassicPlateElement &ele = **it;
+        const QList<int> &Rows= ele.nodeIds();
+//        qDebug() << Rows;
+        // be aware of vertex id (our id starts from 0)
+        A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
+    }
 
-//        const QMap<QString, QList<int> > & boundaries = polyMesh.boundaryNameNodes();
+//    std::cout << "baseStiff"<< std::endl;
+//    std::cout << elements.first()->baseStiff();
+//    std::cout << "baseMass" << std::endl;
+//    std::cout << elements.first()->baseMass();
+
+    set2DBoudaryConditions(polyMesh,A,b);
+
+//    Form *tmp = new Form(A,b,mw_);
+//    tmp->show();
+
+    linearAlgebraSolver las(A, b, x);
+    las.LUSolve_GSL();
+
+//    std::cout << x << std::endl;
+
+    int size = polyMesh.nNodes();
+    mathExtension::Vector disp2d(size*3);
+    for (int i = 0; i < size; i++) {
+        int startI = i*3;
+        const double & w = x[startI];
+        const double & alpha = x[startI+1]; // wy
+        const double & beta = x[startI+2]; // wx
+        disp2d[startI] = 0; //-w*beta;
+        disp2d[startI+1] = 0; //w*alpha;
+        disp2d[startI+2] = w;;
+    }
+
+//    // store x to xx
+    mathExtension::Vector disp3d(mesh()->nNodes()*3);
+    polyMesh.dispTo3DMesh(disp2d,disp3d);
+    writeData(*mesh(), disp3d);
 }
 
 void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Vector &b)
@@ -296,6 +326,82 @@ void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Ve
         }
 //        b[rs+1] = -100;
     }
+    vertex.clear();
+}
+
+void feaAnalysisPanel::set2DBoudaryConditions(const FEATwoDMesh &polyMesh, Matrix &A, Vector &b)
+{
+    // set displacement on Left as fixed boundary
+    QList<int> vertex;
+    polyMesh.fetchBCUniqueVertex("Left", vertex);
+    qDebug() << "Left: " << vertex;
+
+//    QList<int> vertex2;
+//    polyMesh.fetchBCUniqueVertex("Right",vertex2);
+//    qDebug() << "Right:" << vertex2;
+//    vertex.append(vertex2);
+
+//    QList<int> vertex3;
+//    polyMesh.fetchBCUniqueVertex("TopAndBottom", vertex3);
+//    qDebug() << "TopAndBottom: " << vertex3;
+
+//    vertex.append(vertex3);
+    QList<int>::const_iterator vIt;
+    for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
+        int vertexId = *vIt;
+        int rs = vertexId*3;
+        int cs = vertexId*3;
+        for (int i = 0; i < 3; i++) {
+            A.setZeroExceptRowCol(rs+i, cs+i);
+            b[rs+i] = 0.0;
+        }
+    }
+    vertex.clear();
+
+//    set force
+    polyMesh.fetchBCUniqueVertex("Right",vertex);
+    qDebug() << "Right:" << vertex;
+    int c = 0;
+    for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
+        int vertexId = *vIt;
+        int rs = vertexId*3;
+
+        double f = 0;
+        if (c%3 == 0) f = 1;
+        else if (c%3 == 1) f = 0;
+        else if (c%3 == 2) f = -1;
+
+        b[rs] = -10000000.0*f;
+
+        c++;
+    }
+
+//    const double & yhig = polyMesh.mesh().box().yhig;
+//    const double & ylow = polyMesh.mesh().box().ylow;
+//    const double & xhig = polyMesh.mesh().box().xhig;
+//    const double & xlow = polyMesh.mesh().box().xlow;
+//    double yl = yhig - ylow;
+//    double xl = xhig - xlow;
+//    double yc = ylow + 0.5*yl;
+//    double xc = xlow + 0.5*xl;
+//    double cutSqr = xl*xl*0.1*0.1;
+
+//    const QList<QVector3D> & points = polyMesh.points();
+//    QList<QVector3D>::const_iterator pIt;
+//    int vertexId = 0;
+//    for (pIt = points.begin(); pIt != points.end(); ++pIt) {
+//        const QVector3D & coord = *pIt;
+//        const double & x = coord.x();
+//        const double & y = coord.y();
+//        const double distSqr = (x-xc)*(x-xc) + (y-yc)*(y-yc);
+//        qDebug() << "dist : "<< distSqr << cutSqr << xhig << xlow << yhig << ylow;
+//        if(distSqr < cutSqr) {
+//            int rs = vertexId*3;
+//            b[rs] = -100000;
+//            qDebug() << "Front:" << vertexId;
+//        }
+//        vertexId++;
+//    }
     vertex.clear();
 }
 
