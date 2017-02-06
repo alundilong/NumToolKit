@@ -46,6 +46,8 @@ Edge::Edge(const Mesh &mesh, const int &s, const int &e)
     QString largeIndex = QString::number(e_);
     edgeName_ = smallIndex+"-"+largeIndex;
 
+    length_ = (points[s]-points[e]).length();
+
 }
 
 }
