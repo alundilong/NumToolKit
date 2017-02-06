@@ -33,7 +33,7 @@ namespace Fea {
 
 FEATwoDMesh::FEATwoDMesh(const QVector3D & dir, const Mesh &mesh)
     :
-    mesh_(mesh)
+    mesh_(mesh), dir_(dir)
 {
     // create edge list by looping over faces
     int size = mesh.owner().size();
@@ -52,6 +52,9 @@ FEATwoDMesh::FEATwoDMesh(const QVector3D & dir, const Mesh &mesh)
             }
         }
     }
+
+    // find the thickness of 2D mesh
+    thickness_ = nameMapEdge().first().length();
 
     QMap<QString, Edge>::const_iterator nme;
     int c = 0;
