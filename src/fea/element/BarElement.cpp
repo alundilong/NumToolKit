@@ -95,18 +95,24 @@ void BarElement::infoAboutThisElement()
 
 void BarElement::constructGeometry()
 {
-    const QList<QVector3D> &points = geometry()->mesh().points();
+    const QList<QVector3D> &points = geometry()->oneDMesh().points();
     QVector3D p1 = points[pointIds()[1-1]];
     QVector3D p2 = points[pointIds()[2-1]];
 
+    const QList<double> & areas = geometry()->oneDMesh().faceAreas();
+    area_[0] = areas[pointIds()[1-1]];
+    area_[1] = areas[pointIds()[2-1]];
+
     // set length in each direction
-    double ex = p1.distanceToPoint(p2);
-    double ey = 0.0;
-    double ez = 0.0;
+    const double ex = p1.distanceToPoint(p2);
+    // assume square
+    const double ey = sqrt(area());
+    const double ez = ey;
     exyz() = {ex, ey, ez};
     const QVector3D& origin = geometry()->center();
     QVector3D axisX((p2-origin).normalized());
     lcs().setOXYZ(origin, axisX, axisX, axisX);
+
 }
 
 void BarElement::constructBaseMatrix()
@@ -118,24 +124,23 @@ void BarElement::constructBaseMatrix()
 
     const MaterialEle & m = *material();
     const GeometryEle & g = *geometry();
-    const double mass = m.rho()*g.volume();
-    const double *eL = g.e();
-    const double ex = eL[GeometryEle::X];
+    const double mass = m.rho()*volume();
+//    const double *eL = g.e();
+    const double ex = exyz().ex;
     const double coeffMass = mass*ex/6.0;
 
     baseMass_[0][0] = 2*coeffMass; baseMass_[0][1] = 1*coeffMass;
     baseMass_[1][0] = 1*coeffMass; baseMass_[1][1] = 2*coeffMass;
 
-    const double E = m.E();
-    const double A = g.A();
-    const double coeffStiff = E*A/ex;
+    const double E = m.E();;
+    const double coeffStiff = E*area()/ex;
 
     baseStiff_[0][0] = 1*coeffStiff; baseStiff_[0][1] = -1*coeffStiff;
     baseStiff_[1][0] = -1*coeffStiff; baseStiff_[1][1] = 1*coeffStiff;
 
     // compute moment of inertia
-    const double ey = eL[GeometryEle::Y];
-    const double ez = eL[GeometryEle::Z];
+    const double ey = exyz().ey;
+    const double ez = exyz().ez;
 
     I[FEAElementBase::component::XX] = mass*(ey*ey+ez*ez)/12.;
     I[FEAElementBase::component::YY] = mass*(ex*ex+ez*ez)/12.;
@@ -178,7 +183,7 @@ void BarElement::numberSequence()
     uniqueList.sort();
     uniqueList.unique();
 
-    const QList<QVector3D> & points = geometry()->mesh().points();
+    const QList<QVector3D> & points = geometry()->oneDMesh().points();
 
     double xc, yc, zc; // bar center
     xc = yc = zc = 0.0;
