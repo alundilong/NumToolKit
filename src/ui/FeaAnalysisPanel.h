@@ -78,7 +78,8 @@ private:
     void solve2DFEA();
     void solve1DFEA();
     void setBoundaryConditions(const Mesh& mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
-    void set2DBoudaryConditions(const FEATwoDMesh & mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
+    void set2DBoundaryConditions(const FEATwoDMesh & mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
+    void set1DBoundaryConditions(const FEAOneDMesh & mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
     void writeData(const Mesh&, const mathExtension::Vector&x);
 };
 

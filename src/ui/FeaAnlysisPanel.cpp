@@ -264,7 +264,7 @@ void feaAnalysisPanel::solve2DFEA()
 //    std::cout << "baseMass" << std::endl;
 //    std::cout << elements.first()->baseMass();
 
-    set2DBoudaryConditions(polyMesh,A,b);
+    set2DBoundaryConditions(polyMesh,A,b);
 
 //    Form *tmp = new Form(A,b,mw_);
 //    tmp->show();
@@ -306,7 +306,7 @@ void feaAnalysisPanel::solve1DFEA()
     for (int i = 0; i < nElement; i++) {
         MaterialEle *m = new MaterialEle(nameMat);
         const QList<int> & vertex = elementNodes[i];
-//        qDebug() << vertex ;
+//        qDebug() << vertex << polyMesh.points()[vertex[0]] << polyMesh.points()[vertex[1]];
         GeometryEle *g = new GeometryEle(polyMesh, vertex);
         std::unique_ptr<FEAElementBase> parentEle = \
                 FEAElementBase::New(\
@@ -330,10 +330,32 @@ void feaAnalysisPanel::solve1DFEA()
     for(it = elements.begin(); it != elements.end(); ++it) {
         const BarElement &ele = **it;
         const QList<int> &Rows= ele.nodeIds();
-//        qDebug() << Rows;
         // be aware of vertex id (our id starts from 0)
         A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
     }
+
+    set1DBoundaryConditions(polyMesh, A, b);
+
+//    Form *tmp = new Form(A,b,mw_);
+//    tmp->show();
+    linearAlgebraSolver las(A, b, x);
+    las.LUSolve_GSL();
+
+
+    int size = polyMesh.nNodes();
+    mathExtension::Vector disp1d(size*3);
+    for (int i = 0; i < size; i++) {
+        int startI = i;
+        const double & u = x[startI];
+        disp1d[3*startI] = u;
+        disp1d[3*startI+1] = 0.0;
+        disp1d[3*startI+2] = 0.0;
+    }
+
+    //    // store x to xx
+    mathExtension::Vector disp3d(mesh()->nNodes()*3);
+    polyMesh.dispTo3DMesh(disp1d,disp3d);
+    writeData(*mesh(), disp3d);
 }
 
 void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Vector &b)
@@ -374,7 +396,42 @@ void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Ve
     vertex.clear();
 }
 
-void feaAnalysisPanel::set2DBoudaryConditions(const FEATwoDMesh &polyMesh, Matrix &A, Vector &b)
+void feaAnalysisPanel::set1DBoundaryConditions(const FEAOneDMesh &polyMesh, Matrix &A, Vector &b)
+{
+    // set displacement on Left as fixed boundary
+    QList<int> vertex;
+    polyMesh.fetchBCUniqueVertex("Left", vertex);
+    qDebug() << "Left: " << vertex;
+
+    QList<int>::const_iterator vIt;
+    for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
+        int vertexId = *vIt;
+        int rs = vertexId;
+        int cs = vertexId;
+        for (int i = 0; i < 1; i++) {
+            A.setZeroExceptRowCol(rs+i, cs+i);
+            b[rs+i] = 0.0;
+        }
+    }
+    vertex.clear();
+
+//    set force
+    polyMesh.fetchBCUniqueVertex("Right",vertex);
+    qDebug() << "Right:" << vertex;
+    int c = 0;
+    for (vIt = vertex.begin(); vIt != vertex.end(); ++vIt) {
+        int vertexId = *vIt;
+        int rs = vertexId;
+
+        b[rs] = -100000000.0;
+
+        c++;
+    }
+
+    vertex.clear();
+}
+
+void feaAnalysisPanel::set2DBoundaryConditions(const FEATwoDMesh &polyMesh, Matrix &A, Vector &b)
 {
     // set displacement on Left as fixed boundary
     QList<int> vertex;
