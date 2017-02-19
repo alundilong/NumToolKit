@@ -136,8 +136,9 @@ void feaAnalysisPanel::on_buttonRun_clicked()
 
     if(ui->comboBox1DElement->currentText() == "Bar") {
         log_ += "Solving 1-D Bar Problem...\n";
-        //solveFEA();
-        solve2DFEA();
+//        solveFEA();
+//        solve2DFEA();
+        solve1DFEA();
     }
 }
 
@@ -289,6 +290,50 @@ void feaAnalysisPanel::solve2DFEA()
     mathExtension::Vector disp3d(mesh()->nNodes()*3);
     polyMesh.dispTo3DMesh(disp2d,disp3d);
     writeData(*mesh(), disp3d);
+}
+
+void feaAnalysisPanel::solve1DFEA()
+{
+    // 1D Bar Element
+    // construct 1D mesh from 3D mesh
+    QVector3D direction(1,0,0);
+    const FEAOneDMesh polyMesh = FEAOneDMesh(direction, *mesh());
+    const QList<QList<int> > &elementNodes = polyMesh.elementNodes();
+
+    const int nElement = polyMesh.nCells();
+    std::string nameMat = "Aluminum-2014T";
+    QList<BarElement*> elements;
+    for (int i = 0; i < nElement; i++) {
+        MaterialEle *m = new MaterialEle(nameMat);
+        const QList<int> & vertex = elementNodes[i];
+//        qDebug() << vertex ;
+        GeometryEle *g = new GeometryEle(polyMesh, vertex);
+        std::unique_ptr<FEAElementBase> parentEle = \
+                FEAElementBase::New(\
+                    "OneD",\
+                    "Bar21",\
+                    *m,\
+                    *g);
+        BarElement *cpe =\
+                static_cast<BarElement*>(parentEle.get());
+        parentEle.release();
+        elements.push_back(cpe);
+    }
+
+    const int nUnknown = polyMesh.nNodes()*BarElement::nDOF;
+    mathExtension::Matrix A(nUnknown , nUnknown);
+    mathExtension::Vector b(nUnknown);
+    mathExtension::Vector x(nUnknown);
+
+    QList<BarElement*>::const_iterator it;
+    qDebug() << "====== Form Linear Algebra Equations =====";
+    for(it = elements.begin(); it != elements.end(); ++it) {
+        const BarElement &ele = **it;
+        const QList<int> &Rows= ele.nodeIds();
+//        qDebug() << Rows;
+        // be aware of vertex id (our id starts from 0)
+        A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
+    }
 }
 
 void feaAnalysisPanel::setBoundaryConditions(const Mesh &polyMesh, Matrix &A, Vector &b)
