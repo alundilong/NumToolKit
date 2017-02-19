@@ -227,7 +227,7 @@ void BarElement::numberSequence()
     pointIds() = vertex;
 }
 
-makeElement(ElementName, BarElement, FEAElementOneD, Bar)
+makeElement(ElementName, BarElement, FEAElementOneD, Bar21)
 makeElementNode(ElementName, BarElement, FEAElementBase)
 makeElementNodeDOF(ElementName, BarElement, FEAElementBase)
 
