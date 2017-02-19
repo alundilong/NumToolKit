@@ -523,14 +523,14 @@ void Mesh::createCellNodes()
 void Mesh::createFaceNormalAndAreas()
 {
     // duplicate node
-    faceNormals_.reserve(nFaces());
-    faceAreas_.reserve(nFaces());
-    for(int i = 0; i < nFaces(); i++) {
-        QVector3D v;
-        double a;
-        faceNormals_.append(v);
-        faceAreas_.append(a);
-    }
+//    faceNormals_.reserve(nFaces());
+//    faceAreas_.reserve(nFaces());
+//    for(int i = 0; i < nFaces(); i++) {
+//        QVector3D v;
+//        double a;
+//        faceNormals_.append(v);
+//        faceAreas_.append(a);
+//    }
 
     // loop over all faces
     int faceId = 0;
@@ -542,6 +542,7 @@ void Mesh::createFaceNormalAndAreas()
         QVector3D p1 = points()[*it];
         QVector3D p2, p3;
         bool normalComputed = false;
+        QVector3D normal;
         double area = 0;
         for (; it != nodeIds.end();)
         {
@@ -551,7 +552,9 @@ void Mesh::createFaceNormalAndAreas()
                 p2 = points()[*it];
                 ++it;
                 p3 = points()[*it];
-                faceNormals_.push_back(QVector3D::normal(p1, p2, p3));
+                normal = QVector3D::normal(p1, p2, p3);
+                faceNormals_.push_back(normal);
+//                qDebug() << "normal : " << normal << p1 << p2 << p3;
                 normalComputed = true;
 
                 QVector3D p12 = p2 - p1;
@@ -565,6 +568,7 @@ void Mesh::createFaceNormalAndAreas()
             p3 = pNext;
             ++it;
         }
+//        qDebug() << "area : " << area;
         faceAreas_.push_back(area);
     }
 }
