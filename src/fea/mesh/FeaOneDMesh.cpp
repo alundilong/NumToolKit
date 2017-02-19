@@ -37,7 +37,7 @@ FEAOneDMesh::FEAOneDMesh(const QVector3D & dir, const Mesh & mesh)
     // find all faces whose normals are parallel to this direction
     QList<int>::const_iterator it;
     const QList<QVector3D> & faceNormals = mesh.faceNormals();
-    int size = mesh.owner().size();
+    int size = mesh.nFaces();
     int c = 0;
     for (int faceI = 0; faceI < size; faceI++) {
         const QVector3D & n = faceNormals[faceI];
@@ -67,6 +67,13 @@ FEAOneDMesh::FEAOneDMesh(const QVector3D & dir, const Mesh & mesh)
 
     // compute face centers
     computeFaceCenters();
+    // use facecenters as node coord
+    createPoints();
+    // create boundary nodes
+    createBoundaryNameNodes();
+
+    nNodes_ = points().size();
+    nCells_ = mesh_.nCells();
 }
 
 void FEAOneDMesh::createPoints()
@@ -101,6 +108,25 @@ void FEAOneDMesh::computeFaceCenters()
         }
         center /= nodeIds.size();
         faceCenters_.push_back(center);
+    }
+}
+
+void FEAOneDMesh::createBoundaryNameNodes()
+{
+    const QMap<QString, QList<int> > & mapBCFaceId = mesh_.boundaryNameFaces();
+
+    QMap<QString, QList<int> >::const_iterator it;
+    for (it = mapBCFaceId.begin(); it != mapBCFaceId.end(); ++it) {
+        const QString & name = it.key();
+        const QList<int> & faceIds = *it;
+
+        QList<int>::const_iterator it2;
+        QList<int> nodeIds;
+        for(it2 = faceIds.begin(); it2 != faceIds.end(); ++it2) {
+            const int & faceId = *it2;
+            nodeIds.push_back(threeDFaceToOneDNode_[faceId]);
+        }
+        boundaryNameNodes_[name] = nodeIds;
     }
 }
 

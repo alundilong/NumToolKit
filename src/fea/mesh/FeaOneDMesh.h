@@ -44,15 +44,21 @@ public:
     inline const QList<QList<int> > elementNodes() const { return elementNodes_; }
     // access to 3D mesh if necessary
     inline const Mesh & mesh() const { mesh_; }
+    inline const int & nCells() const { nCells_; }
+    inline const int & nNodes() const { nNodes_; }
     inline const QList<QVector3D> points() const { return points_; }
     inline const QList<double> faceAreas() const { return faceAreas_; } // will be used for 1D bar/beam
     inline const QVector3D & direction() const { return dir_; }
+    inline const QMap<QString, QList<int> > boundaryNameNodes() \
+    const { return boundaryNameNodes_; }
 private:
     QList<int> oneDNodes_; // all 3D faces contriibute to 1D nodes
     QMap<int,int> oneDNodeToThreeDFace_;
     QMap<int,int> threeDFaceToOneDNode_;
     QList<QList<int> > elementNodes_;
     QList<QVector3D> points_;
+    int nNodes_;
+    int nCells_;
     const Mesh & mesh_;
     const QVector3D & dir_;
     QList<QVector3D> faceCenters_;
@@ -61,6 +67,8 @@ private:
     void createPoints();
     void computeFaceCenters();
     inline const QList<QVector3D> faceCenters() const { return faceCenters_;}
+    void createBoundaryNameNodes();
+    QMap<QString, QList<int> > boundaryNameNodes_; //  a list of node
 
 };
 
