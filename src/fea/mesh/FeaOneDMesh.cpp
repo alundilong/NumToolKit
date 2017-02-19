@@ -35,13 +35,13 @@ FEAOneDMesh::FEAOneDMesh(const QVector3D & dir, const Mesh & mesh)
     mesh_(mesh), dir_(dir)
 {
     // find all faces whose normals are parallel to this direction
-    QList<int>::const_iterator it;
     const QList<QVector3D> & faceNormals = mesh.faceNormals();
     int size = mesh.nFaces();
     int c = 0;
     for (int faceI = 0; faceI < size; faceI++) {
         const QVector3D & n = faceNormals[faceI];
         if(QVector3D::crossProduct(n,dir).length() == 0) {
+//            qDebug() << n << dir ;
             oneDNodes_.push_back(faceI);
             oneDNodeToThreeDFace_[c] = faceI;
             threeDFaceToOneDNode_[faceI] = c;
@@ -64,7 +64,6 @@ FEAOneDMesh::FEAOneDMesh(const QVector3D & dir, const Mesh & mesh)
         }
         elementNodes_.push_back(twoNodes);
     }
-
     // compute face centers
     computeFaceCenters();
     // use facecenters as node coord
@@ -72,24 +71,75 @@ FEAOneDMesh::FEAOneDMesh(const QVector3D & dir, const Mesh & mesh)
     // create boundary nodes
     createBoundaryNameNodes();
 
-    nNodes_ = points().size();
+    nNodes_ = elementNodes().size()+1;
     nCells_ = mesh_.nCells();
+}
+
+void FEAOneDMesh::fetchBCUniqueVertex(const QString &name, QList<int> &vertex) const
+{
+    QMap<QString, QList<int> >::const_iterator it;
+    it = boundaryNameNodes().find(name);
+
+    if(it != boundaryNameNodes().end()) {
+        const QList<int> & nodeList = boundaryNameNodes()[name];
+        QList<int>::const_iterator it2;
+        for(it2 = nodeList.begin(); it2 != nodeList.end(); ++it2) {
+            vertex.push_back(*it2);
+        }
+
+    } else {
+        for (it = boundaryNameNodes().begin(); it != boundaryNameNodes().end(); ++it) {
+            qDebug() << (*it).first();
+        }
+    }
+}
+
+void FEAOneDMesh::dispTo3DMesh(const mathExtension::Vector &disp1d, mathExtension::Vector &disp3d) const
+{
+    int c = 0;
+    int size = nNodes_;
+    const QList<QList<int> > & faceNodes = mesh().faceNode();
+    for (c = 0; c < size; c++) {
+        const int & faceI = oneDNodeToThreeDFace_[c];
+        const QList<int> & nodeIds = faceNodes[faceI];
+        QList<int>::const_iterator it;
+        for(it = nodeIds.begin(); it != nodeIds.end(); ++it) {
+            const int & nodeI = *it;
+            disp3d[nodeI*3] = disp1d[3*c];
+            disp3d[nodeI*3+1] = disp1d[3*c+1];
+            disp3d[nodeI*3+2] = disp1d[3*c+2];
+        }
+    }
 }
 
 void FEAOneDMesh::createPoints()
 {
-    QList<QList<int> >::const_iterator it;
-    const QList<double> & allFaceAreas = mesh().faceAreas();
-    for(it = elementNodes().begin(); it != elementNodes().end(); ++it) {
-        const int & first = (*it)[0];
-        const int & second = (*it)[1];
-        const int & faceI1 = oneDNodeToThreeDFace()[first];
-        const int & faceI2 = oneDNodeToThreeDFace()[second];
-        points_.push_back(faceCenters()[faceI1]);
-        points_.push_back(faceCenters()[faceI2]);
+//    QList<QList<int> >::const_iterator it;
+//    const QList<double> & allFaceAreas = mesh().faceAreas();
 
-        faceAreas_.push_back(allFaceAreas[faceI1]);
-        faceAreas_.push_back(allFaceAreas[faceI2]);
+//    for(it = elementNodes().begin(); it != elementNodes().end(); ++it) {
+//        const int & first = (*it)[0];
+//        const int & second = (*it)[1];
+
+//        const int & faceI1 = oneDNodeToThreeDFace()[first];
+//        const int & faceI2 = oneDNodeToThreeDFace()[second];
+//        points_[first] = faceCenters()[faceI1];
+//        points_[second] = faceCenters()[faceI2];
+
+//        qDebug() << first << second << faceCenters()[faceI1] << faceCenters()[faceI2];
+
+//        faceAreas_.push_back(allFaceAreas[faceI1]);
+//        faceAreas_.push_back(allFaceAreas[faceI2]);
+//    }
+
+    // using oneDNodeToThreeDFace_ to assign coord and area for each node
+    const QList<double> & allFaceAreas = mesh().faceAreas();
+    QMap<int,int>::const_iterator it;
+    for (it = oneDNodeToThreeDFace_.begin(); it != oneDNodeToThreeDFace_.end(); ++it) {
+//        const int & oneDNodeId = it.key();
+        const int & threeDFaceId  = it.value();
+        points_.push_back(faceCenters()[threeDFaceId]);
+        faceAreas_.push_back(allFaceAreas[threeDFaceId]);
     }
 }
 
