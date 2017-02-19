@@ -48,8 +48,8 @@ public:
     inline const QMap<QString, QList<int> > boundaryNameNodes() \
     const { return boundaryNameNodes_; }
 
-    inline const int nNodes() const { return numEdge_; }
-    inline const int nCells() const { return mesh_.nCells();}
+    inline const int & nNodes() const { return numEdge_; }
+    inline const int & nCells() const { return nCells_;}
     inline const QVector3D & direction() const { return dir_; }
     const QList<QVector3D> & points() const { return edgeCenters_;}
     const double & thickness() const { return thickness_; }
@@ -71,6 +71,7 @@ private:
     QMap<QString, QList<int> > boundaryNameNodes_; //  a list of node
 
     int numEdge_;
+    int nCells_;
     double thickness_;
 
     const QMap<QString, Edge>  & nameMapEdge() const { return nameMapEdge_;}

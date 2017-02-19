@@ -66,6 +66,7 @@ FEATwoDMesh::FEATwoDMesh(const QVector3D & dir, const Mesh &mesh)
     }
     // total number of edge
     numEdge_ = nameMapEdge().size();// == nameMapEdge().uniqueKeys().size()
+    nCells_ = mesh_.nCells();
 
     // face edge
     for (int faceI = 0; faceI < size; faceI++) {
@@ -160,7 +161,6 @@ void FEATwoDMesh::createBoundaryNameNodes()
 {
     const QMap<QString, QList<int> > & mapBCFaceId = mesh_.boundaryNameFaces();
 
-    // mesh() instead of mesh_ causes problem...
     QMap<QString, QList<int> >::const_iterator it;
     for (it = mapBCFaceId.begin(); it != mapBCFaceId.end(); ++it) {
         const QString & name = it.key();
