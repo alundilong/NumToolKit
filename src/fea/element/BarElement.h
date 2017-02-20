@@ -60,11 +60,7 @@ protected:
     virtual void transformToGlobal();
     virtual void numberSequence();
 
-private:
-    double area_[2];
-    double volume_;
-    inline const double & volume() const { return volume_;}
-    inline double area() const { return (area_[0]+area_[1])*0.5; }
+
 //    double dof_[24];
 
 };

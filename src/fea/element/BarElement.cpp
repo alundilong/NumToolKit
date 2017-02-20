@@ -108,6 +108,7 @@ void BarElement::constructGeometry()
     // assume square
     const double ey = sqrt(area());
     const double ez = ey;
+    volume_ = area()*ex;
     exyz() = {ex, ey, ez};
     const QVector3D& origin = geometry()->center();
     QVector3D axisX((p2-origin).normalized());
@@ -124,9 +125,10 @@ void BarElement::constructBaseMatrix()
 
     const MaterialEle & m = *material();
     const GeometryEle & g = *geometry();
-    const double mass = m.rho()*volume();
+
 //    const double *eL = g.e();
     const double ex = exyz().ex;
+    const double mass = m.rho()*volume()/ex;
     const double coeffMass = mass*ex/6.0;
 
     baseMass_[0][0] = 2*coeffMass; baseMass_[0][1] = 1*coeffMass;
@@ -153,12 +155,13 @@ void BarElement::transformToGlobal()
     const QVector3D & e0 = lcs().e0();
     const QVector3D eg0(1.0,0.0,0.0);
 
-    mathExtension::Matrix G(2,2);
+    const int nrow = nDOF*nNode;
+    mathExtension::Matrix G(nrow,nrow);
     int step = BarElement::nDOF;
-    for (int i = 0; i < 2; i = i+step) {
+    for (int i = 0; i < nrow; i = i+step) {
         mathExtension::pos rowRange = {i,1,i+step};
         mathExtension::pos colRange = {i,1,i+step};
-        mathExtension::Matrix T(1,1);
+        mathExtension::Matrix T(nDOF,nDOF);
         //Transformation matrix
         T[0][0] = QVector3D::dotProduct(eg0, e0);
 

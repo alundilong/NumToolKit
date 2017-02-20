@@ -50,7 +50,8 @@ public:
     );
     ~EulerBernoulliBeam();
 
-
+    // access
+    const QList<int>& nodeIds() const {return pointIds_;}
 protected:
     virtual void infoAboutThisElement();
     virtual void constructGeometry();
