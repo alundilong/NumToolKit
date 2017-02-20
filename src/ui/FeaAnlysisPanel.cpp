@@ -136,87 +136,107 @@ void feaAnalysisPanel::on_buttonRun_clicked()
 
     if(ui->comboBox1DElement->currentText() == "Bar") {
         log_ += "Solving 1-D Bar Problem...\n";
-//        solveFEA();
+//        solve3DFEA();
 //        solve2DFEA();
-        solve1DFEA();
+        oneDTest t = Bar21;
+        solve1DFEA(t);
     }
 }
 
-void feaAnalysisPanel::solveFEA()
+void feaAnalysisPanel::solve3DFEA(const threeDTest & testName)
 {
-// construct mesh with polyMesh
-    const Mesh & polyMesh = (*mesh());
-    const QList<QList<int> > &cellNode = polyMesh.cellNode();
-
-    const int nElement = polyMesh.nCells();
-    const int nUnknown = polyMesh.nNodes()*3;
-
-    std::string nameMat = "Aluminum-2014T";
-    QList<FEAElementLinearCubicalElement*> elements;
-    for (int i = 0; i < nElement; i++) {
-        MaterialEle *m = new MaterialEle(nameMat);
-        const QList<int> & vertex = cellNode[i];
-        GeometryEle *g = new GeometryEle(polyMesh, vertex);
-        std::unique_ptr<FEAElementBase> parentEle = \
-                FEAElementBase::New(\
-                    "ThreeD",\
-                    "LinearCubicalElementBeamThreeD",\
-                    *m,\
-                    *g);
-        FEAElementLinearCubicalElement *lce =\
-                static_cast<FEAElementLinearCubicalElement*>(parentEle.get());
-        parentEle.release();
-        elements.push_back(lce);
+    switch(testName) {
+    case threeDTest::LinearCubical83: {solveLinearCubicalElement83(); break;}
+    default: {break;}
     }
-
-    mathExtension::Matrix A(nUnknown , nUnknown);
-    mathExtension::Vector b(nUnknown);
-    mathExtension::Vector x(nUnknown);
-
-    QList<FEAElementLinearCubicalElement*>::const_iterator it;
-    qDebug() << "====== Form Linear Algebra Equations =====";
-    for(it = elements.begin(); it != elements.end(); ++it) {
-        const FEAElementLinearCubicalElement &ele = **it;
-        const QList<int> &Rows= ele.nodeIds();
-        // be aware of vertex id (our id starts from 0)
-        A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
-    }
-
-    setBoundaryConditions(polyMesh,A,b);
-    linearAlgebraSolver las(A, b, x);
-    las.LUSolve_GSL();
-//    las.GaussSeidelMethod();
-//    std::cout << "ke" << std::endl;
-//    std::cout << elements[0]->baseStiff() << std::endl;
-//    std::cout << "me" << std::endl;
-//    std::cout << elements[0]->baseMass() << std::endl;
-
-//    Form *tmp = new Form(A,b,mw_);
-//    tmp->show();
-
-    // post-processing
-    // output new positions
-    // output ux, uy, uz
-    writeData(polyMesh, x);
-
-//    QList<int> vertex;
-//    polyMesh.fetchBCUniqueVertex("Left", vertex);
-//    QList<int>::const_iterator it2;
-//    for (it2 = vertex.begin(); it2 != vertex.end(); ++it2) {
-//        int id = *it2;
-//        qDebug() << id << x[id*3] << x[id*3+1] << x[id*3+2];
-//        int ID = id*3;
-//        for (int i = 0; i < 3; i++) {
-//            for (int j = 0; j < 3; j++) {
-//                qDebug() << "A : " << A[ID+i][ID+j];
-//            }
-//        }
-//        qDebug() << "b : " << b[ID] << b[ID+1] << b[ID+2];
-//    }
 
 }
 
-void feaAnalysisPanel::solve2DFEA()
+void feaAnalysisPanel::solveLinearCubicalElement83()
+{
+    // construct mesh with polyMesh
+        const Mesh & polyMesh = (*mesh());
+        const QList<QList<int> > &cellNode = polyMesh.cellNode();
+
+        const int nElement = polyMesh.nCells();
+        const int nUnknown = polyMesh.nNodes()*3;
+
+        std::string nameMat = "Aluminum-2014T";
+        QList<FEAElementLinearCubicalElement*> elements;
+        for (int i = 0; i < nElement; i++) {
+            MaterialEle *m = new MaterialEle(nameMat);
+            const QList<int> & vertex = cellNode[i];
+            GeometryEle *g = new GeometryEle(polyMesh, vertex);
+            std::unique_ptr<FEAElementBase> parentEle = \
+                    FEAElementBase::New(\
+                        "ThreeD",\
+                        "LinearCubicalElementBeamThreeD",\
+                        *m,\
+                        *g);
+            FEAElementLinearCubicalElement *lce =\
+                    static_cast<FEAElementLinearCubicalElement*>(parentEle.get());
+            parentEle.release();
+            elements.push_back(lce);
+        }
+
+        mathExtension::Matrix A(nUnknown , nUnknown);
+        mathExtension::Vector b(nUnknown);
+        mathExtension::Vector x(nUnknown);
+
+        QList<FEAElementLinearCubicalElement*>::const_iterator it;
+        qDebug() << "====== Form Linear Algebra Equations =====";
+        for(it = elements.begin(); it != elements.end(); ++it) {
+            const FEAElementLinearCubicalElement &ele = **it;
+            const QList<int> &Rows= ele.nodeIds();
+            // be aware of vertex id (our id starts from 0)
+            A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
+        }
+
+        setBoundaryConditions(polyMesh,A,b);
+        linearAlgebraSolver las(A, b, x);
+        las.LUSolve_GSL();
+    //    las.GaussSeidelMethod();
+    //    std::cout << "ke" << std::endl;
+    //    std::cout << elements[0]->baseStiff() << std::endl;
+    //    std::cout << "me" << std::endl;
+    //    std::cout << elements[0]->baseMass() << std::endl;
+
+    //    Form *tmp = new Form(A,b,mw_);
+    //    tmp->show();
+
+        // post-processing
+        // output new positions
+        // output ux, uy, uz
+        writeData(polyMesh, x);
+
+    //    QList<int> vertex;
+    //    polyMesh.fetchBCUniqueVertex("Left", vertex);
+    //    QList<int>::const_iterator it2;
+    //    for (it2 = vertex.begin(); it2 != vertex.end(); ++it2) {
+    //        int id = *it2;
+    //        qDebug() << id << x[id*3] << x[id*3+1] << x[id*3+2];
+    //        int ID = id*3;
+    //        for (int i = 0; i < 3; i++) {
+    //            for (int j = 0; j < 3; j++) {
+    //                qDebug() << "A : " << A[ID+i][ID+j];
+    //            }
+    //        }
+    //        qDebug() << "b : " << b[ID] << b[ID+1] << b[ID+2];
+    //    }
+}
+
+void feaAnalysisPanel::solve2DFEA(const twoDTest & testName)
+{
+    switch(testName) {
+    case twoDTest::ClassicPlate43: {solveClassicPlate43(); break;}
+    case twoDTest::Memberane41: {solveMembrane41(); break;}
+    default: {break;}
+    }
+
+
+}
+
+void feaAnalysisPanel::solveClassicPlate43()
 {
     // 2D classic plate
     // construct 2D mesh from 3D mesh
@@ -292,7 +312,92 @@ void feaAnalysisPanel::solve2DFEA()
     writeData(*mesh(), disp3d);
 }
 
-void feaAnalysisPanel::solve1DFEA()
+void feaAnalysisPanel::solveMembrane41()
+{
+    // 2D classic plate
+    // construct 2D mesh from 3D mesh
+    QVector3D direction(0,0,1);
+    const FEATwoDMesh polyMesh = FEATwoDMesh(direction, *mesh());
+    const QList<QList<int> > &elementNodes = polyMesh.elementNodes();
+
+    const int nElement = polyMesh.nCells();
+    std::string nameMat = "Aluminum-2014T";
+    QList<MembraneElement41*> elements;
+    for (int i = 0; i < nElement; i++) {
+        MaterialEle *m = new MaterialEle(nameMat);
+        const QList<int> & vertex = elementNodes[i];
+//        qDebug() << vertex ;
+        GeometryEle *g = new GeometryEle(polyMesh, vertex);
+        std::unique_ptr<FEAElementBase> parentEle = \
+                FEAElementBase::New(\
+                    "TwoD",\
+                    "ClassicPlate43",\
+                    *m,\
+                    *g);
+        MembraneElement41 *cpe =\
+                static_cast<MembraneElement41*>(parentEle.get());
+        parentEle.release();
+        elements.push_back(cpe);
+    }
+
+    const int nUnknown = polyMesh.nNodes()*MembraneElement41::nDOF;
+    mathExtension::Matrix A(nUnknown , nUnknown);
+    mathExtension::Vector b(nUnknown);
+    mathExtension::Vector x(nUnknown);
+
+    QList<MembraneElement41*>::const_iterator it;
+    qDebug() << "====== Form Linear Algebra Equations =====";
+    for(it = elements.begin(); it != elements.end(); ++it) {
+        const MembraneElement41 &ele = **it;
+        const QList<int> &Rows= ele.nodeIds();
+//        qDebug() << Rows;
+        // be aware of vertex id (our id starts from 0)
+        A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
+    }
+
+//    std::cout << "baseStiff"<< std::endl;
+//    std::cout << elements.first()->baseStiff();
+//    std::cout << "baseMass" << std::endl;
+//    std::cout << elements.first()->baseMass();
+
+    set2DBoundaryConditions(polyMesh,A,b);
+
+//    Form *tmp = new Form(A,b,mw_);
+//    tmp->show();
+
+    linearAlgebraSolver las(A, b, x);
+    las.LUSolve_GSL();
+
+//    std::cout << x << std::endl;
+
+    int size = polyMesh.nNodes();
+    mathExtension::Vector disp2d(size*3);
+    for (int i = 0; i < size; i++) {
+        int startI = i*3;
+        const double & w = x[startI];
+        const double & alpha = x[startI+1]; // wy
+        const double & beta = x[startI+2]; // wx
+        disp2d[startI] = 0; //-w*beta;
+        disp2d[startI+1] = 0; //w*alpha;
+        disp2d[startI+2] = w;;
+    }
+
+//    // store x to xx
+    mathExtension::Vector disp3d(mesh()->nNodes()*3);
+    polyMesh.dispTo3DMesh(disp2d,disp3d);
+    writeData(*mesh(), disp3d);
+}
+
+void feaAnalysisPanel::solve1DFEA(const oneDTest & testName)
+{
+    switch(testName) {
+    case oneDTest::Bar21: {solveBar21(); break;}
+    case oneDTest::BeamEuler22: {solveBeamEuler22(); break;}
+    default: {break;}
+    }
+}
+
+void feaAnalysisPanel::solveBar21()
 {
     // 1D Bar Element
     // construct 1D mesh from 3D mesh
@@ -341,11 +446,75 @@ void feaAnalysisPanel::solve1DFEA()
     linearAlgebraSolver las(A, b, x);
     las.LUSolve_GSL();
 
-
     int size = polyMesh.nNodes();
     mathExtension::Vector disp1d(size*3);
     for (int i = 0; i < size; i++) {
         int startI = i;
+        const double & u = x[startI];
+        disp1d[3*startI] = u;
+        disp1d[3*startI+1] = 0.0;
+        disp1d[3*startI+2] = 0.0;
+    }
+
+    //    // store x to xx
+    mathExtension::Vector disp3d(mesh()->nNodes()*3);
+    polyMesh.dispTo3DMesh(disp1d,disp3d);
+    writeData(*mesh(), disp3d);
+}
+
+void feaAnalysisPanel::solveBeamEuler22()
+{
+    // 1D Bar Element
+    // construct 1D mesh from 3D mesh
+    QVector3D direction(1,0,0);
+    const FEAOneDMesh polyMesh = FEAOneDMesh(direction, *mesh());
+    const QList<QList<int> > &elementNodes = polyMesh.elementNodes();
+
+    const int nElement = polyMesh.nCells();
+    std::string nameMat = "Aluminum-2014T";
+    QList<EulerBernoulliBeam*> elements;
+    for (int i = 0; i < nElement; i++) {
+        MaterialEle *m = new MaterialEle(nameMat);
+        const QList<int> & vertex = elementNodes[i];
+//        qDebug() << vertex << polyMesh.points()[vertex[0]] << polyMesh.points()[vertex[1]];
+        GeometryEle *g = new GeometryEle(polyMesh, vertex);
+        std::unique_ptr<FEAElementBase> parentEle = \
+                FEAElementBase::New(\
+                    "OneD",\
+                    "EulerBernoulliBeam22",\
+                    *m,\
+                    *g);
+        EulerBernoulliBeam *cpe =\
+                static_cast<EulerBernoulliBeam*>(parentEle.get());
+        parentEle.release();
+        elements.push_back(cpe);
+    }
+
+    const int nUnknown = polyMesh.nNodes()*EulerBernoulliBeam::nDOF;
+    mathExtension::Matrix A(nUnknown , nUnknown);
+    mathExtension::Vector b(nUnknown);
+    mathExtension::Vector x(nUnknown);
+
+    QList<EulerBernoulliBeam*>::const_iterator it;
+    qDebug() << "====== Form Linear Algebra Equations =====";
+    for(it = elements.begin(); it != elements.end(); ++it) {
+        const EulerBernoulliBeam &ele = **it;
+        const QList<int> &Rows= ele.nodeIds();
+        // be aware of vertex id (our id starts from 0)
+        A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
+    }
+
+    set1DBoundaryConditions(polyMesh, A, b);
+
+//    Form *tmp = new Form(A,b,mw_);
+//    tmp->show();
+    linearAlgebraSolver las(A, b, x);
+    las.LUSolve_GSL();
+
+    int size = polyMesh.nNodes();
+    mathExtension::Vector disp1d(size*3);
+    for (int i = 0; i < size; i++) {
+        int startI = i*2;
         const double & u = x[startI];
         disp1d[3*startI] = u;
         disp1d[3*startI+1] = 0.0;

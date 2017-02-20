@@ -44,6 +44,10 @@ class feaAnalysisPanel : public QWidget
     Q_OBJECT
 
 public:
+    enum oneDTest{Bar21, BeamEuler22, String21};
+    enum twoDTest{ClassicPlate43, Memberane41};
+    enum threeDTest {LinearCubical83};
+
     explicit feaAnalysisPanel(QWidget *parent = 0);
     explicit feaAnalysisPanel(MainWindow *mw, ViewerWindow *vwin, QWidget *parent = 0);
     ~feaAnalysisPanel();
@@ -74,9 +78,18 @@ private:
     Mesh *mesh_;
 
     inline const Mesh* mesh() { return mesh_; }
-    void solveFEA();
-    void solve2DFEA();
-    void solve1DFEA();
+
+    void solve3DFEA(const threeDTest & test);
+    void solveLinearCubicalElement83();
+
+    void solve2DFEA(const twoDTest & test);
+    void solveClassicPlate43();
+    void solveMembrane41();
+
+    void solve1DFEA(const oneDTest & test);
+    void solveBar21();
+    void solveBeamEuler22();
+
     void setBoundaryConditions(const Mesh& mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
     void set2DBoundaryConditions(const FEATwoDMesh & mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
     void set1DBoundaryConditions(const FEAOneDMesh & mesh, mathExtension::Matrix &A, mathExtension::Vector &b);
