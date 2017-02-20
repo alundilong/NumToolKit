@@ -349,6 +349,20 @@ mathExtension::Matrix mathExtension::Matrix::transpose()
     return m;
 }
 
+void mathExtension::Matrix::symmetry()
+{
+    Matrix &m = *this;
+    const int nRow = m.nrow();
+    const int nCol = m.ncol();
+
+    for (int i = 0; i < nRow; i++) {
+        for (int j = 0; j < nCol; j++) {
+            if (i > j)
+                m[j][i] = m[i][j];
+        }
+    }
+}
+
 void mathExtension::Matrix::operator=(const mathExtension::Matrix &m)
 {
     if((*this) == m) {

@@ -178,6 +178,8 @@ public:
     // therefore return a copy only
     // transpose (no change to the original)
     Matrix transpose();
+    // make change to the original matrix
+    void symmetry();
 
     // operator overload
     // copy
