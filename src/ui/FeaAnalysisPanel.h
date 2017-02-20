@@ -45,7 +45,7 @@ class feaAnalysisPanel : public QWidget
 
 public:
     enum oneDTest{Bar21, BeamEuler22, String21};
-    enum twoDTest{ClassicPlate43, Memberane41};
+    enum twoDTest{ClassicPlate43, Memberane41, ShearPanel42};
     enum threeDTest {LinearCubical83};
 
     explicit feaAnalysisPanel(QWidget *parent = 0);
@@ -85,6 +85,7 @@ private:
     void solve2DFEA(const twoDTest & test);
     void solveClassicPlate43();
     void solveMembrane41();
+    void solveShearPanel42();
 
     void solve1DFEA(const oneDTest & test);
     void solveBar21();

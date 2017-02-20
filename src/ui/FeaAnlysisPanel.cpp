@@ -230,6 +230,7 @@ void feaAnalysisPanel::solve2DFEA(const twoDTest & testName)
     switch(testName) {
     case twoDTest::ClassicPlate43: {solveClassicPlate43(); break;}
     case twoDTest::Memberane41: {solveMembrane41(); break;}
+    case twoDTest::ShearPanel42: {solveShearPanel42(); break; }
     default: {break;}
     }
 
@@ -369,6 +370,71 @@ void feaAnalysisPanel::solveMembrane41()
     las.LUSolve_GSL();
 
 //    std::cout << x << std::endl;
+
+    int size = polyMesh.nNodes();
+    mathExtension::Vector disp2d(size*3);
+    for (int i = 0; i < size; i++) {
+        int startI = i*3;
+        const double & w = x[startI];
+        const double & alpha = x[startI+1]; // wy
+        const double & beta = x[startI+2]; // wx
+        disp2d[startI] = 0; //-w*beta;
+        disp2d[startI+1] = 0; //w*alpha;
+        disp2d[startI+2] = w;;
+    }
+
+//    // store x to xx
+    mathExtension::Vector disp3d(mesh()->nNodes()*3);
+    polyMesh.dispTo3DMesh(disp2d,disp3d);
+    writeData(*mesh(), disp3d);
+}
+
+void feaAnalysisPanel::solveShearPanel42()
+{
+    // 2D classic plate
+    // construct 2D mesh from 3D mesh
+    QVector3D direction(0,0,1);
+    const FEATwoDMesh polyMesh = FEATwoDMesh(direction, *mesh());
+    const QList<QList<int> > &elementNodes = polyMesh.elementNodes();
+
+    const int nElement = polyMesh.nCells();
+    std::string nameMat = "Aluminum-2014T";
+    QList<ShearPanelElement42*> elements;
+    for (int i = 0; i < nElement; i++) {
+        MaterialEle *m = new MaterialEle(nameMat);
+        const QList<int> & vertex = elementNodes[i];
+//        qDebug() << vertex ;
+        GeometryEle *g = new GeometryEle(polyMesh, vertex);
+        std::unique_ptr<FEAElementBase> parentEle = \
+                FEAElementBase::New(\
+                    "TwoD",\
+                    "ShearPanelElement42",\
+                    *m,\
+                    *g);
+        ShearPanelElement42 *cpe =\
+                static_cast<ShearPanelElement42*>(parentEle.get());
+        parentEle.release();
+        elements.push_back(cpe);
+    }
+
+    const int nUnknown = polyMesh.nNodes()*ShearPanelElement42::nDOF;
+    mathExtension::Matrix A(nUnknown , nUnknown);
+    mathExtension::Vector b(nUnknown);
+    mathExtension::Vector x(nUnknown);
+
+    QList<ShearPanelElement42*>::const_iterator it;
+    qDebug() << "====== Form Linear Algebra Equations =====";
+    for(it = elements.begin(); it != elements.end(); ++it) {
+        const ShearPanelElement42 &ele = **it;
+        const QList<int> &Rows= ele.nodeIds();
+        // be aware of vertex id (our id starts from 0)
+        A.assemblyMatrix(Rows, Rows, ele.baseStiff(),false, ele.nDOF); // index with no moveby
+    }
+
+    set2DBoundaryConditions(polyMesh,A,b);
+
+    linearAlgebraSolver las(A, b, x);
+    las.LUSolve_GSL();
 
     int size = polyMesh.nNodes();
     mathExtension::Vector disp2d(size*3);
