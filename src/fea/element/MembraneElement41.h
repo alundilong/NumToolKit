@@ -26,10 +26,46 @@
 #ifndef MEMBRANEELEMENT41_H
 #define MEMBRANEELEMENT41_H
 
+#include "FeaElementTwoD.h"
+
+namespace NumToolKit {
+
+namespace Fea {
+
 class MembraneElement41 : public FEAElementTwoD
 {
 public:
+    static const std::string typeName;
+    static const int  nNode;
+    static const int nDOF;
+public:
     MembraneElement41();
+    MembraneElement41
+    (
+            const std::string & dim,
+            const std::string & name,
+            const MaterialEle & m,
+            const GeometryEle & g
+    );
+
+    // access
+    const QList<int>& nodeIds() const {return pointIds_;}
+
+protected:
+    virtual void infoAboutThisElement();
+    virtual void constructGeometry();
+    virtual void constructBaseMatrix();
+    virtual void transformToGlobal();
+    virtual void numberSequence();
+
+private:
+    // prestress
+    double t1_;
+    double t2_;
 };
+
+} // end of Fea
+
+} // end of Num
 
 #endif // MEMBRANEELEMENT41_H
