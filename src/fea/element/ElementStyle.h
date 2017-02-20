@@ -33,6 +33,8 @@
 
 // 2D Element
 #include "ClassicPlateElement.h"
+#include "MembraneElement41.h"
+#include "ShearPanelElement42.h"
 
 // 3D Element
 #include "FeaElementLinearCubicalElement.h"
